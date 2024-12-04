@@ -1,0 +1,76 @@
+name: Deploy to S3
+
+on:
+  push:
+    branches:
+      - FrontEndProd
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 커밋 메시지가 Release_v* 패턴인지 확인
+      - name: 1.Check commit message
+        id: check_commit
+        run: |
+          echo "커밋 메시지: ${{ github.event.head_commit.message }}"
+          if [[ "${{ github.event.head_commit.message }}" =~ ^Release_v[0-9]+\.[0-9]+$ ]]; then
+            echo "is_release=true" >> $GITHUB_ENV
+            echo "Release_v* 타입의 커밋 발생"
+          else
+            echo "is_release=false" >> $GITHUB_ENV
+            echo "Release_v* 타입의 커밋이 아님"
+            exit 0
+          fi
+        shell: bash
+
+      # 2. 레포지토리 체크아웃 (조건에 따라 실행)
+      - name: 2.Checkout repository
+        if: env.is_release == 'true'
+        uses: actions/checkout@v3
+
+      # 3. Node.js 환경 설정 (조건에 따라 실행)
+      - name: 3.Set up Node.js
+        if: env.is_release == 'true'
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.17.0' # Node.js 버전 설정
+
+      # 4. Actions secrets and variables 저장된 환경 변수를 .env.production 파일로 저장
+      - name: 4.Create .env.production file
+        if: env.is_release == 'true'
+        run: |
+          echo "${{ secrets.ENV_PRODUCTION }}" > .env.production
+
+      # 5. 라이브러리 설치 (조건에 따라 실행)
+      - name: 5.Install dependencies
+        if: env.is_release == 'true'
+        run: npm install
+
+      # 6. 빌드 실행 (조건에 따라 실행)
+      - name: 6.Build the project
+        if: env.is_release == 'true'
+        run: npm run build
+
+      # 7. AWS CLI 설정 (조건에 따라 실행)
+      - name: 7.Configure AWS credentials
+        if: env.is_release == 'true'
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2 # 서울 리전
+
+      # 8. S3에 업로드 (조건에 따라 실행)
+      - name: 8.Deploy to S3
+        if: env.is_release == 'true'
+        run: |
+          aws s3 sync ./build s3://app.cocabot.com --delete
+
+      # 9. CloudFront 캐시 무효화 (조건에 따라 실행)
+      - name: 9.Invalidate CloudFront cache
+        if: env.is_release == 'true'
+        run: |
+          aws cloudfront create-invalidation --distribution-id E1QI6AXVOT0ID4 --paths "/*"
+

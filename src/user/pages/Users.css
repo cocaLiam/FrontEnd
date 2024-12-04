@@ -1,0 +1,30 @@
+/* Users.css */
+.add-device-container {
+  position: absolute;
+  top: 100px; /* 화면 위쪽에서 100px 떨어짐 */
+  left: 100px; /* 화면 왼쪽에서 100px 떨어짐 */
+  padding: 10px;
+}
+
+.add-device-button {
+  background-color: #4caf50; /* 녹색 배경 */
+  color: white; /* 텍스트 색상 */
+  font-size: 16px; /* 텍스트 크기 */
+  padding: 10px 20px; /* 버튼 내부 여백 */
+  border: none; /* 테두리 제거 */
+  border-radius: 5px; /* 둥근 모서리 */
+  cursor: pointer; /* 마우스 포인터 변경 */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+  transition: all 0.3s ease; /* 부드러운 애니메이션 */
+}
+
+.add-device-button:hover {
+  background-color: #45a049; /* 호버 시 더 어두운 녹색 */
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* 호버 시 그림자 강화 */
+}
+
+.add-device-button:active {
+  background-color: #3e8e41; /* 클릭 시 더 어두운 녹색 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* 클릭 시 그림자 축소 */
+  transform: translateY(2px); /* 클릭 시 버튼이 눌리는 효과 */
+}
