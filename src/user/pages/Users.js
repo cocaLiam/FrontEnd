@@ -5,6 +5,7 @@ import ErrorModal from '../../shared/components/UIElements/ErrorModal';
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
 
 import { useHttpClient } from "../../shared/hooks/http-hook";
+import andInterface from '../../shared/util/androidInterface';
 
 import './Users.css'; // CSS 파일 추가
 
@@ -22,22 +23,26 @@ const Users = () => {
       } catch (err) { }
     };
     fetchUsers();
+    console.log(" == fetchUsers == ")
 
-    // Android WebView에서 호출할 수 있도록 window 객체에 함수 등록
-    window.receiveDataFromApp = (data) => {
-      console.log("Received data from app:", data);
-      addDeviceHandler(`APP to Web : ${data}`)
-    };
+    // // Android WebView에서 호출할 수 있도록 window 객체에 함수 등록
+    // window.receiveDataFromApp = (data) => {
+    //   console.log("Received data from app:", data);
+    //   addDeviceHandler(`APP to Web : ${data}`)
+    // };
+
+    // Android WebView에서 호출할 수 있도록 window 객체에 함수 등록 <<-- 이거 되는지 확인필요 
+    andInterface.registerAndroidInterface(andInterface.andShowToast);
   }, [sendRequest]);
 
-  // Android WebView의 showToast 호출
-  const addDeviceHandler = (msg) => {
-    if (window.AndroidInterface && window.AndroidInterface.showToast) {
-      window.AndroidInterface.showToast(msg);
-    } else {
-      console.log("AndroidInterface is not available.");
-    }
-  };
+  // // Android WebView의 showToast 호출
+  // const addDeviceHandler = (msg) => {
+  //   if (window.AndroidInterface && window.AndroidInterface.showToast) {
+  //     window.AndroidInterface.showToast(msg);
+  //   } else {
+  //     console.log("AndroidInterface is not available.");
+  //   }
+  // };
 
   return (
     <React.Fragment>
@@ -49,7 +54,11 @@ const Users = () => {
       )}
       {!isLoading && loadedUsers && <UsersList items={loadedUsers} />}
       <div style={{ position: 'absolute', top: '10px', left: '10px' }}>
-        <button className="add-device-button" onClick={() => addDeviceHandler("APP API : Web to APP")}>
+        {/* <button className="add-device-button" onClick={() => addDeviceHandler("APP API : Web to APP")}> */}
+        <button
+          className="add-device-button"
+          onClick={() => andInterface.andShowToast("APP API : Web to APP")}
+        >
           Add Device
         </button>
       </div>

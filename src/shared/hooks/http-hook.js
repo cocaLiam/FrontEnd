@@ -1,8 +1,8 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 
 export const useHttpClient = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState();
+  const [isLoading , setIsLoading] = useState(false);
+  const [error     , setError    ] = useState();
 
   const activeHttpRequests = useRef([]);
   // [] 빈 배열의 주소값 같은거라고 생각 하면 됨. activeHttpRequests.current <- &activeHttpRequests
@@ -10,6 +10,8 @@ export const useHttpClient = () => {
   // activeHttpRequests는 컴포넌트의 상태와는 독립적으로 유지되어야 하는 변경 가능한 데이터를 관리하기 위해 사용됩니다.
 
   const sendRequest = useCallback(
+    // setIsLoading , setError 함수가 동작 할때 "sendRequest" 함수의 참조가 바뀐다.
+    // --> sendRequest 를 의존성 으로 가지고 있는 useEffect 훅 들은 리렌더링 된다.
     async (url, method = "GET", body = null, headers = {}) => {
 
       const parts = url.split('/');
