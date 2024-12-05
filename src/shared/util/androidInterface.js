@@ -4,7 +4,7 @@ const andInterface = {
  * ######################## Web ---API---> Android Function 호출 ########################
  */
   // Android WebView의 showToast 호출
-  andShowToast: (msg) => {
+  ShowToast: (msg) => {
     if (window.AndroidInterface && window.AndroidInterface.andShowToast) {
       window.AndroidInterface.andShowToast(msg);
     } else {
@@ -22,7 +22,7 @@ const andInterface = {
       try {
         const parsedData = JSON.parse(data); // JSON 데이터 파싱
         console.log("Received data from app:", parsedData);
-        callback(`APP to Web : ${parsedData}`);
+        callback(parsedData);
       } catch (error) {
         console.error("Failed to parse data from app:", error);
       }
