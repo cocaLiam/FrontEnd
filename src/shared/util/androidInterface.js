@@ -1,10 +1,9 @@
 const andInterface = {
-
 /**
  * ######################## Web ---API---> Android Function 호출 ########################
  */
   // Android WebView의 showToast 호출
-  ShowToast: (msg) => {
+  showToast: (msg) => {
     if (window.AndroidInterface && window.AndroidInterface.andShowToast) {
       window.AndroidInterface.andShowToast(msg);
     } else {
