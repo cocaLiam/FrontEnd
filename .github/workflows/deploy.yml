@@ -41,8 +41,6 @@ jobs:
       - name: 4.Create .env.production file
         if: env.is_release == 'true'
         run: |
-          echo "${secrets.ENV_PRODUCTION}"
-          echo "${Secrets.ENV_PRODUCTION}"
           echo "${{secrets.ENV_PRODUCTION}}"
           echo "${{Secrets.ENV_PRODUCTION}}"
           echo "${{ secrets.ENV_PRODUCTION }}" > .env.production
