@@ -71,7 +71,6 @@ jobs:
         if: env.is_release == 'true'
         run: |
           aws s3 sync ./build s3://app.cocabot.com --delete
-          aws s3 sync .env.production s3://app.cocabot.com --delete
 
       # 9. CloudFront 캐시 무효화 (조건에 따라 실행)
       - name: 9.Invalidate CloudFront cache
