@@ -44,6 +44,8 @@ jobs:
           echo "${{secrets.ENV_PRODUCTION}}"
           echo "${{Secrets.ENV_PRODUCTION}}"
           echo "${{ secrets.ENV_PRODUCTION }}" > .env.production
+          cat .env.production
+          echo $PWD
 
       # 5. 라이브러리 설치 (조건에 따라 실행)
       - name: 5.Install dependencies
