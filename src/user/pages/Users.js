@@ -37,8 +37,8 @@ const Users = () => {
 
   // Android WebView의 showToast 호출
   const addDeviceHandler = (msg) => {
-    if (window.AndroidInterface && window.AndroidInterface.showToast) {
-      window.AndroidInterface.showToast(msg);
+    if (window.AndroidInterface && window.AndroidInterface.andShowToast) {
+      window.AndroidInterface.andShowToast(msg);
     } else {
       console.log("AndroidInterface is not available.");
     }
