@@ -42,8 +42,11 @@ jobs:
       - name: 4.Create .env.production file
         if: env.is_release == 'true'
         run: |
+          ls -la
           rm -f .env.production
+          ls -la
           echo "${{ secrets.ENV_PRODUCTION }}" > .env.production
+          ls -la
           cat .env.production
           echo $PWD
 
