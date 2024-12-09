@@ -28,16 +28,21 @@ const andInterface = {
   },
 
   resConnect: (data) => {
-    // resConnect(macAddress: String, deviceName: String)
     try {
-      console.log(JSON.stringify(data, null, 2))
-      console.log(data)
-      console.log(data.macAddress)
-      console.log(data.deviceName)
-      return true  // Android 쪽에 return 값 반환
+      // 전달된 데이터가 JSON 문자열인지 확인
+      if (typeof data === "string") {
+        data = JSON.parse(data); // JSON 문자열을 객체로 변환
+      }
+  
+      console.log(JSON.stringify(data,null, 2)); // JSON 데이터 출력
+      console.log(data); // 객체 출력
+      console.log(data.macAddress); // macAddress 출력
+      console.log(data.deviceName); // deviceName 출력
+  
+      return true; // Android로 반환
     } catch (error) {
       console.error(`Json String Type 이 아닙니다. : ${data}`);
-      return false // Android 쪽에 return 값 반환
+      return false; // Android로 반환
     }
   }
 }
