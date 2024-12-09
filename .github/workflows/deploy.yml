@@ -15,12 +15,13 @@ jobs:
         id: check_commit
         run: |
           echo "커밋 메시지: ${{ github.event.head_commit.message }}"
-          if [[ "${{ github.event.head_commit.message }}" =~ ^Release_v[0-9]+\.[0-9]+$ ]]; then
+          #if [[ "${{ github.event.head_commit.message }}" =~ ^Release_v[0-9]+\.[0-9]+$ ]]; then
+          if [[ "${{ github.event.head_commit.message }}" =~ ^Release_v[0-9]+\.[0-9]+\ .+$ ]]; then
             echo "is_release=true" >> $GITHUB_ENV
-            echo "Release_v* 타입의 커밋 발생"
+            echo "Release_v*.* *** 타입의 커밋 발생"
           else
             echo "is_release=false" >> $GITHUB_ENV
-            echo "Release_v* 타입의 커밋이 아님"
+            echo "Release_v*.* *** 타입의 커밋이 아님"
             exit 0
           fi
         shell: bash
@@ -41,8 +42,6 @@ jobs:
       - name: 4.Create .env.production file
         if: env.is_release == 'true'
         run: |
-          echo "${{secrets.ENV_PRODUCTION}}"
-          echo "${{Secrets.ENV_PRODUCTION}}"
           echo "${{ secrets.ENV_PRODUCTION }}" > .env.production
           cat .env.production
           echo $PWD
