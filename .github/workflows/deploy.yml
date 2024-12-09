@@ -58,7 +58,7 @@ jobs:
         run: |
           rm -rf build
           ls -la
-          npm run builid
+          npm run build
           ls -la
 
       # 7. AWS CLI 설정 (조건에 따라 실행)
