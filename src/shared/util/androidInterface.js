@@ -41,9 +41,8 @@ const andInterface = {
    */
   resConnect: (data) => {
     try {
-      const jsonObject = typeof data === "string" 
-      ? keyCheck(data, "macAddress", "deviceName") 
-      : keyCheck(JSON.stringify(data), "macAddress", "deviceName");
+      const needKeys = ["macAddress", "deviceName"]; // 필수 키 목록
+      const jsonObject = keyCheck(data, needKeys);
 
       console.log("macAddress:", jsonObject.macAddress); // macAddress 출력
       console.log("deviceName:", jsonObject.deviceName); // deviceName 출력
@@ -57,25 +56,28 @@ const andInterface = {
 };
 
 /**
- * JSON 문자열인지 확인하고, 필수 키가 모두 존재하는지 검사하는 함수
- * @param {string} jsonString - JSON 문자열
- * @param {...string} keys - 필수 키 목록
- * @returns {DeviceInfo} - JSON 문자열이 유효하고, 필수 키가 모두 존재하면 파싱된 DeviceInfo 객체 반환
- * @throws {Error} - JSON 문자열이 유효하지 않거나 필수 키가 누락된 경우 에러 발생
+ * JSON 데이터인지 확인하고, 필수 키가 모두 존재하는지 검사하는 함수
+ * @param {string|Object} data - JSON 문자열 또는 객체
+ * @param {string[]} keys - 필수 키 목록
+ * @returns {DeviceInfo} - JSON 데이터가 유효하고, 필수 키가 모두 존재하면 파싱된 DeviceInfo 객체 반환
+ * @throws {Error} - JSON 데이터가 유효하지 않거나 필수 키가 누락된 경우 에러 발생
  */
-function keyCheck(jsonString, ...keys) {
-  const data = JSON.parse(jsonString);
+function keyCheck(data, keys) {
+  // data가 문자열이면 JSON 파싱
+  const parsedData = typeof data === "string" ? JSON.parse(data) : data;
 
-  if (typeof data !== "object" || data === null) {
+  // 객체인지 확인
+  if (typeof parsedData !== "object" || parsedData ===null) {
     throw new Error("JSON 데이터가 유효한 객체가 아닙니다.");
   }
 
-  const missingKeys = keys.filter((key) => !(key in data));
+  // 필수 키 확인
+  const missingKeys = keys.filter((key) => !(key in parsedData));
   if (missingKeys.length > 0) {
     throw new Error(`필수 키가 누락되었습니다: ${missingKeys.join(", ")}`);
   }
 
-  return data;
+  return parsedData;
 }
 
 export default andInterface;
