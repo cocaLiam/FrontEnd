@@ -28,7 +28,7 @@ const andInterface = {
   receiveDataFromApp: (data) => {
     try {
       const parsedData = JSON.parse(data); // JSON 데이터 파싱
-      console.log("Parsed Data from Android: ", JSON.stringify(parsedData,, 2));
+      console.log("Parsed Data from Android: ", JSON.stringify(parsedData,null, 2));
     } catch (error) {
       console.error(`Json String Type 이 아닙니다. : ${data}`);
     }
