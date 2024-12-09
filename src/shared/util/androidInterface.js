@@ -26,16 +26,17 @@ const andInterface = {
   //     }
   //   };
   // }
-    // 실제 receiveDataFromApp 함수 정의
-    receiveDataFromApp: (data) => {
-      try {
-        const parsedData = JSON.parse(data); // JSON 데이터 파싱
-        console.log("Parsed Data from Android: ", parsedData);
-        // 필요한 추가 로직 작성
-      } catch (error) {
-        console.error(`Json String Type 이 아닙니다. : ${data}`);
-      }
+  
+  // 실제 receiveDataFromApp 함수 정의
+  receiveDataFromApp: (data) => {
+    try {
+      const parsedData = JSON.parse(data); // JSON 데이터 파싱
+      console.log("Parsed Data from Android: ", parsedData);
+      // 필요한 추가 로직 작성
+    } catch (error) {
+      console.error(`Json String Type 이 아닙니다. : ${data}`);
     }
+  }
 }
   
 
