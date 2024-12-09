@@ -32,10 +32,6 @@ const Users = () => {
     window.andInterface.receiveDataFromApp = andInterface.receiveDataFromApp; // 특정 함수만 등록
   }, [sendRequest]);
 
-  function subAndroidData(msg){
-    console.log("subAndroidData : ", msg);
-  }
-
   return (
     <React.Fragment>
       <ErrorModal showError={error} onClear={clearError} />
