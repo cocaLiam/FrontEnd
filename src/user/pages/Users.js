@@ -28,8 +28,17 @@ const Users = () => {
     // // Android WebView에서 호출할 수 있도록 window 객체에 함수 등록
     // andInterface.registerAndroidInterface(subAndroidData);
     // window 객체에 특정 함수만 등록
-    window = window || {}; // andInterface 네임스페이스가 없으면 생성
-    window.receiveDataFromApp = andInterface.receiveDataFromApp; // 특정 함수만 등록
+
+    // //  window.receiveDataFromApp << Android 에 정의된 함수명
+    // window.andInterface = window.andInterface || {}; // andInterface 네임스페이스가 없으면 생성
+    // window.andInterface.receiveDataFromApp = andInterface.receiveDataFromApp; // 특정 함수만 등록
+
+    // // receiveDataFromApp 함수를 전역에 등록
+    // window.andInterface = window.andInterface || {}; // andInterface 네임스페이스가 없으면 생성
+    // window.andInterface.receiveDataFromApp = andInterface.receiveDataFromApp; // 특정 함수만 등록
+
+    window.receiveDataFromApp = andInterface.receiveDataFromApp;
+
   }, [sendRequest]);
 
   return (
