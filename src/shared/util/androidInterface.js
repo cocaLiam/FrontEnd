@@ -41,7 +41,9 @@ const andInterface = {
    */
   resConnect: (data) => {
     try {
-      const jsonObject = typeof data === "string" ? keyCheck(data, "macAddress", "deviceName") : keyCheck(JSON.stringify(data), "macAddress", "deviceName");
+      const jsonObject = typeof data === "string" 
+      ? keyCheck(data, "macAddress", "deviceName") 
+      : keyCheck(JSON.stringify(data), "macAddress", "deviceName");
 
       console.log("macAddress:", jsonObject.macAddress); // macAddress 출력
       console.log("deviceName:", jsonObject.deviceName); // deviceName 출력
