@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
-import UsersList from '../components/UsersList';
-import ErrorModal from '../../shared/components/UIElements/ErrorModal';
-import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
+import UsersList from "../components/UsersList";
+import ErrorModal from "../../shared/components/UIElements/ErrorModal";
+import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 
 import { useHttpClient } from "../../shared/hooks/http-hook";
-import andInterface from '../../shared/util/androidInterface';
+import andInterface from "../../shared/util/androidInterface";
 
-import './Users.css'; // CSS 파일 추가
+import "./Users.css"; // CSS 파일 추가
 
 const Users = () => {
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
@@ -20,15 +20,16 @@ const Users = () => {
           `${process.env.REACT_APP_BASE}${process.env.REACT_APP_USERS_ROUTE}${process.env.REACT_APP_ROOT}`
         );
         setLoadedUsers(responseData.users);
-      } catch (err) { }
+      } catch (err) {}
     };
     fetchUsers();
-    console.log(" -- fetchUsers -- ")
+    console.log(" -- fetchUsers -- ");
 
     // // Android WebView에서 호출할 수 있도록 window 객체에 함수 등록
-    window.receiveDataFromApp = andInterface.receiveDataFromApp;
     window.resConnect = andInterface.resConnect;
-
+    window.resParingInfo = andInterface.resParingInfo;
+    window.resReadData = andInterface.resReadData;
+    window.subObserveData = andInterface.subObserveData;
   }, [sendRequest]);
 
   return (
@@ -40,10 +41,17 @@ const Users = () => {
         </div>
       )}
       {!isLoading && loadedUsers && <UsersList items={loadedUsers} />}
-      <div style={{ position: 'absolute', top: '10px', left: '10px' }}>
+      <div style={{ position: "absolute", top: "10px", left: "10px" }}>
         <button
           className="add-device-button"
-          onClick={() => andInterface.showToast("APP API : Web to APP")}
+          // onClick={() => andInterface.pubToasting("APP API : Web to APP")}
+          onClick={() =>
+            andInterface.pubSendData(
+              "55:55:55:55",
+              "Device_1",
+              { "key_web": "val_Web" }
+            )
+          }
         >
           Add Device
         </button>
