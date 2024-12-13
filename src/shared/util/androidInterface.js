@@ -27,9 +27,87 @@ const andInterface = {
      * Web(client) -> APP(server) API 호출
      * Web에서 App으로 데이터를 전달받는 인터페이스
      */
-  pubToasting: (msg) => {
+
+  reqConnect: () => {
+    if (window.AndroidInterface) {
+      if (window.AndroidInterface.reqConnect) {
+        window.AndroidInterface.reqConnect();
+      } else {
+        console.log("reqConnect is not available.");
+      }
+    } else {
+      console.log("AndroidInterface is not available.");
+    }
+  },
+
+  reqRemoveParing: (macAddress, deviceName) => {
+    const deviceInfo = {
+      macAddress: macAddress,
+      deviceName: deviceName,
+    };
+    console.log(
+      "reqRemoveParing 보내는 DATA : ",
+      JSON.stringify(deviceInfo, null, 2)
+    );
+    if (window.AndroidInterface) {
+      if (window.AndroidInterface.reqRemoveParing) {
+        window.AndroidInterface.reqRemoveParing(JSON.stringify(deviceInfo));
+      } else {
+        console.log("reqRemoveParing is not available.");
+      }
+    } else {
+      console.log("AndroidInterface is not available.");
+    }
+  },
+
+  reqParingInfo: () => {
+    if (window.AndroidInterface) {
+      if (window.AndroidInterface.reqParingInfo) {
+        window.AndroidInterface.reqParingInfo();
+      } else {
+        console.log("reqParingInfo is not available.");
+      }
+    } else {
+      console.log("AndroidInterface is not available.");
+    }
+  },
+
+  reqConnectedDevices: () => {
+    if (window.AndroidInterface) {
+      if (window.AndroidInterface.reqConnectedDevices) {
+        console.log("reqConnectedDevices ON.");
+        window.AndroidInterface.reqConnectedDevices();
+      } else {
+        console.log("reqConnectedDevices is not available.");
+      }
+    } else {
+      console.log("AndroidInterface is not available.");
+    }
+  },
+
+  reqReadData: (macAddress, deviceName) => {
+    const deviceInfo = {
+      macAddress: macAddress,
+      deviceName: deviceName,
+    };
+    console.log(
+      "reqReadData 보내는 DATA : ",
+      JSON.stringify(deviceInfo, null, 2)
+    );
     console.log(window.AndroidInterface); // AndroidInterface 객체 확인
-    console.log(window.AndroidInterface.pubSendData); // pubSendData 메서드 확인
+    console.log(window.AndroidInterface.reqReadData); // pubSendData 메서드 확인
+    if (window.AndroidInterface) {
+      if (window.AndroidInterface.reqReadData) {
+        window.AndroidInterface.reqReadData(JSON.stringify(deviceInfo));
+      } else {
+        console.log("reqReadData is not available.");
+      }
+    } else {
+      console.log("AndroidInterface is not available.");
+    }
+  },
+
+  pubToasting: (msg) => {
     if (window.AndroidInterface) {
       if (window.AndroidInterface.pubToasting) {
         window.AndroidInterface.pubToasting(msg);
@@ -41,7 +119,26 @@ const andInterface = {
     }
   },
 
+  pubDisconnectAllDevice: () => {
+    if (window.AndroidInterface) {
+      if (window.AndroidInterface.pubDisconnectAllDevice) {
+        window.AndroidInterface.pubDisconnectAllDevice();
+      } else {
+        console.log("pubDisconnectAllDevice is not available.");
+      }
+    } else {
+      console.log("AndroidInterface is not available.");
+    }
+  },
+
   pubSendData: (macAddress, deviceName, msg) => {
+    /**     사용법
+     *      andInterface.pubSendData(
+              "55:55:55:55",
+              "Device_1",
+              { "key_web": "val_Web" }
+            )
+     */
     const WriteData = {
       deviceInfo: {
         macAddress: macAddress,
@@ -91,14 +188,63 @@ const andInterface = {
   },
 
   /**
+   * @param {string|DeviceInfo} data - DeviceInfo 객체
+   * @returns {boolean} - 처리 결과
+   */
+  resRemoveParing: (data) => {
+    try {
+      if (validateDeviceInfo(data).isValid) {
+        console.log(
+          "resRemoveParing 받은 DATA : ",
+          JSON.stringify(data, null, 2)
+        );
+        console.log(typeof data); // object
+        console.log(data.deviceName);
+        console.log(data.macAddress);
+      }
+
+      return true; // Android로 반환
+    } catch (error) {
+      console.error(`에러 발생 1: ${error.message}`);
+      return false; // Android로 반환
+    }
+  },
+
+  /**
    * @param {string|DeviceList} data - DeviceList 객체
    * @returns {boolean} - 처리 결과
    */
   resParingInfo: (data) => {
     try {
+      if (!validateDeviceList(data).isValid) return false; // Paring Device 가 0 개 인 경우
       if (validateDeviceList(data).isValid) {
         console.log(
           "resParingInfo 받은 DATA : ",
+          JSON.stringify(data, null, 2)
+        );
+        console.log(typeof data); // object
+        console.dir(data.deviceList);
+        console.log(data.deviceList[0].deviceName);
+        console.log(data.deviceList[0].macAddress);
+      }
+
+      return true; // Android로 반환
+    } catch (error) {
+      console.error(`에러 발생 1: ${error.message}`);
+      return false; // Android로 반환
+    }
+  },
+
+  /**
+   * @param {string|DeviceList} data - DeviceList 객체
+   * @returns {boolean} - 처리 결과
+   */
+  resConnectedDevices: (data) => {
+    try {
+      if (!validateDeviceList(data).isValid) return false; // Conneted Device 가 0 개 인 경우
+      if (validateDeviceList(data).isValid) {
+        console.log(
+          "resConnectedDevices 받은 DATA : ",
           JSON.stringify(data, null, 2)
         );
         console.log(typeof data); // object

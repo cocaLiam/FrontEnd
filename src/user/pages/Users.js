@@ -27,7 +27,9 @@ const Users = () => {
 
     // // Android WebView에서 호출할 수 있도록 window 객체에 함수 등록
     window.resConnect = andInterface.resConnect;
+    window.resRemoveParing = andInterface.resRemoveParing;
     window.resParingInfo = andInterface.resParingInfo;
+    window.resConnectedDevices = andInterface.resConnectedDevices;
     window.resReadData = andInterface.resReadData;
     window.subObserveData = andInterface.subObserveData;
   }, [sendRequest]);
@@ -46,11 +48,12 @@ const Users = () => {
           className="add-device-button"
           // onClick={() => andInterface.pubToasting("APP API : Web to APP")}
           onClick={() =>
-            andInterface.pubSendData(
-              "55:55:55:55",
-              "Device_1",
-              { "key_web": "val_Web" }
-            )
+            // andInterface.pubSendData(
+            //   "55:55:55:55",
+            //   "Device_1",
+            //   { "key_web": "val_Web" }
+            // )
+            andInterface.reqConnectedDevices()
           }
         >
           Add Device
