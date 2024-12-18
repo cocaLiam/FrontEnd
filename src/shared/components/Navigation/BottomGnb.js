@@ -37,15 +37,6 @@ const BottomGnb = props => {
           <NavLink to='/auth' exact> My</NavLink>
         </li>
       )}
-      {auth.isLoggedIn ? (
-        <li>
-          <NavLink to='/auth'> Debug</NavLink>
-        </li>
-      ) : (
-        <li>
-          <NavLink to='/auth' exact> Debug</NavLink>
-        </li>
-      )}
     </ul>
   );
 };

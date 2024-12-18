@@ -1,26 +1,3 @@
-// import React from "react";
-
-// import UserItem from "./UserItem";
-// import './UserItem.css'
-
-// const UserList = props => {
-//     if (props.items.length == 0) {
-//         return (
-//             <div className="center">
-//                 <h2>등록된 User 없음</h2>
-//             </div>
-//         );
-//     } else {
-//         return (
-//             <ul>
-//                 {props.items.map(user => {
-//                     return <UserItem />;
-//                 })}
-//             </ul>
-//         );
-//     };
-// };
-
 // export default UserList;
 import React from 'react';
 
@@ -33,14 +10,14 @@ const UsersList = props => {
     return (
       <div className="center">
         <Card>
-          <h2>등록된 User 없음</h2>
+          <h2>등록된 기기 없음</h2>
         </Card>
       </div>
     );
   }
 
   return (
-    <ul className="users-list">
+    <ul className="device-list">
       {props.items.map(user => (
         <UserItem
           key={user.id}

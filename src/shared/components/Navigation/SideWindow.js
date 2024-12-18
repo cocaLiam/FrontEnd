@@ -15,9 +15,12 @@ const SideWindow = props => {
           </li>
           {auth.isLoggedIn && (
                 <li>
-                    <NavLink to='/' exact> 모든 유저들</NavLink>
+                    <NavLink to='/' exact> 기기추가</NavLink>
                 </li>
             )}
+          <li>
+              <NavLink to='/' exact> Debug</NavLink>
+          </li>
       </ul>
   );
 

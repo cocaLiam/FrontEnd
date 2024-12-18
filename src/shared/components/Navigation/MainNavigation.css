@@ -41,3 +41,31 @@
   height: 100%; /* 드로어 내비게이션의 높이를 100%로 설정 */
 }
 
+/* 반응형 디자인을 위한 추가 코드 */
+.main-navigation {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 화면 크기가 768px 이하일 때 적용되는 스타일 */
+@media (max-width: 768px) {
+  .main-navigation {
+    font-size: 0.9rem;
+  }
+
+  .main-navigation__menu-btn {
+    width: 1.5rem;  /* 작은 화면에서는 메뉴 버튼 크기 줄임 */
+    height: 1.5rem;
+    margin-right: 1rem;
+  }
+
+  .main-navigation__menu-btn span {
+    width: 1.5rem;  /* 메뉴 버튼 내 막대 크기도 줄임 */
+  }
+
+  .main-navigation__header-nav {
+    padding: 0.5rem;  /* 작은 화면에서 여백 조정 */
+  }
+}

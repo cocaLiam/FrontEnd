@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 
 import UsersList from "../components/UsersList";
@@ -11,7 +12,7 @@ import "./Users.css"; // CSS 파일 추가
 
 const Users = () => {
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
-  const [loadedUsers, setLoadedUsers] = useState();
+  const [pairedDevice, setPairedDevice] = useState();
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -19,7 +20,8 @@ const Users = () => {
         const responseData = await sendRequest(
           `${process.env.REACT_APP_BASE}${process.env.REACT_APP_USERS_ROUTE}${process.env.REACT_APP_ROOT}`
         );
-        setLoadedUsers(responseData.users);
+        setPairedDevice(responseData.users);
+        console.log(responseData)
       } catch (err) {}
     };
     fetchUsers();
@@ -42,7 +44,7 @@ const Users = () => {
           <LoadingSpinner />
         </div>
       )}
-      {!isLoading && loadedUsers && <UsersList items={loadedUsers} />}
+      {!isLoading && pairedDevice && <UsersList items={pairedDevice} />}
       <div style={{ position: "absolute", top: "10px", left: "10px" }}>
         <button
           className="add-device-button"
@@ -53,7 +55,7 @@ const Users = () => {
             //   "Device_1",
             //   { "key_web": "val_Web" }
             // )
-            andInterface.reqConnectedDevices()
+            andInterface.reqParingInfo()
           }
         >
           Add Device

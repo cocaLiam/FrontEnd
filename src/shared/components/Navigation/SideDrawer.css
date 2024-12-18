@@ -7,4 +7,11 @@
   width: 70%;
   background: white;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+  max-width: 300px; /* 최대 너비 설정 */
+}
+
+@media (max-width: 768px) {
+  .side-drawer {
+    width: 80%; /* 모바일에서는 화면의 80% 차지 */
+  }
 }
