@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
@@ -11,11 +12,14 @@ function App() {
       <h1>Hi Vite 모듈번들러, and tailWind CSS</h1>
       <div className="grid gap-6 mb-6 md:grid-cols-2">
         <div className="flex flex-col">
-          <p1 className="text-left ">taiWind CSS 확인용</p1>
-          <p1 className="text-left text-red-500">taiWind CSS 확인용</p1>
+          <p className="text-left text-red-200">taiWind CSS 확인용3</p>
+          <p className="text-center text-red-500">taiWind CSS 확인용2</p>
         </div>
       </div>
-      <>
+      {/* <div className="flex items-center justify-center min-h-screen">
+        <div> 정중앙 배치 </div>
+      </div> */}
+      <React.Fragment>
         <div>
           <a href="https://vite.dev" target="_blank">
             <img src={viteLogo} className="logo" alt="Vite logo" />
@@ -32,7 +36,7 @@ function App() {
         <p className="read-the-docs">
           Click on the Vite and React logos to learn more
         </p>
-      </>
+        </React.Fragment>
     </form>
   );
 }
