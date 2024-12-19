@@ -98,7 +98,7 @@ ___
 ### [tailWind CSS 실시간 적용 ]
 ***변경사항 감지시 ./src/output.css를 빌드해 실시간으로 Web에 적용***
 ```bash
-npx tailwindcss -i ./src/index.css -o ./src/output.css --watch
+$ npx tailwindcss -i ./src/index.css -o ./src/output.css --watch
 ```
 ### FrontEnd code 배포판 빌드
 ***npm run build 시, .env.production 환경변수를 참조해 빌드***

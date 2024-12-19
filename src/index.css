@@ -34,6 +34,11 @@ body {
   min-height: 100vh;
 }
 
+#root {
+  width: 100%; /* React 애플리케이션이 마운트되는 실제 DOM 요소 너비 지정 */
+  height: 100vh; /* React 애플리케이션이 마운트되는 실제 DOM 요소 높이 지정 */
+}
+
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
