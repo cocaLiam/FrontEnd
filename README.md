@@ -26,27 +26,39 @@ ___
 ### ( react - vite - tailWind CSS << 컴포넌트 기반 아키텍처 )
 ```tree
 src/
+├── asset/                  # 이미지 파일들 (svg ..)
+|   └──                     
 ├── components/             # UI 컴포넌트들을 모아둔 디렉토리
 │   ├── atoms/              # 더 이상 쪼갤 수 없는 가장 작은 단위의 컴포넌트 (버튼, 입력창, 아이콘 등)
+|   |   └──               
 │   ├── molecules/          # atoms를 조합하여 만든 좀 더 복잡한 컴포넌트 (검색바, 유저카드 등) 
+|   |   └──
 │   ├── organisms/          # molecules를 조합한 더 큰 단위의 독립적인 컴포넌트 (헤더, 푸터, 사이드바 등)
-│   ├── templates/          # 페이지의 레이아웃을 담당하는 컴포넌트 (대시보드 레이아웃, 관리자 레이아웃 등)
-│   └── pages/              # 실제 라우팅되는 페이지 컴포넌트 (홈페이지, 프로필페이지 등)
+|   |   ├── BottomNavigation.jsx
+|   |   └── SideDrawer.jsx
+│   ├── pages/              # 페이지의 레이아웃을 담당하는 컴포넌트 (대시보드 레이아웃, 관리자 레이아웃 등)
+|   |   ├── Home.jsx
+|   |   ├── Routine.jsx
+|   |   ├── My.jsx
+|   |   ├── Profile.jsx
+|   |   ├── Debug.jsx
+|   |   └── Settings.jsx
+│   └── templates/          # 실제 라우팅되는 페이지 컴포넌트 (홈페이지, 프로필페이지 등)
+|       └── MainLayout.jsx
 ├── context/                # React Context API를 사용한 전역 상태 관리 디렉토리
-│   └── UserContext.js      # 사용자 정보 관련 전역 상태 관리
+│   └── 
 ├── hooks/                  # 재사용 가능한 커스텀 훅들을 모아둔 디렉토리
-│   ├── useFetch.js         # API 요청을 위한 커스텀 훅
-│   └── useNativeBridge.js  # 네이티브 앱과의 통신을 위한 커스텀 훅
-├── utils/                  # 여러 곳에서 재사용되는 유틸리티 함수들을 모아둔 디렉토리
-│   ├── api.js              # API 호출 관련 유틸리티 함수
-│   └── format.js           # 데이터 포맷팅 관련 유틸리티 함수
+│   ├── 
+│   └──
 ├── styles/                 # 스타일 관련 파일들을 모아둔 디렉토리
 │   └── index.css           # Tailwind CSS 설정 및 전역 스타일
+├── utils/                  # 여러 곳에서 재사용되는 유틸리티 함수들을 모아둔 디렉토리
+│   ├── 
+│   └── 
 ├── App.jsx                 # 앱의 최상위 컴포넌트
 ├── index.css               # 기본 스타일시트
 ├── main.jsx                # React 앱의 진입점 (ReactDOM.render)
 └── output.css              # Tailwind CSS가 빌드된 최종 CSS 파일
-
 ```
 
 ### 환경변수 설명
