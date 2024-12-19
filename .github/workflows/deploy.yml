@@ -59,7 +59,7 @@ jobs:
       - name: 6.Build the project
         if: env.is_release == 'true'
         run: |
-          rm -rf build
+          rm -rf dist
           ls -la
           npm run build
           ls -la
@@ -77,7 +77,7 @@ jobs:
       - name: 8.Deploy to S3
         if: env.is_release == 'true'
         run: |
-          aws s3 sync ./build s3://app.cocabot.com --delete
+          aws s3 sync ./dist s3://app.cocabot.com --delete
           aws s3 ls s3://app.cocabot.com
 
       # 9. CloudFront 캐시 무효화 (조건에 따라 실행)
