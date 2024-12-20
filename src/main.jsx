@@ -22,8 +22,6 @@ import {
   HiLogout, // 로그아웃
 } from "react-icons/hi";
 
-import { Button, Card } from "flowbite-react";
-
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <App/>

@@ -3,13 +3,13 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainLayout from "./components/templates/MainLayout";
 
 // // 각 페이지 컴포넌트들
-import Home from "./components/pages/Home";
-import Routine from "./components/pages/Routine";
-import My from "./components/pages/My";
-import Settings from "./components/pages/Settings";
-import Profile from "./components/pages/Profile";
-import Debug from "./components/pages/Debug";
-import Auth from "./components/pages/Auth";
+import Home from "./pages/Home";
+import Routine from "./pages/Routine";
+import My from "./pages/My";
+import AddDevice from "./pages/AddDevice";
+import Settings from "./pages/Settings";
+import Debug from "./pages/Debug";
+import Auth from "./pages/Auth";
 
 import { LoadingProvider } from "./context/LoadingContext";
 
@@ -20,13 +20,16 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route element={<MainLayout />}> {/* MainLayout을 부모 Route로 설정 */}
+            {/* Bottom GNB 영역 */}
             <Route path="/" element={<Home />} />
-            <Route path="/routine" element={<Routine />} />
-            <Route path="/my" element={<My />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/debug" element={<Debug />} />
-            <Route path="/logout" element={<Auth />} />
+            <Route path="/Routine" element={<Routine />} />
+            <Route path="/My" element={<My />} />
+
+            {/* Side Bar 영역 */}
+            <Route path="/AddDevice" element={<AddDevice />} />
+            <Route path="/Settings" element={<Settings />} />
+            <Route path="/Login" element={<Auth />} />
+            <Route path="/Debug" element={<Debug />} />
           </Route>
         </Routes>
       </BrowserRouter>

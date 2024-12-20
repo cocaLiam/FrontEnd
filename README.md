@@ -23,44 +23,98 @@ ___
 # FrontEnd 구성 설명
 #### 
 
+=====Offset Properties=====
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+inset-0 위에 전부 0
+<div class="w-1/2">너비가 50%인 div</div>
+<div class="w-2/3">너비가 약 66.7%인 div</div>
+<div class="h-3/4">높이가 75%인 div</div>
+
+=====Dimension CSS=====
+단위 : 
+1. vh(전체창(viewPoint)기준 높이)  2. vw(전체창(viewPoint)기준 너비) 3. %(부모(컨테이너같은) 프로퍼티 기준)
+width (너비)
+height (높이)
+min-width (최소 너비)
+min-height (최소 높이)
+max-width (최대 너비)
+max-height (최대 높이)
+
+=====POSION CSS=====
+.box {
+  left: 20px
+  top: 20px
+  position: static | relative | absolute | fixed | stickey
+}
+static	생성된 위치 고정 (배치 불가능 / 기본값)
+relative	현재 배치된 본인 위치 에서 20,20
+absolute	부모(컨테이너같은) 프로퍼티 기준 20,20
+fixed	전체 창 기준 20,20( 뷰포트 기준 20,20 )
+stickey	생성된 위치 에서 스크롤 임계점에서 fixed 처리(배치 불가능 / 기본값)
+
+=====DISPLAY CSS=====
+컨테이너용 프로퍼티
+flex: 플렉스 컨테이너로 지정
+flex-direction: 주축의 방향 설정 (가로/세로)
+    [ row | col | row-reverse | col-reverse ]
+flex-wrap: 아이템 줄바꿈 여부 설정
+    [ nowrap | wrap ]
+justify-content: 주축 방향 정렬 방식
+    [ flex-start | flex-end | center | space-around | space-evenly | space-between ]
+align-items: 교차축 방향 정렬 방식
+    [ flex-start | flex-end | center ]
+text-align : 텍스트 블록의 수평 정렬 방식을 지정
+    [ left | right | center | justify ]
+align-content: 여러 행 정렬 방식 (wrap일 때)
+    [ flex-start | flex-end | center | space-around | space-evenly | space-between ]
+
+아이템용 프로퍼티
+flex-basis: 아이템의 기본 크기 설정
+    [ auto | 0~100% ]
+align-self: 개별 아이템의 교차축 정렬
+    [ flex-start | flex-end | center ]
+
 ### ( react - vite - tailWind CSS << 컴포넌트 기반 아키텍처 )
 ```tree
 src/
-├── asset/                  # 이미지 파일들 (svg ..)
-|   └──                     
-├── components/             # UI 컴포넌트들을 모아둔 디렉토리
-│   ├── atoms/              # 더 이상 쪼갤 수 없는 가장 작은 단위의 컴포넌트 (버튼, 입력창, 아이콘 등)
-|   |   ├── icons/          # 버튼 Icon SVG 파일들
-|   |   |   └── 
+├── asset/                        # 이미지 파일들 (svg ..)
+|   └──                           
+├── components/                   # UI 컴포넌트들을 모아둔 디렉토리 
+|   ├── templates/                # 전체 레이아웃 구조 
+|   │   └── MainLayout.jsx        # 사이드바, GNB 등을 포함한 전체 레이아웃
+|   ├── organisms/                # 큰 구조의 독립적 영역 [ Gnb, SideBar]
+|   │   ├── Sidebar.jsx           # 사이드 네비게이션 영역
+|   │   └── Gnb.jsx               # 글로벌 네비게이션 바 영역
+|   ├── molecules/                # 재사용 가능한 복합 컴포넌트 [ Modal, Card, SearchBar]
 |   │   └── 
-│   ├── molecules/          # atoms를 조합하여 만든 좀 더 복잡한 컴포넌트 (검색바, 유저카드 등) 
-|   |   └──
-│   ├── organisms/          # molecules를 조합한 더 큰 단위의 독립적인 컴포넌트 (헤더, 푸터, 사이드바 등)
-|   |   ├── BottomNavigation.jsx
-|   |   └── SideDrawer.jsx
-│   ├── pages/              # 페이지의 레이아웃을 담당하는 컴포넌트 (대시보드 레이아웃, 관리자 레이아웃 등)
-|   |   ├── Home.jsx
-|   |   ├── Routine.jsx
-|   |   ├── My.jsx
-|   |   ├── Profile.jsx
-|   |   ├── Debug.jsx
-|   |   └── Settings.jsx
-│   └── templates/          # 실제 라우팅되는 페이지 컴포넌트 (홈페이지, 프로필페이지 등)
-|       └── MainLayout.jsx
-├── context/                # React Context API를 사용한 전역 상태 관리 디렉토리
-│   └── 
-├── hooks/                  # 재사용 가능한 커스텀 훅들을 모아둔 디렉토리
-│   ├── 
-│   └──
-├── styles/                 # 스타일 관련 파일들을 모아둔 디렉토리
-│   └── index.css           # Tailwind CSS 설정 및 전역 스타일
-├── utils/                  # 여러 곳에서 재사용되는 유틸리티 함수들을 모아둔 디렉토리
-│   ├── 
-│   └── 
-├── App.jsx                 # 앱의 최상위 컴포넌트
-├── index.css               # 기본 스타일시트
-├── main.jsx                # React 앱의 진입점 (ReactDOM.render)
-└── output.css              # Tailwind CSS가 빌드된 최종 CSS 파일
+|   ├── atoms/                    # 가장 기본이 되는 컴포넌트 [ button, Input, spinner]
+|   │   ├──
+|   │   └── icons/                # 아이콘 모음
+|   │       └──
+├── pages/                        # 실제 라우팅되는 페이지들
+|   ├── AddDevice.jsx             #
+|   ├── Debug.jsx                 #
+|   ├── Routine.jsx               #
+|   ├── Auth.jsx                  #
+|   ├── Home.jsx                  #
+|   ├── My.jsx                    #
+|   └── Settings.jsx              #
+├── context/                      # React Context API를 사용한 전역 상태 관리 디렉토리
+│   └──       
+├── hooks/                        # 재사용 가능한 커스텀 훅들을 모아둔 디렉토리
+│   └──     
+├── styles/                       # 스타일 관련 파일들을 모아둔 디렉토리
+│   └── index.css                 # Tailwind CSS 설정 및 전역 스타일
+├── utils/                        # 여러 곳에서 재사용되는 유틸리티 함수들을 모아둔 디렉토리
+│   ├──       
+│   └──       
+├── App.jsx                       # 앱의 최상위 컴포넌트
+├── index.css                     # 기본 스타일시트
+├── main.jsx                      # React 앱의 진입점 (ReactDOM.render)
+└── output.css                    # Tailwind CSS가 빌드된 최종 CSS 파일
 ```
 
 ### 환경변수 설명
