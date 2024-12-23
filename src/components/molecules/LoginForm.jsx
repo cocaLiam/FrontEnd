@@ -29,12 +29,9 @@ const LoginForm = () => {
     setIsLoading(true);
 
     try {
-      console.log('Login attempt with:', {
-        email: formData.userEmail,
-        password: formData.password // 보안을 위해 실제 비밀번호 대신 길이만 출력
-      });
-      const res = await auth.login(formData.userEmail, formData.password);
-      console.log(`Login 성공 :`, res);
+      await auth.login(formData.userEmail, formData.password);
+      // const res = await auth.login(formData.userEmail, formData.password);
+      // console.log(`Login 성공 :`, res);
     } catch (err) {
       console.log(`Login 실패 : ${err}`);
       setIsErrorModalOpen(true);
@@ -46,10 +43,15 @@ const LoginForm = () => {
   return (
     <form onSubmit={handleSubmit} className="w-full space-y-4">
       {isLoading && <LoadingSpinner />}
+      <ErrorModal
+        isOpen={isErrorModalOpen}
+        onClose={() => setIsErrorModalOpen(false)}
+        content="Login Error"
+      />
       <div>
         <input
-          type="userEmail"
           name="userEmail"
+          type="email"
           value={formData.userEmail}
           onChange={handleChange}
           placeholder="이메일"
@@ -68,11 +70,6 @@ const LoginForm = () => {
           required
         />
       </div>
-      <ErrorModal
-        isOpen={isErrorModalOpen}
-        onClose={() => setIsErrorModalOpen(false)}
-        content="Login Error"
-      />
       <button
         type="submit"
         disabled={isLoading}

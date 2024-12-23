@@ -23,7 +23,6 @@ import { AuthContext } from "./context/AuthContext";
 // App.jsx
 function App() {
   console.log("#Start APP#");
-  // const authStatus = useContext(AuthProvider)
   const authStatus = useContext(AuthContext)
 
   useEffect(() => {

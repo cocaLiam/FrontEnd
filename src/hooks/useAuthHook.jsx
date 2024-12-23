@@ -1,0 +1,147 @@
+import { useCallback } from "react";
+import { decodeToken } from "../utils/jwtUtils"; // JWT 토큰을 디코딩하는 유틸리티 함수
+import { useHttpHook } from "./useHttpHook"; // HTTP 요청을 처리하는 커스텀 훅
+
+// useAuthHook: 인증 관련 로직을 캡슐화한 커스텀 훅
+export const useAuthHook = ({ setToken, setDbObjectId, setTokenExpirationDate }) => {
+  // HTTP 요청을 처리하기 위한 커스텀 훅에서 sendRequest 함수 가져오기
+  const { sendRequest } = useHttpHook();
+
+  /**
+   * 로그인 함수
+   * @param {string} userEmail - 사용자의 이메일
+   * @param {string} password - 사용자의 비밀번호
+   */
+  const login = useCallback(async (userEmail, password) => {
+    // 로그인 API 요청
+    const responseData = await sendRequest({
+      url: "/api/user/login", // 로그인 엔드포인트
+      method: "POST", // HTTP 메서드
+      data: { userEmail, password }, // 요청 데이터
+    });
+
+    // 응답 데이터에서 사용자 ID와 토큰 추출
+    const { dbObjectId, token } = responseData;
+
+    // JWT 토큰 디코딩하여 만료 시간 추출
+    const jwtDecodedData = decodeToken(token);
+    const tokenExpiration = new Date(jwtDecodedData.exp * 1000); // 만료 시간은 초 단위이므로 밀리초로 변환
+
+    // 상태 업데이트
+    setToken(token); // 토큰 저장
+    setDbObjectId(dbObjectId); // 사용자 ID 저장
+    setTokenExpirationDate(tokenExpiration); // 토큰 만료 시간 저장
+
+    // 로컬 스토리지에 인증 데이터 저장
+    localStorage.setItem(
+      "tokenData",
+      JSON.stringify({
+        dbObjectId,
+        token,
+        expiration: tokenExpiration.toISOString(), // ISO 형식으로 저장
+      })
+    );
+  }, [sendRequest, setToken, setDbObjectId, setTokenExpirationDate]);
+
+  /**
+   * 회원가입 함수
+   * @param {string} userName - 사용자 이름
+   * @param {string} userEmail - 사용자 이메일
+   * @param {string} password - 사용자 비밀번호
+   * @param {string} homeAddress - 사용자 주소
+   * @param {string} phoneNumber - 사용자 전화번호
+   */
+  const signup = useCallback(async (userName, userEmail, password, homeAddress, phoneNumber) => {
+    // 회원가입 API 요청
+    const responseData = await sendRequest({
+      url: "/api/user/signup", // 회원가입 엔드포인트
+      method: "POST", // HTTP 메서드
+      data: { userName, userEmail, password, homeAddress, phoneNumber }, // 요청 데이터
+    });
+
+    // 응답 데이터에서 사용자 ID와 토큰 추출
+    const { dbObjectId, token, emailVerified } = responseData;
+    console.log("responseData : ",responseData);
+
+    // TODO: 나중에 이메일 인증 로직 필요함
+    if (dbObjectId && token) {
+      console.log("회원가입 성공:", responseData, " - ",dbObjectId, " - ",token);
+  
+      // 이메일 인증 여부 확인
+      if (!emailVerified) {
+        console.log("이메일 인증이 필요합니다. 인증 링크를 확인하세요.");
+        // 이메일 인증 관련 로직 추가
+      }
+    } else {
+      console.error("회원가입 실패:", responseData);
+      throw new Error("회원가입에 실패했습니다.");
+    }
+  
+
+    // 회원가입 후 자동으로 로그인 처리
+    await login(userEmail, password);
+  }, [sendRequest, login]);
+
+  /**
+   * 토큰 갱신 함수
+   * @param {string} dbObjectId - 사용자 ID
+   * @param {string} token - 현재 토큰
+   * @param {Date} expirationDate - 현재 토큰의 만료 시간
+   */
+  const refreshToken = useCallback(async (dbObjectId, token, expirationDate) => {
+    // 현재 토큰의 만료 시간 계산
+    const jwtDecodedData = decodeToken(token);
+    const tokenExpiration = expirationDate || new Date(jwtDecodedData.exp * 1000);
+
+    // 남은 시간 계산
+    const timeLeft = tokenExpiration.getTime() - new Date().getTime();
+
+    // 남은 시간이 30분 미만일 경우 토큰 갱신
+    if (timeLeft < 30 * 60 * 1000) {
+      // 토큰 갱신 API 요청
+      const responseData = await sendRequest({
+        url: "/api/user/refresh-token", // 토큰 갱신 엔드포인트
+        method: "POST", // HTTP 메서드
+        data: { dbObjectId }, // 요청 데이터
+        headers: { Authorization: `Bearer ${token}` }, // 현재 토큰을 Authorization 헤더에 포함
+      });
+
+      // 응답 데이터에서 새로운 토큰 추출
+      const { newToken } = responseData;
+
+      // 새로운 토큰의 만료 시간 계산
+      const newTokenExpiration = new Date(decodeToken(newToken).exp * 1000);
+
+      // 상태 업데이트
+      setToken(newToken); // 새로운 토큰 저장
+      setDbObjectId(dbObjectId); // 사용자 ID 유지
+      setTokenExpirationDate(newTokenExpiration); // 새로운 토큰 만료 시간 저장
+
+      // 로컬 스토리지에 갱신된 인증 데이터 저장
+      localStorage.setItem(
+        "tokenData",
+        JSON.stringify({
+          dbObjectId,
+          token: newToken,
+          expiration: newTokenExpiration.toISOString(),
+        })
+      );
+    }
+  }, [sendRequest, setToken, setDbObjectId, setTokenExpirationDate]);
+
+  /**
+   * 로그아웃 함수
+   */
+  const logout = useCallback(() => {
+    // 상태 초기화
+    setToken(null); // 토큰 제거
+    setDbObjectId(null); // 사용자 ID 제거
+    setTokenExpirationDate(null); // 토큰 만료 시간 제거
+
+    // 로컬 스토리지에서 인증 데이터 제거
+    localStorage.removeItem("tokenData");
+  }, [setToken, setDbObjectId, setTokenExpirationDate]);
+
+  // 인증 관련 함수들을 반환
+  return { login, signup, refreshToken, logout };
+};

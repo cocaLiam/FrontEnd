@@ -12,7 +12,7 @@ const ErrorModal = ({ isOpen, onClose, content }) => {
 
   return (
     // <div className="fixed inset-0 z-10 overflow-y-auto" id="my-modal">
-    <div className="fixed inset-0 w-full h-full bg-gray-600 bg-opacity-30">
+    <div className="fixed inset-0 z-50 w-full h-full bg-gray-600 bg-opacity-30">
     {/* 모달의 최상위 컨테이너. 전체 화면을 차지하며 스크롤 가능 */}
 
       {/* <div className="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0"> */}

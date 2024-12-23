@@ -20,8 +20,8 @@ export const useHttpHook = () => {
  * const response = await sendRequest({
  *   url: '/api/secure-endpoint',
  *   method: 'POST',
- *   headers: { Authorization: `Bearer ${auth.token}` },
- *   data: sensitiveData
+ *   data: {sensitiveData:sensitiveData},
+ *   headers: { Authorization: `Bearer ${auth.token}` }
  * });
  */
   const sendRequest = useCallback(async (config) => {
@@ -30,10 +30,6 @@ export const useHttpHook = () => {
 
     // 상세 로깅 추가
     console.log('HTTP > 전체 설정값:', config);
-    console.log('HTTP > URL:', config.url);
-    console.log('HTTP > 메소드:', config.method);
-    console.log('HTTP > 데이터:', config.data);
-    console.log('HTTP > header:', config.headers);
 
     try {
       const response = await axiosInstance({

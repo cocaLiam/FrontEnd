@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types"; // PropTypes import 추가
 
@@ -6,9 +7,14 @@ import ButtonWithIcon from "../atoms/ButtonWithIcon";
 import AddDeviceIcon from "../atoms/icons/AddDeviceIcon";
 import SettingsIcon from "../atoms/icons/SettingsIcon";
 import LoginIcon from "../atoms/icons/LoginIcon";
-import DeugIcon from "../atoms/icons/DebugIcon";
+import LogoutIcon from "../atoms/icons/LogoutIcon";
+import DebugIcon from "../atoms/icons/DebugIcon";
+
+import { AuthContext } from "../../context/AuthContext";
 
 export default function SideBar({ isOpen, onClose }) {
+  const authStatus = useContext(AuthContext);
+
   return (
     <>
       {/* 오버레이 */}
@@ -47,21 +53,26 @@ export default function SideBar({ isOpen, onClose }) {
             onClick={onClose}
           />
           {/* Login 버튼 */}
-          <ButtonWithIcon
-            icon={LoginIcon}
-            content={<Link to="/Login">Login</Link>}
-            onClick={onClose}
-          />
+          {authStatus.isLoggedIn && (
+            <ButtonWithIcon
+              icon={LogoutIcon}
+              content={<Link to="/">Logout</Link>}
+              onClick={()=>{
+                authStatus.logout();
+                onClose();
+              }}
+            />
+          )}
 
           <div className="flex flex-col space-y-1">
-          {/* 구분선 space-y-1 : Item 간의 간격을 정의 */}
+            {/* 구분선 space-y-1 : Item 간의 간격을 정의 */}
             <div className="w-full h-[2px] bg-gray-950" />
             <div className="w-full h-[2px] bg-gray-950" />
           </div>
 
           {/* Debug 버튼 */}
           <ButtonWithIcon
-            icon={DeugIcon}
+            icon={DebugIcon}
             content={<Link to="/Debug">Debug</Link>}
             onClick={onClose}
           />
