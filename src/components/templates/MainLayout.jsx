@@ -3,14 +3,12 @@ import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import BottomNavigation from "../organisms/BottomNavigation";
 import SideBar from "../organisms/SideBar";
-import { useLoading } from '../../context/LoadingContext';
+// import { useLoading } from '../../context/LoadingContext';
 
 const MainLayout = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  
-  // eslint-disable-next-line no-unused-vars
-  const { setIsLoading } = useLoading();
+  // const { setIsLoading } = useLoading();
 
   // 사이드바 함수
   const handleDrawerOpen = () => setIsDrawerOpen(true);

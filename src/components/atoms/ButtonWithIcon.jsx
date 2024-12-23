@@ -18,12 +18,12 @@ function ButtonWithIcon({
     className="
       inline-flex        // display: inline-flex; - 인라인 요소처럼 배치되면서 flex 속성 가짐
       items-center       // align-items: center; - flex 아이템들을 수직 중앙 정렬
-      gap-2              // gap: 0.5rem; - flex 아이템 사이의 간격을 8px로 설정
-      px-4               // padding-left, padding-right: 1rem; - 좌우 패딩 16px
+      space-x-2          // space-x-2: flex 아이템 사이의 간격을 설정
+      px-2               // padding-left, padding-right: 1rem; - 좌우 패딩 16px
       py-2               // padding-top, padding-bottom: 0.5rem; - 상하 패딩 8px
       font-bold          // font-weight: 700; - 글꼴 굵기를 굵게
-      rounded            // border-radius: 0.25rem; - 모서리를 4px 둥글게
-      bg-grey-light      // background-color: #색상코드; - 밝은 회색 배경
+      rounded-lg         // border-radius: 0.25rem; - 모서리를 4px 둥글게
+      bg-gray-800      // background-color: #색상코드; - 밝은 회색 배경
       hover:bg-grey      // hover 시 background-color 변경 - 마우스 오버시 회색으로 변경
       text-grey-darkest  // color: #색상코드; - 가장 어두운 회색 텍스트 색상
     "

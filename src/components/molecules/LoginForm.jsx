@@ -1,46 +1,119 @@
 // components/molecules/LoginForm.jsx
+import { useState, useContext } from "react";
+
+import { AuthContext } from "../../context/AuthContext";
+import ErrorModal from "../molecules/ErrorModal";
+
+import LoadingSpinner from "../atoms/LoadingSpinner";
+
 const LoginForm = () => {
-  const handleSubmit = (e) => {
+  const [formData, setFormData] = useState({
+    userEmail: "",
+    password: "",
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+
+  const auth = useContext(AuthContext);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // 로그인 로직 구현
+    setIsLoading(true);
+
+    try {
+      console.log('Login attempt with:', {
+        email: formData.userEmail,
+        password: formData.password // 보안을 위해 실제 비밀번호 대신 길이만 출력
+      });
+      const res = await auth.login(formData.userEmail, formData.password);
+      console.log(`Login 성공 :`, res);
+    } catch (err) {
+      console.log(`Login 실패 : ${err}`);
+      setIsErrorModalOpen(true);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mt-8 space-y-6">
-      <div className="space-y-4">
-        <div>
-          <label htmlFor="email" className="sr-only">이메일</label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            required
-            className="relative block w-full px-3 py-2 text-white placeholder-gray-400 bg-gray-800 border border-gray-700 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="이메일"
-          />
-        </div>
-        <div>
-          <label htmlFor="password" className="sr-only">비밀번호</label>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            required
-            className="relative block w-full px-3 py-2 text-white placeholder-gray-400 bg-gray-800 border border-gray-700 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="비밀번호"
-          />
-        </div>
+    <form onSubmit={handleSubmit} className="w-full space-y-4">
+      {isLoading && <LoadingSpinner />}
+      <div>
+        <input
+          type="userEmail"
+          name="userEmail"
+          value={formData.userEmail}
+          onChange={handleChange}
+          placeholder="이메일"
+          className="w-full p-2 text-white bg-gray-800 rounded"
+          required
+        />
       </div>
-
+      <div>
+        <input
+          type="password"
+          name="password"
+          value={formData.password}
+          onChange={handleChange}
+          placeholder="비밀번호"
+          className="w-full p-2 text-white bg-gray-800 rounded"
+          required
+        />
+      </div>
+      <ErrorModal
+        isOpen={isErrorModalOpen}
+        onClose={() => setIsErrorModalOpen(false)}
+        content="Login Error"
+      />
       <button
         type="submit"
-        className="w-full px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        disabled={isLoading}
+        className="w-full p-2 text-white bg-blue-600 rounded hover:bg-blue-500 disabled:bg-blue-300"
       >
         로그인
       </button>
     </form>
+    // <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+    //   <div className="space-y-4">
+    //     <div>
+    //       <label htmlFor="email" className="sr-only">이메일</label>
+    //       <input
+    //         id="email"
+    //         name="email"
+    //         type="email"
+    //         required
+    //         className="relative block w-full px-3 py-2 text-white placeholder-gray-400 bg-gray-800 border border-gray-700 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+    //         placeholder="이메일"
+    //       />
+    //     </div>
+    //     <div>
+    //       <label htmlFor="password" className="sr-only">비밀번호</label>
+    //       <input
+    //         id="password"
+    //         name="password"
+    //         type="password"
+    //         required
+    //         className="relative block w-full px-3 py-2 text-white placeholder-gray-400 bg-gray-800 border border-gray-700 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+    //         placeholder="비밀번호"
+    //       />
+    //     </div>
+    //   </div>
+    //   <button
+    //     type="submit"
+    //     className="w-full px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+    //   >
+    //     로그인
+    //   </button>
+    // </form>
   );
 };
-
 
 export default LoginForm;

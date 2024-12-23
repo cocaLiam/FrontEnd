@@ -33,3 +33,17 @@ import PropTypes from 'prop-types';
 LoadingProvider.propTypes = {
   children: PropTypes.node.isRequired
 };
+
+
+/**
+ * 사용법
+import { useLoading } from '../../context/LoadingContext';
+  const { setIsLoading } = useLoading();
+  const handleDrawerOpen = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+      setIsDrawerOpen(true);
+    }, 1000);
+  };
+ */

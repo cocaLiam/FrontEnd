@@ -33,7 +33,7 @@ export default function SideBar({ isOpen, onClose }) {
         </div>
 
         {/* 네비게이션 메뉴 */}
-        <nav className="flex flex-col gap-1 min-w-[120px] p-2 font-sans text-base font-normal text-gray-700">
+        <nav className="flex flex-col space-y-2 min-w-[120px] p-2 font-sans text-base font-normal text-gray-700">
           {/* AddDevice 버튼 */}
           <ButtonWithIcon
             icon={AddDeviceIcon}
@@ -53,8 +53,11 @@ export default function SideBar({ isOpen, onClose }) {
             onClick={onClose}
           />
 
-          {/* 구분선 */}
-          <div className="w-full h-[3px] my-3 bg-gray-300" />
+          <div className="flex flex-col space-y-1">
+          {/* 구분선 space-y-1 : Item 간의 간격을 정의 */}
+            <div className="w-full h-[2px] bg-gray-950" />
+            <div className="w-full h-[2px] bg-gray-950" />
+          </div>
 
           {/* Debug 버튼 */}
           <ButtonWithIcon

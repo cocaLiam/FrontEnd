@@ -5,11 +5,13 @@ import { Link } from "react-router-dom";
 
 import ErrorModal from "../molecules/ErrorModal";
 import ConfirmModal from "../molecules/ConfirmModal";
+import ButtonWithIcon from "../atoms/ButtonWithIcon";
 
 import MenuIcon from "../atoms/icons/MenuIcon";
 import HomeIcon from "../atoms/icons/HomeIcon";
 import RoutineIcon from "../atoms/icons/RoutineIcon";
 import MyIcon from "../atoms/icons/MyIcon";
+import DebugIcon from "../atoms/icons/DebugIcon";
 
 const BottomNavigation = ({ onDrawerOpen }) => {
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
@@ -22,17 +24,11 @@ const BottomNavigation = ({ onDrawerOpen }) => {
   return (
     // <nav className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-between h-16 px-4 bg-white border-t">
     <nav className="fixed bottom-0 left-0 right-0 z-10 flex items-center justify-between w-full h-16 px-4 bg-white border-t">
-      <button onClick={onDrawerOpen} className="p-2">
-        <MenuIcon />
-      </button>
 
-      <button onClick={() => {
-          // setIsErrorModalOpen(true);
-          setIsConfirmModalOpen(true);
-        }}
-      >
-        Debug
-      </button>
+      <ButtonWithIcon icon={MenuIcon} onClick={onDrawerOpen}/>
+
+      <ButtonWithIcon icon={DebugIcon} onClick={() => setIsConfirmModalOpen(true)}/>
+      {/* <ButtonWithIcon icon={DebugIcon} onClick={() => setIsErrorModalOpen(true)}/> */}
       
       <Link to="/" className="p-2">
         <HomeIcon />

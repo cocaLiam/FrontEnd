@@ -9,21 +9,17 @@ const DebugIcon = () => {
       fill="none"
       stroke="currentColor"
       strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
     >
-      <path d="M12 3v2" />
-      <path d="M12 19v2" />
-      <path d="M4 12H2" />
-      <path d="M22 12h-2" />
-      <path d="M19.07 4.93l-1.41 1.41" />
-      <path d="M4.93 19.07l1.41-1.41" />
-      <path d="M4.93 4.93l1.41 1.41" />
-      <path d="M19.07 19.07l-1.41-1.41" />
-      <circle cx="12" cy="12" r="3" />
+      {/* 망치 머리 */}
+      <path d="M3 17l9-9" />
+      <path d="M12 8l4 4" />
+      <path d="M15 11l4.5-4.5" />
+      
+      {/* 망치 머리 부분 */}
+      <path d="M17.5 4.5l2 2" />
+      <path d="M19.5 6.5l-2 2" />
     </svg>
   );
 };
 
 export default DebugIcon;
-

@@ -1,13 +1,14 @@
-// components/pages/Auth/index.jsx
+// pages/Auth.jsx
 import { useState } from "react";
+
 import LoginForm from "../components/molecules/LoginForm";
 import SignupForm from "../components/molecules/SignupForm";
 
 const Auth = () => {
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLoginForm, setAuthForm] = useState(true);
 
   const toggleForm = () => {
-    setIsLogin(!isLogin);
+    setAuthForm(!isLoginForm);
   };
 
   return (
@@ -22,18 +23,18 @@ const Auth = () => {
 
         <div className="text-center">
           <h2 className="text-3xl font-bold text-white">
-            {isLogin ? "로그인" : "회원가입"}
+            {isLoginForm ? "로그인" : "회원가입"}
           </h2>
         </div>
 
-        {isLogin ? <LoginForm /> : <SignupForm />}
+        {isLoginForm ? <LoginForm /> : <SignupForm />}
 
         <div className="text-center">
           <button
             onClick={toggleForm}
             className="text-sm text-blue-500 hover:text-blue-400"
           >
-            {isLogin ? "회원가입하기" : "로그인하기"}
+            {isLoginForm ? "회원가입하기" : "로그인하기"}
           </button>
         </div>
       </div>
