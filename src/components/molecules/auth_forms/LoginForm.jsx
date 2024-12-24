@@ -1,10 +1,11 @@
 // components/molecules/LoginForm.jsx
 import { useState, useContext } from "react";
 
-import { AuthContext } from "../../context/AuthContext";
-import ErrorModal from "../molecules/ErrorModal";
+import LoadingSpinner from "@/components/atoms/LoadingSpinner";
 
-import LoadingSpinner from "../atoms/LoadingSpinner";
+import ErrorModal from "@/components/molecules/ErrorModal";
+
+import { AuthContext } from "@/context/AuthContext";
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({
@@ -13,6 +14,8 @@ const LoginForm = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  
 
   const auth = useContext(AuthContext);
 
@@ -34,6 +37,23 @@ const LoginForm = () => {
       // console.log(`Login 성공 :`, res);
     } catch (err) {
       console.log(`Login 실패 : ${err}`);
+      switch (err.status) {
+        case 401:
+          setErrorMessage("인증 토큰에러, 다시 로그인 해주세요 : ",err.status);
+          break;
+        case 403:
+          setErrorMessage("비밀번호가 틀립니다. : ",err.status);
+          break;
+        case 404:
+          setErrorMessage("Email 이 존재하지 않습니다. : ",err.status);
+          break;
+        case 500:
+          setErrorMessage("로그인 할 수 없습니다. [ 서버 에러 : 비밀번호 검증 오류, DB query ] : ",err.status);
+          break;
+        default:
+          setErrorMessage("로그인 실패 : ",err.status);
+      }
+      setIsErrorModalOpen(true);
       setIsErrorModalOpen(true);
     } finally {
       setIsLoading(false);
@@ -46,7 +66,7 @@ const LoginForm = () => {
       <ErrorModal
         isOpen={isErrorModalOpen}
         onClose={() => setIsErrorModalOpen(false)}
-        content="Login Error"
+        content={errorMessage}
       />
       <div>
         <input

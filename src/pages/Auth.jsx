@@ -1,8 +1,8 @@
 // pages/Auth.jsx
 import { useState } from "react";
 
-import LoginForm from "../components/molecules/LoginForm";
-import SignupForm from "../components/molecules/SignupForm";
+import LoginForm from "@/components/molecules/auth_forms/LoginForm";
+import SignupForm from "@/components/molecules/auth_forms/SignupForm";
 
 const Auth = () => {
   const [isLoginForm, setAuthForm] = useState(true);

@@ -1,16 +1,16 @@
 // App.jsx
 import React, { Suspense, useContext, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import MainLayout from "./components/templates/MainLayout";
+import MainLayout from "@/components/templates/MainLayout";
 
 // 각 페이지들
-const Home      = React.lazy(() => import("./pages/Home"      ));
-const Routine   = React.lazy(() => import("./pages/Routine"   ));
-const My        = React.lazy(() => import("./pages/My"        ));
-const AddDevice = React.lazy(() => import("./pages/AddDevice" ));
-const Settings  = React.lazy(() => import("./pages/Settings"  ));
-const Debug     = React.lazy(() => import("./pages/Debug"     ));
-const Auth      = React.lazy(() => import("./pages/Auth"      ));
+const Home      = React.lazy(() => import("@/pages/Home"      ));
+const Routine   = React.lazy(() => import("@/pages/Routine"   ));
+const My        = React.lazy(() => import("@/pages/My"        ));
+const AddDevice = React.lazy(() => import("@/pages/AddDevice" ));
+const Settings  = React.lazy(() => import("@/pages/Settings"  ));
+const Debug     = React.lazy(() => import("@/pages/Debug"     ));
+const Auth      = React.lazy(() => import("@/pages/Auth"      ));
 
 // Atoms 파일
 import LoadingSpinner from './components/atoms/LoadingSpinner';

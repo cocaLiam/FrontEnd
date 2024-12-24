@@ -1,6 +1,6 @@
 import { useCallback } from "react";
-import { decodeToken } from "../utils/jwtUtils"; // JWT 토큰을 디코딩하는 유틸리티 함수
-import { useHttpHook } from "./useHttpHook"; // HTTP 요청을 처리하는 커스텀 훅
+import { decodeToken } from "@/utils/jwtUtils"; // JWT 토큰을 디코딩하는 유틸리티 함수
+import { useHttpHook } from "@/hooks/useHttpHook"; // HTTP 요청을 처리하는 커스텀 훅
 
 // useAuthHook: 인증 관련 로직을 캡슐화한 커스텀 훅
 export const useAuthHook = ({ setToken, setDbObjectId, setTokenExpirationDate }) => {

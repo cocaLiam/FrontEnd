@@ -2,13 +2,13 @@ import { useContext } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types"; // PropTypes import 추가
 
-import ButtonWithIcon from "../atoms/ButtonWithIcon";
+import ButtonWithIcon from "@/components/atoms/ButtonWithIcon";
 
-import AddDeviceIcon from "../atoms/icons/AddDeviceIcon";
-import SettingsIcon from "../atoms/icons/SettingsIcon";
-import LoginIcon from "../atoms/icons/LoginIcon";
-import LogoutIcon from "../atoms/icons/LogoutIcon";
-import DebugIcon from "../atoms/icons/DebugIcon";
+import AddDeviceIcon from "@/components/atoms/icons/AddDeviceIcon";
+import SettingsIcon from "@/components/atoms/icons/SettingsIcon";
+import LoginIcon from "@/components/atoms/icons/LoginIcon";
+import LogoutIcon from "@/components/atoms/icons/LogoutIcon";
+import DebugIcon from "@/components/atoms/icons/DebugIcon";
 
 import { AuthContext } from "../../context/AuthContext";
 

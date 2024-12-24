@@ -1,9 +1,9 @@
 import { useState, useContext } from "react";
 
-import { AuthContext } from "../../context/AuthContext";
-import ErrorModal from "../molecules/ErrorModal";
+import { AuthContext } from "@/context/AuthContext";
+import ErrorModal from "@/components/molecules/ErrorModal";
 
-import LoadingSpinner from "../atoms/LoadingSpinner";
+import LoadingSpinner from "@/components/atoms/LoadingSpinner";
 
 const SignupForm = () => {
   const [formData, setFormData] = useState({
@@ -136,16 +136,20 @@ const SignupForm = () => {
       console.log(`Signup 실패 : ${err}`);
       console.log(err.status);
       switch (err.status) {
+        case 401:
+          setErrorMessage("인증 토큰에러, 다시 로그인 해주세요 : ",err.status);
+          break;
         case 409:
-          setErrorMessage("이미 존재하는 Email 입니다.");
+          setErrorMessage("이미 존재하는 Email 입니다. : ",err.status);
+          break;
+        case 422:
+          setErrorMessage("사용자 입력값 유효하지 않음\n 비밀번호 6글자 이상 : ",err.status);
           break;
         case 500:
-          setErrorMessage(
-            "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요."
-          );
+          setErrorMessage("로그인 할 수 없습니다. [ 서버 에러 : 비밀번호 검증 오류, DB query ] : ",err.status);
           break;
         default:
-          setErrorMessage("회원가입에 실패했습니다. 다시 시도해주세요.");
+          setErrorMessage("회원가입에 실패했습니다. 다시 시도해주세요. : ",err.status);
       }
       setIsErrorModalOpen(true);
     } finally {
@@ -259,169 +263,3 @@ const SignupForm = () => {
 };
 
 export default SignupForm;
-
-// // /components/molecules/SignupForm.jsx
-// import { useState, useContext } from "react";
-
-// import { AuthContext } from "../../context/AuthContext";
-// import ErrorModal from "../molecules/ErrorModal";
-
-// import LoadingSpinner from "../atoms/LoadingSpinner";
-
-// const SignupForm = () => {
-//   const [formData, setFormData] = useState({
-//     userName: "",
-//     userEmail: "",
-//     password: "",
-//     confirmPassword: "",
-//     homeAddress: "",
-//     phoneNumber: "",
-//   });
-//   const [isLoading, setIsLoading] = useState(false);
-//   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
-//   const [errorMessage, setErrorMessage] = useState("");
-
-//   const auth = useContext(AuthContext);
-
-//   const handleChange = (e) => {
-//     const { name, value } = e.target;
-//     setFormData((prev) => ({
-//       ...prev,
-//       [name]: value,
-//     }));
-//   };
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-
-//     // 비밀번호 확인 로직 추가
-//     if (formData.password !== formData.confirmPassword) {
-//       setErrorMessage("비밀번호가 일치하지 않습니다.");
-//       setIsErrorModalOpen(true);
-//       return;
-//     }
-
-//     setIsLoading(true);
-
-//     try {
-//       // await auth.signup(formData.userEmail, formData.password);
-//       const res = await auth.signup(
-//         formData.userName,
-//         formData.userEmail,
-//         formData.password,
-//         formData.homeAddress,
-//         formData.phoneNumber
-//       );
-//       console.log(`Signup 성공 :`, res);
-//     } catch (err) {
-//       console.log(`Signup 실패 : ${err}`);
-//       console.log(err.status);
-//       switch (err.status) {
-//         case 409:
-//           setErrorMessage("이미 존재하는 Email 입니다.");
-//           break;
-//         case 500:
-//           break;
-//         case 303:
-//           break;
-//         case 400:
-//           break;
-//         case 402:
-//           break;
-//         default:
-//           setErrorMessage("회원가입에 실패했습니다. 다시 시도해주세요.");
-//       }
-//       setIsErrorModalOpen(true);
-//     } finally {
-//       setIsLoading(false);
-//     }
-//   };
-
-//   return (
-//     <form onSubmit={handleSubmit} className="mt-8 space-y-6">
-//       {isLoading && <LoadingSpinner />}
-//       <ErrorModal
-//         isOpen={isErrorModalOpen}
-//         onClose={() => setIsErrorModalOpen(false)}
-//         content={errorMessage}
-//       />
-//       <div className="space-y-4">
-//         <div>
-//           <input
-//             name="userEmail"
-//             type="email"
-//             value={formData.userEmail}
-//             onChange={handleChange}
-//             required
-//             className="relative block w-full px-3 py-2 text-white placeholder-gray-400 bg-gray-800 border border-gray-700 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-//             placeholder="이메일"
-//           />
-//         </div>
-//         <div>
-//           <input
-//             name="password"
-//             type="password"
-//             value={formData.password}
-//             onChange={handleChange}
-//             required
-//             className="relative block w-full px-3 py-2 text-white placeholder-gray-400 bg-gray-800 border border-gray-700 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-//             placeholder="비밀번호"
-//           />
-//         </div>
-//         <div>
-//           <input
-//             name="confirmPassword"
-//             type="password"
-//             value={formData.confirmPassword}
-//             onChange={handleChange}
-//             required
-//             className="relative block w-full px-3 py-2 text-white placeholder-gray-400 bg-gray-800 border border-gray-700 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-//             placeholder="비밀번호 확인"
-//           />
-//         </div>
-//         <div>
-//           <input
-//             name="userName"
-//             type="text"
-//             value={formData.userName}
-//             onChange={handleChange}
-//             required
-//             className="relative block w-full px-3 py-2 text-white placeholder-gray-400 bg-gray-800 border border-gray-700 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-//             placeholder="이름"
-//           />
-//         </div>
-//         <div>
-//           <input
-//             name="homeAddress"
-//             type="text"
-//             value={formData.homeAddress}
-//             onChange={handleChange}
-//             required
-//             className="relative block w-full px-3 py-2 text-white placeholder-gray-400 bg-gray-800 border border-gray-700 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-//             placeholder="주소"
-//           />
-//         </div>
-//         <div>
-//           <input
-//             name="phoneNumber"
-//             type="tel"
-//             value={formData.phoneNumber}
-//             onChange={handleChange}
-//             required
-//             className="relative block w-full px-3 py-2 text-white placeholder-gray-400 bg-gray-800 border border-gray-700 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-//             placeholder="전화번호"
-//           />
-//         </div>
-//       </div>
-
-//       <button
-//         type="submit"
-//         className="w-full px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-//       >
-//         회원가입
-//       </button>
-//     </form>
-//   );
-// };
-
-// export default SignupForm;
