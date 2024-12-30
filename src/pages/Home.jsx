@@ -4,36 +4,85 @@ import { useEffect, useState, useContext } from "react";
 import LoadingSpinner from "@/components/atoms/LoadingSpinner";
 
 import ErrorModal from "@/components/molecules/ErrorModal";
+import ConfirmModal from "@/components/molecules/ConfirmModal";
 import DeviceCard from "@/components/molecules/DeviceCard";
 
 import { useHttpHook } from "@/hooks/useHttpHook"; // HTTP 요청을 처리하는 커스텀 훅
 
+import { handleError } from "@/utils/errorHandler";
+
 import { AuthContext } from "@/context/AuthContext";
+
+import { andInterface } from "@/utils/android/androidInterFace";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [deviceList, setDeviceList] = useState([]); // DeviceCard를 렌더링할 데이터 상태
+  const [selectedDevice, setSelectedDevice] = useState(null); // 선택된 디바이스 정보를 저장하는 상태
 
   // HTTP 요청을 처리하기 위한 커스텀 훅에서 sendRequest 함수 가져오기
   const { sendRequest } = useHttpHook();
 
   const auth = useContext(AuthContext);
 
-  // 모달 띄우기 핸들러
-  const handleCardClick = () => {
-    console.log("모달 창이 열렸습니다!");
+  // Confirm 모달 띄우기 핸들러
+  const handleCardClick = (deviceInfo) => {
+    setSelectedDevice(deviceInfo); // 상태 업데이트
+    setIsConfirmModalOpen(true);
+  };
+
+  // Confirm 모달 창 확인버튼 핸들러러
+  const handleConfirmYes = async () => {
+    if (!selectedDevice) return; // 선택된 디바이스가 없으면 아무 작업도 하지 않음
+    const { macAddress, deviceName, battery } = selectedDevice; // 선택된 디바이스 정보 가져오기
+
+    try {
+      setIsLoading(true); // 로딩 상태 시작
+      // BackEnd 에게 DB 삭제 요청
+      const responseData = await sendRequest({
+        url: `/api/device/${auth.dbObjectId}/deviceDelete`, // API 엔드포인트
+        method: "DELETE", // HTTP 메서드
+        headers: { Authorization: `Bearer ${auth.token}` }, // 현재 토큰을 Authorization 헤더에 포함
+        data: { macAddress, deviceName }, // 요청 데이터
+      });
+      console.log("기기 삭제 성공:", responseData);
+      
+      // 지워진 기기 Disconnect 처리
+      andInterface.reqDisconnect(macAddress, deviceName);
+      // 화면 재배치
+      await fetchDeviceList();
+    } catch (err) {
+      handleError(err, setErrorMessage, setIsErrorModalOpen); // 공통 에러 처리 함수 호출
+    } finally {
+      setIsLoading(false); // 로딩 상태 종료
+    }
+    setIsConfirmModalOpen(false);
   };
 
   // API 호출 핸들러
-  const handleApiCall = async (isActive) => {
+  const handleApiCall = async (isActive, deviceInfo) => {
+    if (!deviceInfo) return; // 선택된 디바이스가 없으면 아무 작업도 하지 않음
+    const { macAddress, deviceName, battery } = deviceInfo; // 선택된 디바이스 정보 가져오기
+
     if (isActive) {
       console.log("비활성화 API 호출");
       // 비활성화 API 호출 로직
+      andInterface.pubSendData(
+        macAddress,
+        deviceName,
+        { "toggleSwitch": "00" }
+      )
     } else {
       console.log("활성화 API 호출");
       // 활성화 API 호출 로직
+      andInterface.pubSendData(
+        macAddress,
+        deviceName,
+        { "toggleSwitch": "01" }
+      )
     }
   };
 
@@ -47,30 +96,22 @@ export default function Home() {
         headers: { Authorization: `Bearer ${auth.token}` }, // 현재 토큰을 Authorization 헤더에 포함
       });
 
-      console.log("DeviceList : ",responseData.device_list);
       const deviceList = responseData.device_list
       // deviceList 배열인지 확인하고 상태에 저장
       if (Array.isArray(deviceList)) {
-        setDeviceList(deviceList);
+        const transformedDeviceList = deviceList.map((device) => ({
+          macAddress: device.mac_address || "", // mac_address가 없으면 빈 문자열로 처리
+          deviceName: device.device_name || "Unknown Device", // 기본값 설정
+          battery: device.battery || "N/A", // 기본값 설정
+        }));
+        setDeviceList(transformedDeviceList);
       } else {
         throw new Error("Invalid response format: Expected an array");
       }
     } catch (err) {
-      console.error(`Device 리스트 가져오기 실패: ${err}`);
-      switch (err.status) {
-        case 401:
-          setErrorMessage("인증 토큰에러, 다시 로그인 해주세요 : ",err.status);
-          break;
-        case 204:
-          setErrorMessage("사용자를 찾을 수 없습니다.");
-          break;
-        
-        default:
-          setErrorMessage(`에러 발생: ${err.message || "알 수 없는 에러"}`);
-      }
-      setIsErrorModalOpen(true);
+      handleError(err, setErrorMessage, setIsErrorModalOpen); // 공통 에러 처리 함수 호출
     } finally {
-      setIsLoading(false);
+      setIsLoading(false); // 로딩 상태 종료
     }
   };
 
@@ -82,6 +123,11 @@ export default function Home() {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    // // Android WebView에서 호출할 수 있도록 window 객체에 함수 등록
+    window.resDisconnect = andInterface.resDisconnect;
+  },[]);
+
   return (
     <div style={{ display: "flex", flexDirection: "row", gap: "16px", padding:"40px"}}>
       {isLoading && <LoadingSpinner />}
@@ -90,16 +136,26 @@ export default function Home() {
         onClose={() => setIsErrorModalOpen(false)}
         content={errorMessage}
       />
+      <ConfirmModal
+      isOpen={isConfirmModalOpen}
+      onClose={() => setIsConfirmModalOpen(false)}
+      onConfirm={handleConfirmYes}
+      title="작업 확인"
+      content="페어링을 삭제하시겠습니까?"
+      />
 
       {/* DeviceCard 리스트 */}
       <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
-        {deviceList.map((device, index) => (
+        {deviceList.map((deviceInfo, index) => (
           <DeviceCard
-            key={device.id || index} // 고유한 키 설정
-            deviceName={device.device_name || `Device ${index + 1}`} // Device 이름 또는 기본 텍스트
-            deviceType={device.device_type} // Device 타입에 따른 아이콘
+            key={deviceInfo.id || index} // 고유한 키 설정
+            deviceInfo={{
+              macAddress: deviceInfo.macAddress,
+              deviceName: deviceInfo.deviceName,
+              battery: deviceInfo.battery,
+            }} // Device 이름 또는 기본 텍스트
             onCardClick={handleCardClick}
-            onApiCall={handleApiCall}
+            onApiCall  ={handleApiCall}
           />
         ))}
       </div>
@@ -107,96 +163,3 @@ export default function Home() {
   );
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import { useState } from "react";
-// import PropTypes from "prop-types";
-
-// const DeviceCard = ({ deviceName, deviceIcon, onCardClick, onApiCall }) => {
-//   // Card의 상태를 관리하는 state
-//   const [isActive, setIsActive] = useState(false);
-
-//   // 우측 상단 버튼 클릭 핸들러
-//   const handleActionButtonClick = async () => {
-//     try {
-//       // API 호출
-//       await onApiCall(isActive);
-
-//       // 상태 변경
-//       setIsActive((prevState) => !prevState);
-//     } catch (error) {
-//       console.error("API 호출 중 오류 발생:", error);
-//     }
-//   };
-
-//   return (
-//     <div
-//       style={{
-//         border: "1px solid #ccc",
-//         borderRadius: "8px",
-//         padding: "8px",
-//         position: "relative",
-//         cursor: "pointer",
-//         width: "100%", // 반응형으로 동작하도록 설정
-//         maxWidth: "150px", // 최대 너비 설정
-//         display: "flex", // 버튼과 텍스트를 가로로 배치
-//         alignItems: "center", // 세로 정렬
-//         justifyContent: "space-between", // 버튼과 텍스트 간격 조정
-//         boxSizing: "border-box", // 패딩 포함 크기 계산
-//       }}
-//       onClick={onCardClick} // Card 클릭 시 모달 띄우기
-//     >
-//       <span className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-green-300 via-blue-500 to-purple-600">
-        
-//       </span>
-
-//       <div className="my-2">
-//         {/* deviceIcon이 존재하면 렌더링 */}
-//         {deviceIcon && <deviceIcon />}
-//         <p className="py-1 text-gray-300">{deviceName}</p>
-//       </div>
-
-//       <div className="flex items-start justify-end">
-//         <button
-//           onClick={(e) => {
-//             e.stopPropagation(); // Card 클릭 이벤트 전파 방지
-//             handleActionButtonClick();
-//           }}
-//           className="px-1 py-1 font-semibold text-white border border-gray-200 rounded hover:bg-gray-800"
-//         >
-//           CC
-//         </button>
-//       </div>
-//     </div>
-//   );
-// };
-
-// DeviceCard.propTypes = {
-//   deviceName: PropTypes.string,
-//   deviceIcon: PropTypes.elementType, // SVG 컴포넌트 타입
-//   onCardClick: PropTypes.func.isRequired,
-//   onApiCall: PropTypes.func.isRequired,
-// };
-
-// export default DeviceCard;

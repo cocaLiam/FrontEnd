@@ -35,8 +35,12 @@ const MainLayout = () => {
       <main>
       {/* 메인 콘텐츠 영역 - 웹 접근성과 SEO를 위한 시맨틱 태그  << 의미적으로 있는 태그*/}
         
-        {/* <div className="fixed w-full h-full"> */}
-        <div className="fixed inset-0 w-full h-full">
+        {/* <div className="fixed inset-0 w-full h-full"> */}
+        {/* <div className="fixed inset-0 w-full h-full pb-16 overflow-auto"> */}
+        <div
+          className="fixed inset-0 w-full h-full overflow-auto"
+          style={{ paddingBottom: "64px" }}
+        >
         {/* Pages 들이 사용하는 컨테이너 정의 */}
           <Outlet />
         </div>

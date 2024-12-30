@@ -3,17 +3,17 @@ import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
-import ErrorModal from "../molecules/ErrorModal";
-import ConfirmModal from "../molecules/ConfirmModal";
-import ButtonWithIcon from "../atoms/ButtonWithIcon";
+import ErrorModal from "@/components/molecules/ErrorModal";
+import ConfirmModal from "@/components/molecules/ConfirmModal";
+import ButtonWithIcon from "@/components/atoms/ButtonWithIcon";
 
-import MenuIcon from "../atoms/icons/MenuIcon";
-import HomeIcon from "../atoms/icons/HomeIcon";
-import RoutineIcon from "../atoms/icons/RoutineIcon";
-import MyIcon from "../atoms/icons/MyIcon";
-import DebugIcon from "../atoms/icons/DebugIcon";
+import MenuIcon from "@/components/atoms/icons/MenuIcon";
+import HomeIcon from "@/components/atoms/icons/HomeIcon";
+import RoutineIcon from "@/components/atoms/icons/RoutineIcon";
+import MyIcon from "@/components/atoms/icons/MyIcon";
+import DebugIcon from "@/components/atoms/icons/DebugIcon";
 
-import andInterface from "@/utils/android/androidInterFace";
+import {andInterface} from "@/utils/android/androidInterFace";
 
 const BottomNavigation = ({ onDrawerOpen }) => {
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
@@ -45,9 +45,9 @@ const BottomNavigation = ({ onDrawerOpen }) => {
       <ButtonWithIcon icon={DebugIcon} onClick={() => {
         // andInterface.reqConnect()
 
-        andInterface.reqParingInfo()
-        andInterface.reqRemoveParing("9C:95:6E:40:0F:75", "ccb_v1")
-        andInterface.reqParingInfo()
+        andInterface.reqParingInfo();
+        // andInterface.reqRemoveParing("9C:95:6E:40:0F:75", "ccb_v1");
+        andInterface.reqConnectedDevices();
         
       }}/>
       

@@ -3,6 +3,8 @@ import { useState, useContext } from "react";
 import { AuthContext } from "@/context/AuthContext";
 import ErrorModal from "@/components/molecules/ErrorModal";
 
+import { handleError } from "@/utils/errorHandler"; // 에러 처리 함수 import
+
 import LoadingSpinner from "@/components/atoms/LoadingSpinner";
 
 const SignupForm = () => {
@@ -133,27 +135,9 @@ const SignupForm = () => {
       );
       console.log(`Signup 성공 :`, res);
     } catch (err) {
-      console.log(`Signup 실패 : ${err}`);
-      console.log(err.status);
-      switch (err.status) {
-        case 401:
-          setErrorMessage("인증 토큰에러, 다시 로그인 해주세요 : ",err.status);
-          break;
-        case 409:
-          setErrorMessage("이미 존재하는 Email 입니다. : ",err.status);
-          break;
-        case 422:
-          setErrorMessage("사용자 입력값 유효하지 않음\n 비밀번호 6글자 이상 : ",err.status);
-          break;
-        case 500:
-          setErrorMessage("로그인 할 수 없습니다. [ 서버 에러 : 비밀번호 검증 오류, DB query ] : ",err.status);
-          break;
-        default:
-          setErrorMessage("회원가입에 실패했습니다. 다시 시도해주세요. : ",err.status);
-      }
-      setIsErrorModalOpen(true);
+      handleError(err, setErrorMessage, setIsErrorModalOpen); // 공통 에러 처리 함수 호출
     } finally {
-      setIsLoading(false);
+      setIsLoading(false); // 로딩 상태 종료
     }
   };
 

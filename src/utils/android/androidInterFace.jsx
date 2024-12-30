@@ -1,7 +1,7 @@
 // andInterface.js
 import PropTypes from 'prop-types';
 
-const andInterface = {
+export const andInterface = {
   /**
 ====================================================================================================
      * Web(client) -> APP(server) API 호출
@@ -14,6 +14,23 @@ const andInterface = {
         window.AndroidInterface.reqConnect();
       } else {
         console.log("reqConnect is not available.");
+      }
+    } else {
+      console.log("AndroidInterface is not available.");
+    }
+  },
+
+  reqDisconnect: (macAddress, deviceName) => {
+    const deviceInfo = {
+      macAddress: macAddress,
+      deviceName: deviceName,
+    };
+    
+    if (window.AndroidInterface) {
+      if (window.AndroidInterface.reqDisconnect) {
+        window.AndroidInterface.reqDisconnect(JSON.stringify(deviceInfo));
+      } else {
+        console.log("reqDisconnect is not available.");
       }
     } else {
       console.log("AndroidInterface is not available.");
@@ -156,6 +173,23 @@ const andInterface = {
         console.log(typeof data); // object
         console.log(data.deviceName);
         console.log(data.macAddress);
+        console.log(data.resResult);
+      }
+      return true; // Android로 반환
+    } catch (error) {
+      console.error(`에러 발생 1: ${error.message}`);
+      return false; // Android로 반환
+    }
+  },
+
+  resDisconnect: (data) => {
+    try {
+      if (validateDeviceInfo(data).isValid) {
+        console.log("resDisconnect 받은 DATA : ", JSON.stringify(data,null, 2));
+        console.log(typeof data); // object
+        console.log(data.deviceName);
+        console.log(data.macAddress);
+        console.log(data.resResult);
       }
       return true; // Android로 반환
     } catch (error) {
@@ -258,7 +292,7 @@ const andInterface = {
 
 // ---------------------------------- Util성 Validation 함수들 --------------------------------------
 // Validation 함수들
-function validateDeviceInfo(data) {
+export const validateDeviceInfo = (data) => {
   const missingKeys = [];
   const emptyValueKeys = [];
   if (!(Object.prototype.hasOwnProperty.call(data, "macAddress"))) {
@@ -271,6 +305,11 @@ function validateDeviceInfo(data) {
   } else if (!data.deviceName || data.deviceName.trim() === "") {
     emptyValueKeys.push("deviceName");
   }
+  if (!(Object.prototype.hasOwnProperty.call(data, "resResult"))) {
+    missingKeys.push("resResult");
+  } else if (data.resResult == false) {
+    emptyValueKeys.push("resResult");
+  }
   return {
     isValid: missingKeys.length === 0 && emptyValueKeys.length === 0,
     missingKeys,
@@ -278,7 +317,7 @@ function validateDeviceInfo(data) {
   };
 }
 
-function validateDeviceList(data) {
+export const validateDeviceList = (data) => {
   const missingKeys = [];
   const invalidItems = [];
   // if (!data.hasOwnProperty("deviceList")) {
@@ -308,7 +347,7 @@ function validateDeviceList(data) {
   };
 }
 
-function validateReadOrWriteData(data) {
+export const validateReadOrWriteData = (data) => {
   const missingKeys = [];
   const emptyValueKeys = [];
   if (!(Object.prototype.hasOwnProperty.call(data, "deviceInfo"))) {
@@ -337,6 +376,11 @@ function validateReadOrWriteData(data) {
 
 // PropTypes 정의
 andInterface.reqRemoveParing.propTypes = {
+  macAddress: PropTypes.string.isRequired,
+  deviceName: PropTypes.string.isRequired,
+};
+
+andInterface.reqDisconnect.propTypes = {
   macAddress: PropTypes.string.isRequired,
   deviceName: PropTypes.string.isRequired,
 };
@@ -380,16 +424,3 @@ andInterface.subObserveData.propTypes = {
   data: PropTypes.object.isRequired,
 };
 
-// andInterface.validateDeviceInfo.propTypes = {
-//   data: PropTypes.object.isRequired,
-// };
-
-// andInterface.validateDeviceList.propTypes = {
-//   data: PropTypes.object.isRequired,
-// };
-
-// andInterface.validateReadOrWriteData.propTypes = {
-//   data: PropTypes.object.isRequired,
-// };
-
-export default andInterface;
