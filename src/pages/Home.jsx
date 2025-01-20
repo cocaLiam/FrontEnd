@@ -102,6 +102,7 @@ export default function Home() {
         const transformedDeviceList = deviceList.map((device) => ({
           macAddress: device.mac_address || "", // mac_address가 없으면 빈 문자열로 처리
           deviceName: device.device_name || "Unknown Device", // 기본값 설정
+          deviceGroup: device.device_group || "N/A", // 기본값 설정
           battery: device.battery || "N/A", // 기본값 설정
         }));
         setDeviceList(transformedDeviceList);

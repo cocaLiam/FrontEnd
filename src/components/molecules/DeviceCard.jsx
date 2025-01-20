@@ -5,18 +5,30 @@ import SettingsIcon from "@/components/atoms/icons/SettingsIcon";
 import DebugIcon from "@/components/atoms/icons/DebugIcon";
 
 // Device 타입에 따라 아이콘을 선택하는 함수
-function DeviceIconSelector(deviceName) {
+function DeviceIconSelector(deviceName, battery) {
+  var IconComponent = "";
   switch (deviceName) {
     case "안방불1":
-      return <DebugIcon />;
+      IconComponent = DebugIcon;
+      break;
     case "안방불2":
-      return <DebugIcon />;
+      IconComponent = DebugIcon;
+      break;
     case "222222222":
-      return <DebugIcon />;
+      IconComponent = DebugIcon;
+      break;
     default:
-      return <SettingsIcon />;
+      IconComponent = SettingsIcon;
+      break;
   }
-}
+      
+    return (
+      <div className="flex flex-row items-start justify-start">
+        <IconComponent />
+        <span className="ml-2">{battery}%</span>
+      </div>
+    );
+  }
 
 const DeviceCard = ({ deviceInfo, onCardClick, onApiCall }) => {
   // console.log("deviceInfo : ", JSON.stringify(deviceInfo,null,2));
@@ -64,7 +76,7 @@ const DeviceCard = ({ deviceInfo, onCardClick, onApiCall }) => {
       {/* Device Icon 과 Device Name 을 Column 방식으로 Container 구성 */}
       <div className="flex flex-col items-start justify-start">
         {/* Device Icon */}
-        {DeviceIconSelector(deviceName)}
+        {DeviceIconSelector(deviceName, battery)}
         {/* Device Name */}
         <p className="py-1 text-gray-100">{deviceName}</p>
       </div>

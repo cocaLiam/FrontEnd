@@ -100,7 +100,7 @@ export const useAuthHook = ({ setToken, setDbObjectId, setTokenExpirationDate })
     if (timeLeft < 30 * 60 * 1000) {
       // 토큰 갱신 API 요청
       const responseData = await sendRequest({
-        url: "/api/user/refresh-token", // 토큰 갱신 엔드포인트
+        url: "/api/user/refreshToken", // 토큰 갱신 엔드포인트
         method: "POST", // HTTP 메서드
         data: { dbObjectId }, // 요청 데이터
         headers: { Authorization: `Bearer ${token}` }, // 현재 토큰을 Authorization 헤더에 포함
