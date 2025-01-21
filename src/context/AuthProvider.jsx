@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
 
   // useAuthHook에서 제공하는 인증 관련 함수들
   const { login, signup, refreshToken, logout } = useAuthHook({
-    setToken,
+  setToken,
     setDbObjectId,
     setTokenExpirationDate,
   });
@@ -31,6 +31,9 @@ export const AuthProvider = ({ children }) => {
     }
   }, [token, tokenExpirationDate, logout]); // token, tokenExpirationDate, logout이 변경될 때마다 실행
 
+  /*{"dbObjectId":"678df6f12129b1d1915fc4fd",
+  "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYk9iamVjdElkIjoiNjc4ZGY2ZjEyMTI5YjFkMTkxNWZjNGZkIiwidXNlckVtYWlsIjoicXFxQHFxcS5jb20iLCJpYXQiOjE3Mzc0Mzc1NjcsImV4cCI6MTczODczMzU2N30.9HWLy7SVmL_Y4WZAKxEVNHM7DUZN34O0yBz82Nw1ZzI",
+  "expiration":"2025-02-05T05:32:47.000Z"}*/
   // 자동 로그인 로직
   useEffect(() => {
     // 로컬 스토리지에서 저장된 인증 데이터를 가져옴
@@ -40,10 +43,11 @@ export const AuthProvider = ({ children }) => {
       if (expirationDate > new Date()) {
         // 만료 시간이 현재 시간보다 이후라면, 토큰 갱신(refreshToken) 실행
         refreshToken(storedData.dbObjectId, storedData.token, expirationDate);
-      } else {
-        // 만료 시간이 지났다면 로그아웃 실행
-        logout();
       }
+      // } else {
+      //   // 만료 시간이 지났다면 로그아웃 실행
+      //   logout();
+      // }
     }
   }, [refreshToken, logout]); // refreshToken, logout이 변경될 때마다 실행
 

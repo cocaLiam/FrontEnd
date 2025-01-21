@@ -1,8 +1,11 @@
+// src/components/molecules/DeviceCard.jsx
 import { useState } from "react";
 import PropTypes from "prop-types";
 
 import SettingsIcon from "@/components/atoms/icons/SettingsIcon";
 import DebugIcon from "@/components/atoms/icons/DebugIcon";
+
+import { andInterface } from "@/utils/android/androidInterFace";
 
 // Device 타입에 따라 아이콘을 선택하는 함수
 function DeviceIconSelector(deviceName, battery) {
@@ -17,20 +20,23 @@ function DeviceIconSelector(deviceName, battery) {
     case "222222222":
       IconComponent = DebugIcon;
       break;
+    case "ccb_v1":
+      IconComponent = DebugIcon;
+      break;
     default:
       IconComponent = SettingsIcon;
       break;
   }
-      
-    return (
-      <div className="flex flex-row items-start justify-start">
-        <IconComponent />
-        <span className="ml-2">{battery}%</span>
-      </div>
-    );
-  }
 
-const DeviceCard = ({ deviceInfo, onCardClick, onApiCall }) => {
+  return (
+    <div className="flex flex-row items-start justify-start">
+      <IconComponent />
+      <span className="ml-2">{battery}%</span>
+    </div>
+  );
+}
+
+const DeviceCard = ({ deviceInfo, onCardClick }) => {
   // console.log("deviceInfo : ", JSON.stringify(deviceInfo,null,2));
   const { macAddress, deviceName, battery } = deviceInfo; // 매개변수로 전달된 device를 사용
 
@@ -41,12 +47,28 @@ const DeviceCard = ({ deviceInfo, onCardClick, onApiCall }) => {
   const handleActionButtonClick = async () => {
     try {
       // API 호출
-      await onApiCall(isActive, deviceInfo);
+      await handleApiCall(isActive, deviceInfo);
 
       // 상태 변경
       setIsActive((prevState) => !prevState);
     } catch (error) {
       console.error("API 호출 중 오류 발생:", error);
+    }
+  };
+
+  // API 호출 핸들러
+  const handleApiCall = async (isActive, deviceInfo) => {
+    if (!deviceInfo) return; // 선택된 디바이스가 없으면 아무 작업도 하지 않음
+    const { macAddress, deviceName, battery } = deviceInfo; // 선택된 디바이스 정보 가져오기
+
+    if (isActive) {
+      console.log("비활성화 API 호출");
+      // 비활성화 API 호출 로직
+      andInterface.pubSendData(macAddress, deviceName, { toggleSwitch: "00" });
+    } else {
+      console.log("활성화 API 호출");
+      // 활성화 API 호출 로직
+      andInterface.pubSendData(macAddress, deviceName, { toggleSwitch: "01" });
     }
   };
 
@@ -102,7 +124,6 @@ DeviceCard.propTypes = {
     battery: PropTypes.string,
   }).isRequired,
   onCardClick: PropTypes.func.isRequired,
-  onApiCall: PropTypes.func.isRequired,
 };
 
 export default DeviceCard;

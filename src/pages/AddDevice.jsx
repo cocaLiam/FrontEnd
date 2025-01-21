@@ -22,7 +22,7 @@ export default function AddDevice() {
   const auth = useContext(AuthContext);
   const { sendRequest } = useHttpHook();
 
-  // 기기 생성 함수
+  // 기기 추가 함수 -> BackEnd 정보전달달
   const createDevice = async (macAddress, deviceName, battery) => {
     try {
       setIsLoading(true); // 로딩 상태 시작
@@ -40,7 +40,7 @@ export default function AddDevice() {
     }
   };
   
-  // Android에서 호출하는 함수
+  // 기기 추가 함수 -> Android에 추가 요청
   const handleResConnect = async (data) => {
     try {
       // 데이터 유효성 검사
@@ -67,7 +67,7 @@ export default function AddDevice() {
     }
   };
 
-
+  // 기기 추가 함수 -> Android 로 부터 Connect Response를 받는 함수수
   useEffect(() => {
     // Android WebView에서 호출할 수 있도록 window 객체에 함수 등록
     window.resConnect = handleResConnect;

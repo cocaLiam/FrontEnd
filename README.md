@@ -70,6 +70,8 @@ text-align : 텍스트 블록의 수평 정렬 방식을 지정
     [ left | right | center | justify ]
 align-content: 여러 행 정렬 방식 (wrap일 때)
     [ flex-start | flex-end | center | space-around | space-evenly | space-between ]
+grid: 부모 컨테이너에 맞춰서 아이템을 배치
+    [ grid-cols-4 | grid-rows-4 ]
 
 아이템용 프로퍼티
 flex-basis: 아이템의 기본 크기 설정

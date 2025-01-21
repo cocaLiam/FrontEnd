@@ -25,7 +25,7 @@ function ButtonWithIcon({
       rounded-lg         // border-radius: 0.25rem; - 모서리를 4px 둥글게
       bg-gray-800      // background-color: #색상코드; - 밝은 회색 배경
       hover:bg-grey      // hover 시 background-color 변경 - 마우스 오버시 회색으로 변경
-      text-grey-darkest  // color: #색상코드; - 가장 어두운 회색 텍스트 색상
+      text-white       // 글자섹을 하얀색으로로
     "
       onClick={onClick}
     >
