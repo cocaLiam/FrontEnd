@@ -4,8 +4,8 @@ export const AuthContext = createContext({
   isLoggedIn: false,
   token: null,
   dbObjectId: null,
-  login         : () => {},
-  signup        : () => {},
-  refreshToken  : () => {},
-  logout        : () => {},
+  login         : async () => {},
+  signup        : async () => {},
+  refreshToken  : async () => {},
+  logout        : async () => {},
 });

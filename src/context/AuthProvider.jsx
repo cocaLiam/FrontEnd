@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
 
   // useAuthHook에서 제공하는 인증 관련 함수들
   const { login, signup, refreshToken, logout } = useAuthHook({
-  setToken,
+    setToken,
     setDbObjectId,
     setTokenExpirationDate,
   });
@@ -24,7 +24,8 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     // 토큰과 만료 시간이 존재할 경우, 남은 시간을 계산하여 로그아웃 타이머 설정
     if (token && tokenExpirationDate) {
-      const remainingTime = tokenExpirationDate.getTime() - new Date().getTime();
+      const remainingTime =
+        tokenExpirationDate.getTime() - new Date().getTime();
       logoutTimer = setTimeout(logout, remainingTime); // 남은 시간이 지나면 로그아웃 실행
     } else {
       clearTimeout(logoutTimer); // 토큰이 없으면 기존 타이머를 초기화
@@ -36,19 +37,19 @@ export const AuthProvider = ({ children }) => {
   "expiration":"2025-02-05T05:32:47.000Z"}*/
   // 자동 로그인 로직
   useEffect(() => {
-    // 로컬 스토리지에서 저장된 인증 데이터를 가져옴
-    const storedData = JSON.parse(localStorage.getItem("tokenData"));
-    if (storedData && storedData.token) {
-      const expirationDate = new Date(storedData.expiration); // 저장된 만료 시간을 Date 객체로 변환
-      if (expirationDate > new Date()) {
-        // 만료 시간이 현재 시간보다 이후라면, 토큰 갱신(refreshToken) 실행
-        refreshToken(storedData.dbObjectId, storedData.token, expirationDate);
+    const checkAndRefreshToken = async () => {
+      // 로컬 스토리지에서 저장된 인증 데이터를 가져옴
+      const storedData = JSON.parse(localStorage.getItem("tokenData"));
+      if (storedData && storedData.token) {
+        const expirationDate = new Date(storedData.expiration); // 저장된 만료 시간을 Date 객체로 변환
+        if (expirationDate > new Date()) {
+          // 만료 시간이 현재 시간보다 이후라면, 토큰 갱신(refreshToken) 실행
+          await refreshToken(storedData.dbObjectId, storedData.token, expirationDate);
+        }
       }
-      // } else {
-      //   // 만료 시간이 지났다면 로그아웃 실행
-      //   logout();
-      // }
-    }
+    };
+
+    checkAndRefreshToken();
   }, [refreshToken, logout]); // refreshToken, logout이 변경될 때마다 실행
 
   // AuthContext.Provider를 통해 하위 컴포넌트에 인증 상태와 함수들을 제공

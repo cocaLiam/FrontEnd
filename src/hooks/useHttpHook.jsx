@@ -4,7 +4,7 @@ import { useCallback, useRef, useEffect } from 'react';
 
 const axiosInstance = axios.create({
   // baseURL: 'http://localhost:5000/',
-  baseURL: 'http://192.168.45.188:5000/',
+  baseURL: 'http://192.168.45.209:5000/',
   timeout: 5000,
 });
 
@@ -22,7 +22,7 @@ export const useHttpHook = () => {
  *   url: '/api/secure-endpoint',
  *   method: 'POST',
  *   data: {sensitiveData:sensitiveData},
- *   headers: { Authorization: `Bearer ${auth.token}` }
+ *   headers: { Authorization: `Bearer ${authStatus.token}` }
  * });
  */
   const sendRequest = useCallback(async (config) => {

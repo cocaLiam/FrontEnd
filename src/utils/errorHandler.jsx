@@ -13,6 +13,9 @@ export const handleError = (err, setErrorMessage, setIsErrorModalOpen) => {
     case 204:
       message = "사용자를 찾을 수 없습니다."
       break;
+    case 400:
+      message = "필요한 프로퍼티 누락"
+      break;
     case 401:
       message = "인증 토큰에러, 다시 로그인 해주세요 : "
       break;
@@ -23,7 +26,7 @@ export const handleError = (err, setErrorMessage, setIsErrorModalOpen) => {
       message = "DB에 해당 정보가 존재하지 않습니다. : "
       break;
     case 409:
-      message = "이미 존재하는 Email 입니다. : "
+      message = "이미 존재하는 Data 입니다. : "
       break;
     case 422:
       message = "사용자 입력값 유효하지 않음\n 비밀번호 6글자 이상 : "

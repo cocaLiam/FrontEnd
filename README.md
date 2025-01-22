@@ -47,13 +47,13 @@ max-height (최대 높이)
 .box {
   left: 20px
   top: 20px
-  position: static | relative | absolute | fixed | stickey
+  position: static | relative | absolute | fixed | sticky
 }
 static	생성된 위치 고정 (배치 불가능 / 기본값)
 relative	현재 배치된 본인 위치 에서 20,20
 absolute	부모(컨테이너같은) 프로퍼티 기준 20,20
 fixed	전체 창 기준 20,20( 뷰포트 기준 20,20 )
-stickey	생성된 위치 에서 스크롤 임계점에서 fixed 처리(배치 불가능 / 기본값)
+sticky	생성된 위치 에서 스크롤 임계점에서 fixed 처리(배치 불가능 / 기본값)
 
 =====DISPLAY CSS=====
 컨테이너용 프로퍼티

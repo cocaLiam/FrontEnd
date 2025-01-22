@@ -16,8 +16,7 @@ export const useAuthHook = ({
    * @param {string} userEmail - 사용자의 이메일
    * @param {string} password - 사용자의 비밀번호
    */
-  const login = useCallback(
-    async (userEmail, password) => {
+  const login = useCallback(async (userEmail, password) => {
       // 로그인 API 요청
       const responseData = await sendRequest({
         url: "/api/user/login", // 로그인 엔드포인트
@@ -58,8 +57,7 @@ export const useAuthHook = ({
    * @param {string} homeAddress - 사용자 주소
    * @param {string} phoneNumber - 사용자 전화번호
    */
-  const signup = useCallback(
-    async (userName, userEmail, password, homeAddress, phoneNumber) => {
+  const signup = useCallback(async (userName, userEmail, password, homeAddress, phoneNumber) => {
       // 회원가입 API 요청
       const responseData = await sendRequest({
         url: "/api/user/signup", // 회원가입 엔드포인트
@@ -104,8 +102,7 @@ export const useAuthHook = ({
    * @param {string} token - 현재 토큰
    * @param {Date} expirationDate - 현재 토큰의 만료 시간
    */
-  const refreshToken = useCallback(
-    async (dbObjectId, token, expirationDate) => {
+  const refreshToken = useCallback(async (dbObjectId, token, expirationDate) => {
       // 현재 토큰의 만료 시간 계산
       const jwtDecodedData = decodeToken(token);
       const tokenExpiration =
@@ -161,7 +158,7 @@ export const useAuthHook = ({
   /**
    * 로그아웃 함수
    */
-  const logout = useCallback(() => {
+  const logout = useCallback(async() => {
     // 상태 초기화
     setToken(null); // 토큰 제거
     setDbObjectId(null); // 사용자 ID 제거

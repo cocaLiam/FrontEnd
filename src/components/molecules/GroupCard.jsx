@@ -35,30 +35,30 @@ const GroupCard = ({ userGroupList }) => {
   // HTTP 요청을 처리하기 위한 커스텀 훅에서 sendRequest 함수 가져오기
   const { sendRequest } = useHttpHook();
 
-  const auth = useContext(AuthContext);
+  const authStatus = useContext(AuthContext);
 
-  /**
-   * 디버깅용
-   */
-  useEffect(() => {
-    console.log("선택된 디바이스 :", selectedDevice);
-  }, [selectedDevice]);
+  // /**
+  //  * 디버깅용
+  //  */
+  // useEffect(() => {
+  //   console.log("선택된 디바이스 :", selectedDevice);
+  // }, [selectedDevice]);
 
-  useEffect(() => {
-    console.log("선택된 그룹", selectedGroup);
-  }, [selectedGroup]);
-  /**
-   * 디버깅용
-   */
+  // useEffect(() => {
+  //   console.log("선택된 그룹", selectedGroup);
+  // }, [selectedGroup]);
+  // /**
+  //  * 디버깅용
+  //  */
 
   // Device 리스트를 가져오는 함수
   const fetchDeviceList = useCallback(async () => {
     setIsLoading(true);
     try {
       const responseData = await sendRequest({
-        url: `/api/device/${auth.dbObjectId}/deviceList`, // 로그인 엔드포인트
+        url: `/api/device/${authStatus.dbObjectId}/deviceList`, // 로그인 엔드포인트
         method: "GET", // HTTP 메서드
-        headers: { Authorization: `Bearer ${auth.token}` }, // 현재 토큰을 Authorization 헤더에 포함
+        headers: { Authorization: `Bearer ${authStatus.token}` }, // 현재 토큰을 Authorization 헤더에 포함
       });
 
       const deviceList = responseData.device_list;
@@ -96,7 +96,7 @@ const GroupCard = ({ userGroupList }) => {
     } finally {
       setIsLoading(false); // 로딩 상태 종료
     }
-  }, [userGroupList, sendRequest, auth.dbObjectId, auth.token]); // 의존성 추가
+  }, [userGroupList, sendRequest, authStatus.dbObjectId, authStatus.token]); // 의존성 추가
 
   // 처음 렌더링될 때 Device 리스트를 가져오는 함수 ( 새로고침시 )
   useEffect(() => {
@@ -115,9 +115,9 @@ const GroupCard = ({ userGroupList }) => {
       setIsLoading(true); // 로딩 상태 시작
       // BackEnd 에게 DB 삭제 요청
       const responseData = await sendRequest({
-        url: `/api/device/${auth.dbObjectId}/deviceDelete`, // API 엔드포인트
+        url: `/api/device/${authStatus.dbObjectId}/deviceDelete`, // API 엔드포인트
         method: "DELETE", // HTTP 메서드
-        headers: { Authorization: `Bearer ${auth.token}` }, // 현재 토큰을 Authorization 헤더에 포함
+        headers: { Authorization: `Bearer ${authStatus.token}` }, // 현재 토큰을 Authorization 헤더에 포함
         data: { macAddress, deviceName }, // 요청 데이터
       });
       console.log("기기 삭제 성공:", responseData);
@@ -145,9 +145,9 @@ const GroupCard = ({ userGroupList }) => {
     try {
       setIsLoading(true); // 로딩 상태 시작
       const responseData = await sendRequest({
-        url: `/api/device/${auth.dbObjectId}/deviceCreate`, // API 엔드포인트
+        url: `/api/device/${authStatus.dbObjectId}/deviceCreate`, // API 엔드포인트
         method: "POST", // HTTP 메서드
-        headers: { Authorization: `Bearer ${auth.token}` }, // 현재 토큰을 Authorization 헤더에 포함
+        headers: { Authorization: `Bearer ${authStatus.token}` }, // 현재 토큰을 Authorization 헤더에 포함
         data: { deviceGroup: selectedGroup, macAddress, deviceName, battery }, // 요청 데이터
       });
       console.log("기기 생성 성공:", responseData);
@@ -156,7 +156,7 @@ const GroupCard = ({ userGroupList }) => {
     } finally {
       setIsLoading(false); // 로딩 상태 종료
     }
-  },[auth.dbObjectId, auth.token, selectedGroup, sendRequest]);
+  },[authStatus.dbObjectId, authStatus.token, selectedGroup, sendRequest]);
 
   // 기기 추가 함수 -> Android 로 부터 Connect Response를 받는 함수
   const handleResConnect = useCallback(async (data) => {

@@ -30,7 +30,7 @@ const SignupForm = () => {
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const auth = useContext(AuthContext);
+  const authStatus = useContext(AuthContext);
 
   // 유효성 검사 함수
   const validateField = (name, value) => {
@@ -126,7 +126,7 @@ const SignupForm = () => {
     setIsLoading(true);
 
     try {
-      const res = await auth.signup(
+      const res = await authStatus.signup(
         formData.userName,
         formData.userEmail,
         formData.password,

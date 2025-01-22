@@ -1,8 +1,9 @@
 // components/molecules/LoginForm.jsx
 import { useState, useContext } from "react";
 
-import LoadingSpinner from "@/components/atoms/LoadingSpinner";
 import ErrorModal from "@/components/molecules/ErrorModal";
+
+import LoadingSpinner from "@/components/atoms/LoadingSpinner";
 
 import { handleError } from "@/utils/errorHandler"; // 에러 처리 함수 import
 
@@ -16,7 +17,7 @@ const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const auth = useContext(AuthContext);
+  const authStatus = useContext(AuthContext);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -31,8 +32,8 @@ const LoginForm = () => {
     setIsLoading(true);
 
     try {
-      await auth.login(formData.userEmail, formData.password);
-      // const res = await auth.login(formData.userEmail, formData.password);
+      await authStatus.login(formData.userEmail, formData.password);
+      // const res = await authStatus.login(formData.userEmail, formData.password);
       // console.log(`Login 성공 :`, res);
     } catch (err) {
       handleError(err, setErrorMessage, setIsErrorModalOpen); // 공통 에러 처리 함수 호출
@@ -51,23 +52,23 @@ const LoginForm = () => {
       />
       <div>
         <input
+          className="w-full p-2 text-white bg-gray-800 rounded"
           name="userEmail"
           type="email"
           value={formData.userEmail}
           onChange={handleChange}
           placeholder="이메일"
-          className="w-full p-2 text-white bg-gray-800 rounded"
           required
         />
       </div>
       <div>
         <input
+          className="w-full p-2 text-white bg-gray-800 rounded"
           type="password"
           name="password"
           value={formData.password}
           onChange={handleChange}
           placeholder="비밀번호"
-          className="w-full p-2 text-white bg-gray-800 rounded"
           required
         />
       </div>

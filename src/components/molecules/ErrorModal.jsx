@@ -1,6 +1,6 @@
 // components/molecules/ErrorModal.jsx
 import PropTypes from "prop-types";
-import ErrorIcon from "../atoms/icons/ErrorIcon";
+import XIcon from "../atoms/icons/XIcon";
 
 /**
  * icon 으로 받는 이유 : 1. 프로퍼티(인자) 로 받을 때는 소문자로 받아야함 2. props 검사 할때 소문자(icon)여야 검사가능
@@ -11,22 +11,24 @@ const ErrorModal = ({ isOpen, onClose, content }) => {
   if (!isOpen) return null;
 
   return (
-    // <div className="fixed inset-0 z-10 overflow-y-auto" id="my-modal">
-    <div className="fixed inset-0 z-50 w-full h-full bg-gray-600 bg-opacity-30">
-    {/* 모달의 최상위 컨테이너. 전체 화면을 차지하며 스크롤 가능 */}
-
-      {/* <div className="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0"> */}
-      <div className="absolute p-6 space-y-2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-900 rounded-lg shadow-lg top-1/2 left-1/2">
-      {/* 모달 컨텐츠를 세로/가로 중앙 정렬하기 위한 컨테이너 */}
-
-
+    <>
+    {/* 모달 컨테이너 배경화면 (오버레이) */}
+    {isOpen && (
+      <div 
+        className="fixed inset-0 z-30 w-full h-full bg-black bg-opacity-30" 
+        onClick={onClose}
+      />
+    )}
+      
+      {/* 모달 컨테이너 */}
+      <div className="fixed z-50 inline-block p-2 mx-auto transform -translate-x-1/2 -translate-y-1/2 bg-orange-100 rounded-md shadow-xl top-1/3 left-1/2">
 
         <div className="inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
         {/* 실제 모달 컨텐츠 박스 */}
 
           <div className="flex items-center justify-center w-12 h-12 mx-auto bg-red-100 rounded-full">
           {/* 아이콘 컨테이너 */}
-            <ErrorIcon />
+            <XIcon />
           </div>
 
           <div className="mt-3 text-center sm:mt-5">
@@ -54,7 +56,7 @@ const ErrorModal = ({ isOpen, onClose, content }) => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

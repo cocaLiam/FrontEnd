@@ -17,8 +17,7 @@ import LoadingSpinner from './components/atoms/LoadingSpinner';
 
 // Context 파일
 import { LoadingProvider } from "./context/LoadingContext";
-// import { AuthProvider } from './context/AuthContext';
-import { AuthContext } from "./context/AuthContext";
+import { AuthContext } from "@/context/AuthContext";
 
 // App.jsx
 function App() {

@@ -10,7 +10,8 @@ import LoginIcon from "@/components/atoms/icons/LoginIcon";
 import LogoutIcon from "@/components/atoms/icons/LogoutIcon";
 import DebugIcon from "@/components/atoms/icons/DebugIcon";
 
-import { AuthContext } from "../../context/AuthContext";
+import { AuthContext } from "@/context/AuthContext";
+
 
 export default function SideBar({ isOpen, onClose }) {
   const authStatus = useContext(AuthContext);
@@ -20,7 +21,7 @@ export default function SideBar({ isOpen, onClose }) {
       {/* 오버레이 */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black bg-opacity-50"
+          className="fixed inset-0 z-30 bg-black bg-opacity-30"
           onClick={onClose}
         />
       )}
@@ -57,8 +58,8 @@ export default function SideBar({ isOpen, onClose }) {
             <ButtonWithIcon
               icon={LogoutIcon}
               content={<Link to="/">Logout</Link>}
-              onClick={()=>{
-                authStatus.logout();
+              onClick={async ()=>{
+                await authStatus.logout();
                 onClose();
               }}
             />

@@ -22,7 +22,7 @@ export default function Home() {
   // HTTP 요청을 처리하기 위한 커스텀 훅에서 sendRequest 함수 가져오기
   const { sendRequest } = useHttpHook();
 
-  const auth = useContext(AuthContext);
+  const authStatus = useContext(AuthContext);
 
   // User의 userGroupList 를 가져오는 함수
   const fetchDeviceGroupList = useCallback(async () => {
@@ -31,7 +31,7 @@ export default function Home() {
       const responseData = await sendRequest({
         url: `/api/user/getUserInfo`, // 로그인 엔드포인트
         method: "GET", // HTTP 메서드
-        headers: { Authorization: `Bearer ${auth.token}` }, // 현재 토큰을 Authorization 헤더에 포함
+        headers: { Authorization: `Bearer ${authStatus.token}` }, // 현재 토큰을 Authorization 헤더에 포함
       });
 
       const userGroupList = responseData.userInfo.device_group_list;
@@ -42,7 +42,7 @@ export default function Home() {
     } finally {
       setIsLoading(false); // 로딩 상태 종료
     }
-  }, [auth.token, sendRequest]);
+  }, [authStatus.token, sendRequest]);
 
   // 처음 렌더링될 때 User의 userGroupList 를 가져오는 함수 ( 새로고침시 )
   useEffect(() => {

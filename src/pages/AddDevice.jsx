@@ -19,7 +19,7 @@ export default function AddDevice() {
   const [isLoading, setIsLoading] = useState(false);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const auth = useContext(AuthContext);
+  const authStatus = useContext(AuthContext);
   const { sendRequest } = useHttpHook();
 
   // 기기 추가 함수 -> BackEnd 정보전달달
@@ -27,9 +27,9 @@ export default function AddDevice() {
     try {
       setIsLoading(true); // 로딩 상태 시작
       const responseData = await sendRequest({
-        url: `/api/device/${auth.dbObjectId}/deviceCreate`, // API 엔드포인트
+        url: `/api/device/${authStatus.dbObjectId}/deviceCreate`, // API 엔드포인트
         method: "POST", // HTTP 메서드
-        headers: { Authorization: `Bearer ${auth.token}` }, // 현재 토큰을 Authorization 헤더에 포함
+        headers: { Authorization: `Bearer ${authStatus.token}` }, // 현재 토큰을 Authorization 헤더에 포함
         data: { macAddress, deviceName, battery }, // 요청 데이터
       });
       console.log("기기 생성 성공:", responseData);
