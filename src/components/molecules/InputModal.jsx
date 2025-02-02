@@ -25,7 +25,9 @@ const SelectInputType = ({ className, type="text", placeHolder="", hintList=["11
     case "userEmail":
       return <input className={className} type="email" placeholder={placeHolder || "example@example.com"} onChange={onChange} required autoFocus />;
     case "password":
-      return <input className={className} type="password" minLength="6" maxLength="50" placeholder={placeHolder} onChange={onChange} required />;
+      return <input className={className} type="password" minLength="6" maxLength="20" placeholder={placeHolder} onChange={onChange} required />;
+    case "newPassword":
+      return <input className={className} type="password" minLength="6" maxLength="20" placeholder={placeHolder} onChange={onChange} required />;
     case "homeAddress":
       return (
         <textarea
@@ -66,7 +68,20 @@ const SelectInputType = ({ className, type="text", placeHolder="", hintList=["11
         </>
       );
     case "text":
-      return <input type="text" onChange={onChange} required/>;
+      return <input className={className} type="text" onChange={onChange} required/>;
+    case "createGroup":
+      return (
+        <>
+          <input className={className} type="text" list="suggestions" minLength="1" maxLength="20" placeholder={placeHolder} onChange={onChange} required autoFocus />
+          <datalist id="suggestions">
+            {hintList.map((tmp, index) => (
+              <option key={index} value={tmp} />
+            ))}
+          </datalist>
+        </>
+      );
+      case "updateGroup":
+        return <input className={className} type="text" minLength="1" maxLength="20" placeholder={placeHolder} onChange={onChange} required autoFocus/>;
     default:
       // text
       return <input type="text" onChange={onChange} />;
@@ -81,7 +96,8 @@ const InputModal = ({
   content = "",
   inputTextType = "text",
   placeHolder = "",
-  hintList = []
+  hintList = [],
+  setPasswordCheck = true
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
@@ -98,7 +114,11 @@ const InputModal = ({
 
     try {
       // onConfirm(true);
-      await onConfirm({[inputTextType]:inputValue, "password":passwordValue});
+      if(passwordValue){
+        await onConfirm({[inputTextType]:inputValue, "password":passwordValue});
+      }else{
+        await onConfirm(inputValue);
+      }
       setClose()
 
     } catch (err) {
@@ -140,7 +160,7 @@ const InputModal = ({
             )}
 
             <SelectInputType
-              className="w-full px-3 py-2 leading-tight text-gray-500 border rounded appearance-none focus:outline-none focus:shadow-outline"
+              className="w-full px-3 py-2 leading-tight text-black border rounded appearance-none focus:outline-none focus:shadow-outline"
               type={inputTextType}
               placeHolder={placeHolder}
               hintList={hintList}
@@ -149,14 +169,14 @@ const InputModal = ({
               }} // 입력 값 상태 업데이트
               updateInputValue
             />
-            <SelectInputType
-              className="w-full px-3 py-2 leading-tight text-gray-500 border rounded appearance-none focus:outline-none focus:shadow-outline"
+            {setPasswordCheck && <SelectInputType
+              className="w-full px-3 py-2 leading-tight text-black border rounded appearance-none focus:outline-none focus:shadow-outline"
               type="password"
               placeHolder="최근 비밀번호"
               onChange={(e) => {setPasswordValue(e.target.value);
                 // console.log(`e.target.value : ${e.target.value}`);
               }} // 비밀번호 값 상태 업데이트
-            />
+            />}
             {/* <SelectInputType
               className="w-full px-3 py-2 leading-tight text-gray-500 border rounded appearance-none focus:outline-none focus:shadow-outline"
               type="email"
@@ -178,7 +198,8 @@ const InputModal = ({
             <SelectInputType
               className="w-full px-3 py-2 leading-tight text-gray-500 border rounded appearance-none focus:outline-none focus:shadow-outline"
               type="hinList"
-              hintList={["Option 4", "Option 5", "Option 6"]}
+              placeHolder="ex) 안방, 거실, 아기방 ... "
+              hintList={["안방", "거실", "아기방"]}
             /> */}
 
           </div>
@@ -214,7 +235,8 @@ InputModal.propTypes = {
   content: PropTypes.string,
   inputTextType: PropTypes.string,
   placeHolder: PropTypes.string,
-  hintList: PropTypes.array
+  hintList: PropTypes.array,
+  setPasswordCheck: PropTypes.bool
 };
 
 export default InputModal;

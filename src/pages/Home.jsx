@@ -7,7 +7,6 @@ import GroupCard from "@/components/molecules/GroupCard";
 import LoadingSpinner from "@/components/atoms/LoadingSpinner";
 
 import { handleError } from "@/utils/errorHandler";
-import { andInterface } from "@/utils/android/androidInterFace";
 
 import { AuthContext } from "@/context/AuthContext";
 
@@ -18,14 +17,13 @@ export default function Home() {
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [userGroupList, setUserGroupList] = useState([]); // DeviceCard를 렌더링할 데이터 상태
-
   // HTTP 요청을 처리하기 위한 커스텀 훅에서 sendRequest 함수 가져오기
   const { sendRequest } = useHttpHook();
 
   const authStatus = useContext(AuthContext);
 
   // User의 userGroupList 를 가져오는 함수
-  const fetchDeviceGroupList = useCallback(async () => {
+  const fetchGroupList = useCallback(async () => {
     setIsLoading(true);
     try {
       const responseData = await sendRequest({
@@ -34,9 +32,7 @@ export default function Home() {
         headers: { Authorization: `Bearer ${authStatus.token}` }, // 현재 토큰을 Authorization 헤더에 포함
       });
 
-      const userGroupList = responseData.userInfo.device_group_list;
-
-      setUserGroupList(userGroupList);
+      setUserGroupList(responseData.userInfo.deviceGroupList);
     } catch (err) {
       handleError(err, setErrorMessage, setIsErrorModalOpen); // 공통 에러 처리 함수 호출
     } finally {
@@ -47,10 +43,10 @@ export default function Home() {
   // 처음 렌더링될 때 User의 userGroupList 를 가져오는 함수 ( 새로고침시 )
   useEffect(() => {
     async function fetchData() {
-      await fetchDeviceGroupList();
+      await fetchGroupList();
     }
     fetchData();
-  }, [fetchDeviceGroupList]);
+  }, []);
 
   return (
     <div className="flex flex-col gap-4 px-6 py-4">
@@ -60,9 +56,11 @@ export default function Home() {
         onClose={() => setIsErrorModalOpen(false)}
         content={errorMessage}
       />
-      <GroupCard
-        userGroupList={userGroupList} // 그룹 리스트 전달달
-      />
+      {/* userGroupList가 불러와진 이후 GroupCard 렌더링링 */}
+      {userGroupList.length > 0 && <GroupCard
+        userGroupList={userGroupList} // 그룹 리스트 전달
+        groupCardReload={fetchGroupList} // groupCard 리렌더링
+      />}
 
     </div>
   );

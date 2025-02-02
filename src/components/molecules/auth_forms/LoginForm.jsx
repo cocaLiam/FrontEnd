@@ -1,4 +1,4 @@
-// components/molecules/LoginForm.jsx
+// @/components/molecules/auth_forms/LoginForm.jsx
 import { useState, useContext } from "react";
 
 import ErrorModal from "@/components/molecules/ErrorModal";

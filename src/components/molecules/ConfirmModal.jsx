@@ -10,17 +10,17 @@ import ExclamationMarkIcon from "@/components/atoms/icons/ExclamationMarkIcon.js
 
 const ConfirmModal = ({ isOpen, onClose, onConfirm, title = "", content }) => {
   if (!isOpen) return null;
-
+  
   return (
     <>
-    {/* 모달 컨테이너 배경화면 (오버레이) */}
-    {isOpen && (
-      <div 
-        className="fixed inset-0 z-30 w-full h-full bg-black bg-opacity-30" 
-        onClick={onClose}
-      />
-    )}
-      
+      {/* 모달 컨테이너 배경화면 (오버레이) */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-30 w-full h-full bg-black bg-opacity-30"
+          onClick={onClose}
+        />
+      )}
+
       {/* 모달 컨테이너 */}
       <div className="fixed z-50 inline-block w-10/12 p-2 mx-auto transform -translate-x-1/2 -translate-y-1/2 bg-orange-100 rounded-md shadow-xl top-1/3 left-1/2">
         {/* fixed: 화면에 고정 */}
@@ -34,7 +34,7 @@ const ConfirmModal = ({ isOpen, onClose, onConfirm, title = "", content }) => {
         {/* top-1/3: 화면 위에서 1/3 지점 */}
         {/* left-1/2: 화면 왼쪽에서 1/2 지점 */}
 
-        <CloseButton onClose={onClose}/>
+        <CloseButton onClose={onClose} />
 
         {/* <div className="p-6 pt-0 text-center"> */}
         <div className="flex flex-col items-center justify-center p-6 pt-0">

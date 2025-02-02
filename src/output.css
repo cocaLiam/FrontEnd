@@ -1152,6 +1152,14 @@ input:checked + .toggle-bg {
   top: 33.333333%;
 }
 
+.right-2 {
+  right: 0.5rem;
+}
+
+.top-2 {
+  top: 0.5rem;
+}
+
 .z-10 {
   z-index: 10;
 }
@@ -1391,10 +1399,6 @@ input:checked + .toggle-bg {
 
 .max-w-md {
   max-width: 28rem;
-}
-
-.max-w-xl {
-  max-width: 36rem;
 }
 
 .flex-1 {

@@ -7,7 +7,7 @@ import XIcon from "../atoms/icons/XIcon";
  * Icon 으로 변수명을 변환하는 이유 : 소문자(icon)는 html으로 변환되지만, 대문자(Icon)은 커스텀컴포넌트로 인식됨
  */
 
-const ErrorModal = ({ isOpen, onClose, content }) => {
+const ErrorModal = ({ isOpen, onClose, content="" }) => {
   if (!isOpen) return null;
 
   return (

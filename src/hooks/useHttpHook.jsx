@@ -4,7 +4,7 @@ import { useCallback, useRef, useEffect } from 'react';
 
 const axiosInstance = axios.create({
   // baseURL: 'http://localhost:5000/',
-  baseURL: 'http://192.168.45.209:5000/',
+  baseURL: 'http://192.168.45.60:5000/',
   timeout: 5000,
 });
 
@@ -29,8 +29,8 @@ export const useHttpHook = () => {
     const source = axios.CancelToken.source();
     activeRequests.current.push(source);
 
-    // 상세 로깅 추가
-    console.log('HTTP > 전체 설정값:', JSON.stringify(config,null, 2));
+    // // 상세 로깅 추가
+    // console.log('HTTP > 전체 설정값:', JSON.stringify(config,null, 2));
 
     try {
       const response = await axiosInstance({
