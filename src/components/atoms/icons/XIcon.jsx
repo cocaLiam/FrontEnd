@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 
 // components/atoms/icons/ErrorIcon.jsx
-const ErrorIcon = ({color="text-red-600"}) => {
+const XIcon = ({color="text-red-600"}) => {
   return (
     <svg
       className={`w-6 h-6 ${color}`}
@@ -21,9 +21,9 @@ const ErrorIcon = ({color="text-red-600"}) => {
   );
 };
 
-ErrorIcon.propTypes = {
+XIcon.propTypes = {
   color: PropTypes.string,
 };
 
 
-export default ErrorIcon;
+export default XIcon;

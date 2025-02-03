@@ -97,6 +97,7 @@ const GroupCard = ({ userGroupList, groupCardReload }) => {
               deviceGroup: deviceInfo.device_group || "N/A", // 기본값 설정
               macAddress: deviceInfo.mac_address || "", // mac_address가 없으면 빈 문자열로 처리
               deviceName: deviceInfo.device_name || "Unknown Device", // 기본값 설정
+              deviceType: deviceInfo.device_type || "Unknown Device", // 기본값 설정
               battery: deviceInfo.battery || "N/A", // 기본값 설정
             });
           }
@@ -217,6 +218,7 @@ const GroupCard = ({ userGroupList, groupCardReload }) => {
                   deviceGroup: deviceInfo.deviceGroup,
                   macAddress: deviceInfo.macAddress,
                   deviceName: deviceInfo.deviceName,
+                  deviceType: deviceInfo.deviceType,
                   battery: deviceInfo.battery,
                 }} // Device 이름 또는 기본 텍스트
                 deviceCardReload={fetchDeviceList} // deviceCard 리렌더링

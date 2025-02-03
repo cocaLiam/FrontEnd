@@ -219,6 +219,12 @@ export const andInterface = {
 
   resParingInfo: (data) => {
     try {
+      console.log("resParingInfo : ",data);
+      console.log(
+        "resParingInfo 받은 DATA : ",
+        JSON.stringify(data,null, 2)
+      );
+      
       if (!validateDeviceList(data).isValid) return false; // Paring Device 가 0 개 인 경우
       if (validateDeviceList(data).isValid) {
         console.log(
@@ -241,6 +247,7 @@ export const andInterface = {
     try {
       if (!validateDeviceList(data).isValid) return false; // Conneted Device 가 0 개 인 경우
       if (validateDeviceList(data).isValid) {
+        alert(data)
         console.log(
           "resConnectedDevices 받은 DATA : ",
           JSON.stringify(data,null, 2)

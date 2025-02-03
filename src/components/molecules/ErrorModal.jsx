@@ -1,6 +1,6 @@
 // components/molecules/ErrorModal.jsx
 import PropTypes from "prop-types";
-import XIcon from "../atoms/icons/XIcon";
+import XIcon from "@/components/atoms/icons/XIcon";
 
 /**
  * icon 으로 받는 이유 : 1. 프로퍼티(인자) 로 받을 때는 소문자로 받아야함 2. props 검사 할때 소문자(icon)여야 검사가능

@@ -6,34 +6,46 @@ import DeviceManagingForm from "@/components/molecules/home_forms/DeviceManaging
 
 import SettingsIcon from "@/components/atoms/icons/SettingsIcon";
 import DebugIcon from "@/components/atoms/icons/DebugIcon";
+import XIcon from "@/components/atoms/icons/XIcon";
+import DefaultIcon from "../atoms/icons/DefaultIcon";
+import BluetoothNotConnected from "../atoms/icons/BluetoothNotConnected";
+import Bluetoothconnect from "../atoms/icons/BlueetoothConnected";
+import PowerOnIcon from "../atoms/icons/PowerOnIcon";
+import BluetoothDisconnect from "../atoms/icons/BluetoothDisconnect";
 
-import { andInterface } from "@/utils/android/androidInterFace";
+import { andInterface,validateDeviceList } from "@/utils/android/androidInterFace";
 
 // Device 타입에 따라 아이콘을 선택하는 함수
-function DeviceIconSelector(deviceName, battery) {
+function DeviceIconSelector(deviceType, battery) {
 
   var IconComponent = "";
-  switch (deviceName) {
-    case "안방불1":
-      IconComponent = DebugIcon;
+  switch (deviceType) {
+    case "안방불11":
+      // IconComponent = <XIcon color="text-red-400" />;
+      // IconComponent = <BluetoothNotConnected />;
+      IconComponent = <div style={{ color: 'white', width: '30px', height: '30px' }}>
+         <BluetoothDisconnect />
+      </div>;
+      // IconComponent = <BluetoothDisconnect />
+      // IconComponent = <Bluetoothconnect/>
       break;
     case "안방불2":
-      IconComponent = DebugIcon;
+      IconComponent = <DebugIcon />;
       break;
     case "222222222":
-      IconComponent = DebugIcon;
+      IconComponent = <DebugIcon />;
       break;
     case "ccb_v1":
-      IconComponent = DebugIcon;
+      IconComponent = <DebugIcon />;
       break;
     default:
-      IconComponent = SettingsIcon;
+      IconComponent = <SettingsIcon />;
       break;
   }
 
   return (
-    <div className="flex flex-row items-start justify-start">
-      <IconComponent />
+    <div className="flex flex-row items-start justify-start text-white">
+      {IconComponent}
       <span className="ml-2">{battery}%</span>
     </div>
   );
@@ -41,7 +53,7 @@ function DeviceIconSelector(deviceName, battery) {
 
 const DeviceCard = ({ deviceInfo, deviceCardReload, groupCardReload }) => {
   // console.log("deviceInfo : ", JSON.stringify(deviceInfo,null,2));
-  const { deviceGroup, macAddress, deviceName, battery } = deviceInfo; // 매개변수로 전달된 device를 사용
+  const { deviceGroup, macAddress, deviceName, deviceType, battery } = deviceInfo; // 매개변수로 전달된 device를 사용
 
   const [isDeviceManagingFormOpen, setDeviceManagingFormOpen] = useState(false);
 
@@ -72,20 +84,58 @@ const DeviceCard = ({ deviceInfo, deviceCardReload, groupCardReload }) => {
   };
 
   // API 호출 핸들러
-  const handleApiCall = async (isActive, deviceInfo) => {
-    if (!deviceInfo) return; // 선택된 디바이스가 없으면 아무 작업도 하지 않음
-    const { macAddress, deviceName, battery } = deviceInfo; // 선택된 디바이스 정보 가져오기
+  const handleApiCall = async (isActive, selectedDeviceInfo) => {
+    if (!selectedDeviceInfo) return; // 선택된 디바이스가 없으면 아무 작업도 하지 않음
+    const { deviceGroup, macAddress, deviceName, deviceType, battery } = selectedDeviceInfo; // 매개변수로 전달된 device를 사용
 
     if (isActive) {
       console.log("비활성화 API 호출");
       // 비활성화 API 호출 로직
-      andInterface.pubSendData(macAddress, deviceName, { toggleSwitch: "00" });
+      andInterface.pubSendData(macAddress, deviceType, { toggleSwitch: "00" });
     } else {
       console.log("활성화 API 호출");
       // 활성화 API 호출 로직
-      andInterface.pubSendData(macAddress, deviceName, { toggleSwitch: "01" });
+      andInterface.pubSendData(macAddress, deviceType, { toggleSwitch: "01" });
     }
   };
+
+  // let resConnectedDevices = (data) => {
+  //   try {
+  //     if (!validateDeviceList(data).isValid) return false; // Conneted Device 가 0 개 인 경우
+  //     if (validateDeviceList(data).isValid) {
+  //       console.log(
+  //         "resConnectedDevices 받은 DATA : ",
+  //         JSON.stringify(data,null, 2)
+  //       );
+  //       console.log(typeof data); // object
+  //       console.dir(data.deviceList);
+  //       console.log(data.deviceList[0].deviceName);
+  //       console.log(data.deviceList[0].macAddress);
+  //       alert(data)
+  //     }
+  //     return true; // Android로 반환
+  //   } catch (error) {
+  //     console.error(`에러 발생 1: ${error.message}`);
+  //     return false; // Android로 반환
+  //   }
+  // }
+
+  useEffect(() => {
+    // // Android WebView에서 호출할 수 있도록 window 객체에 함수 등록
+    // window.resConnectedDevices = resConnectedDevices;
+    // window.resConnectedDevices = andInterface.resConnectedDevices;
+    // window.resParingInfo = andInterface.resParingInfo;
+    window.resConnect = andInterface.resConnect;
+    window.resDisconnect = andInterface.resDisconnect;
+    window.resParingInfo = andInterface.resParingInfo;
+    window.resConnectedDevices = andInterface.resConnectedDevices;
+    window.resReadData = andInterface.resReadData;
+  }, []);
+
+  useEffect(() => {
+    // andInterface.reqConnectedDevices()
+    andInterface.reqParingInfo()
+  },[])
 
   return (
     //
@@ -123,8 +173,8 @@ const DeviceCard = ({ deviceInfo, deviceCardReload, groupCardReload }) => {
 
       {/* Device Icon 과 Device Name 을 Column 방식으로 Container 구성 */}
       <div className="flex flex-col items-start justify-start">
-        {/* Device Icon */}
-        {DeviceIconSelector(deviceName, battery)}
+        {/* Device Icon and battery*/}
+        {DeviceIconSelector(deviceType, battery)}
         {/* Device Name */}
         <p className="py-1 text-gray-100">{deviceName}</p>
       </div>
@@ -135,9 +185,9 @@ const DeviceCard = ({ deviceInfo, deviceCardReload, groupCardReload }) => {
           e.stopPropagation(); // Card 클릭 이벤트 전파 방지
           handleActionButtonClick();
         }}
-        className="px-1 py-1 font-semibold text-gray-100 border border-gray-900 rounded hover:bg-gray-800"
+        className="px-1 py-1 font-semibold text-gray-100 bg-gray-600 border rounded hover:bg-gray-950"
       >
-        <SettingsIcon />
+        <PowerOnIcon />
       </button>
     </div>
   );
@@ -148,6 +198,7 @@ DeviceCard.propTypes = {
     deviceGroup: PropTypes.string.isRequired,
     macAddress: PropTypes.string.isRequired,
     deviceName: PropTypes.string.isRequired,
+    deviceType: PropTypes.string.isRequired,
     battery: PropTypes.string,
   }).isRequired,
   deviceCardReload: PropTypes.func.isRequired,

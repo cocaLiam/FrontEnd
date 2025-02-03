@@ -82,6 +82,8 @@ const SelectInputType = ({ className, type="text", placeHolder="", hintList=["11
       );
       case "updateGroup":
         return <input className={className} type="text" minLength="1" maxLength="20" placeholder={placeHolder} onChange={onChange} required autoFocus/>;
+      case "updateDeviceInfo":
+        return <input className={className} type="text" minLength="1" maxLength="20" placeholder={placeHolder} onChange={onChange} required autoFocus/>;
     default:
       // text
       return <input type="text" onChange={onChange} />;
@@ -205,7 +207,8 @@ const InputModal = ({
           </div>
 
           {/* 모달 컨테이너 */}
-          <div className="flex flex-row justify-end gap-2">
+          {/* <div className="flex flex-row justify-end gap-2"> */}
+          <div className="grid grid-cols-2 gap-2 px-1 py-2">
             <button
               type="button"
               className="px-4 py-2 text-gray-700 bg-gray-300 rounded-md"

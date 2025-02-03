@@ -2,10 +2,9 @@
 import React, { useCallback, useState, useContext, useEffect } from "react";
 import PropTypes from "prop-types";
 
+import InputModal from "@/components/molecules/InputModal";
 import ErrorModal from "@/components/molecules/ErrorModal";
 import ConfirmModal from "@/components/molecules/ConfirmModal";
-import RadioModal from "@/components/molecules/RadioModal";
-import InputModal from "@/components/molecules/InputModal";
 
 import LoadingSpinner from "@/components/atoms/LoadingSpinner";
 import CloseButton from "@/components/atoms/CloseButton";
@@ -20,19 +19,16 @@ const DeviceManagingForm = ({
   setDeviceManagingFormOpen,
   selectedDevice,
   deviceCardReload,
-  groupCardReload,
+  groupCardReload
 }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const [isInputModalOpen, setInputModalOpen] = useState(false);
-
-  const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   const [userInfo, setUserInfo] = useState({});
 
-  const [isRadioModalOpen, setRadioModalOpen] = useState(false);
-  const [selectedRadioButton, getSelectedContent] = useState("");
+  const [isInputModalOpen, setInputModalOpen] = useState(false);
 
   const authStatus = useContext(AuthContext);
   const { sendRequest } = useHttpHook();
@@ -86,20 +82,6 @@ const DeviceManagingForm = ({
             // console.log("그룹카드 리로딩@@@")
             break;
           }
-          case "deviceUpdate": {
-            // Device Group 수정 함수
-            url = `/api/device/${authStatus.dbObjectId}/deviceUpdate`;
-            data = {
-              macAddress: macAddress,
-              deviceName: inputValue,
-            };
-            method = "PATCH";
-
-            // // groupCard 리렌더링
-            // await groupCardReload();
-            // console.log("그룹카드 리로딩@@@")
-            break;
-          }
           case "deviceDelete": {
             // Device Group 삭제 함수
             url = `/api/device/${authStatus.dbObjectId}/deviceDelete`;
@@ -139,9 +121,14 @@ const DeviceManagingForm = ({
 
         // deviceCard 리렌더링
         await deviceCardReload();
+        
+        // groupCard 리렌더링
+        await groupCardReload();
+        console.log("그룹카드 리로딩@@@")
 
-        // // groupCard 리렌더링
-        // await groupCardReload();
+        // // deviceCard 리렌더링
+        // await deviceCardReload();
+
       }
     },
     [authStatus, sendRequest]
@@ -159,12 +146,11 @@ const DeviceManagingForm = ({
   //   };
   //   waitFectchData();
   // }, [fetchUserInfo]);
-
   return (
     <>
       {/* 모달 컨테이너 배경화면 (오버레이) */}
       <div
-        className="fixed inset-0 z-10 w-full h-full bg-black bg-opacity-30"
+        className="fixed inset-0 z-30 w-full h-full bg-black bg-opacity-30"
         onClick={(e) => {
           setDeviceManagingFormOpen(false);
           e.stopPropagation();
@@ -187,33 +173,6 @@ const DeviceManagingForm = ({
         title="작업 확인"
         content="정말 이 작업을 진행하시겠습니까?"
       />
-      {userInfo.deviceGroupList && (
-        <RadioModal
-          isOpen={isRadioModalOpen}
-          onClose={() => setRadioModalOpen(false)}
-          onConfirm={() =>
-            handleGroupAction("deviceGroupUpdate", selectedRadioButton)
-          }
-          title={"Group 변경"}
-          contents={userInfo.deviceGroupList}
-          // contents={["aa","bb","cc"]}
-          getSelectedContent={(target) => getSelectedContent(target)}
-        />
-      )}
-      <InputModal
-        isOpen={isInputModalOpen}
-        onConfirm={(inputValue) =>
-          handleGroupAction("deviceUpdate", inputValue)
-        }
-        setClose={() => setInputModalOpen(false)}
-        title="이름 변경"
-        content={`현재 기기 명 : ${selectedDevice.deviceName}`}
-        inputTextType="updateDeviceInfo"
-        placeHolder="변경할 기기 명"
-        hintList={[]}
-        setPasswordCheck={false}
-      />
-
 
       {/* 모달 컨테이너 // overflow-y-auto 위아래 스크롤(Scroll)*/}
       <div
@@ -221,6 +180,22 @@ const DeviceManagingForm = ({
         onClick={(e) => e.stopPropagation()}
       >
         <CloseButton onClose={() => setDeviceManagingFormOpen(false)} />
+
+        <InputModal
+          isOpen={isInputModalOpen}
+          onConfirm={(inputValue) =>
+            handleGroupAction("deviceGroupUpdate", inputValue)
+          }
+          setClose={() => setInputModalOpen(false)}
+          title={"Group 변경"}
+          content={`현재 그룹명명 : ${selectedDevice.deviceGroup}`}
+          inputTextType={"hinList"}
+          placeHolder={
+            userInfo.deviceGroupList ? userInfo.deviceGroupList.toString() : ""
+          }
+          hintList={userInfo.deviceGroupList}
+          setPasswordCheck={false}
+        />
 
         <div className="flex flex-col py-1">
           <h2 className="px-2 mb-4 text-lg font-bold text-center text-black">
@@ -235,7 +210,7 @@ const DeviceManagingForm = ({
             <div className="ml-auto">
               <button
                 className="text-black bg-orange-300 hover:bg-orange-400"
-                onClick={() => setRadioModalOpen(true)}
+                onClick={() => setInputModalOpen(true)}
               >
                 해당 기기 Group 변경
               </button>
@@ -253,10 +228,10 @@ const DeviceManagingForm = ({
               <button
                 className="text-black bg-orange-300 text- hover:bg-orange-400"
                 onClick={() => {
-                  setInputModalOpen(true);
+                  setIsConfirmModalOpen(true);
                 }}
               >
-                이름 변경
+                삭제
               </button>
               <button
                 className="text-black bg-orange-300 hover:bg-orange-400"

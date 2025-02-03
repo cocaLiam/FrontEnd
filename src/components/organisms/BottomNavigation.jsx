@@ -7,6 +7,7 @@ import ErrorModal from "@/components/molecules/ErrorModal";
 import ConfirmModal from "@/components/molecules/ConfirmModal";
 import ButtonWithIcon from "@/components/atoms/ButtonWithIcon";
 import InputModal from "@/components/molecules/InputModal";
+import RadioModal from "../molecules/RadioModal";
 
 import MenuIcon from "@/components/atoms/icons/MenuIcon";
 import HomeIcon from "@/components/atoms/icons/HomeIcon";
@@ -20,11 +21,24 @@ const BottomNavigation = ({ onDrawerOpen }) => {
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isInputModalOpen, setInputModalOpen] = useState(false);
+  
+  const [isRadioModalOpen, setRadioModalOpen] = useState(false);
+  const [selectedRadioButton, getSelectedContent] = useState("");
 
   const handleConfirm = () => {
     console.log("확인 버튼 클릭됨");
     setIsConfirmModalOpen(false);
+    setRadioModalOpen(false);
   };
+
+  const handleInputConfirm = (inputValue) => {
+    console.log("Input 입력값 : ",inputValue);
+    setIsConfirmModalOpen(false)
+  }
+
+  useEffect(() => {
+    console.log(selectedRadioButton)
+  },[selectedRadioButton])
 
   useEffect(() => {
     // // Android WebView에서 호출할 수 있도록 window 객체에 함수 등록
@@ -51,30 +65,45 @@ const BottomNavigation = ({ onDrawerOpen }) => {
         title="작업 확인"
         content="정말 이 작업을 진행하시겠습니까?"
       />
+      
       <InputModal
         isOpen={isInputModalOpen}
-        onConfirm={() => setInputModalOpen(false)}s
+        onConfirm={handleInputConfirm}
+        s
         setClose={() => setInputModalOpen(false)}
         title="TTTTTT"
         content="CCCCCCCCCCCCCCC"
         inputTextType="userEmail"
         placeHolder="qqq@qqq.com"
         hintList={[]}
+        setPasswordCheck={false}
+      />
+      <RadioModal
+        isOpen={isRadioModalOpen}
+        onClose={() => setRadioModalOpen(false)}
+        onConfirm={handleConfirm}
+        title="title"
+        contents={["aa","bb","cc"]}
+        getSelectedContent={(target) => getSelectedContent(target)}
       />
 
       <ButtonWithIcon icon={MenuIcon} onClick={onDrawerOpen} />
 
       {/* <ButtonWithIcon icon={DebugIcon} onClick={() => setIsConfirmModalOpen(true)}/> */}
-      <ButtonWithIcon icon={DebugIcon} onClick={() => setIsErrorModalOpen(true)}/>
-      {/* <ButtonWithIcon icon={DebugIcon} onClick={() => {
+      {/* <ButtonWithIcon icon={DebugIcon} onClick={() => setIsErrorModalOpen(true)}/> */}
+      <ButtonWithIcon icon={DebugIcon} onClick={() => {
         // andInterface.reqConnect()
 
         andInterface.reqParingInfo();
         // andInterface.reqRemoveParing("9C:95:6E:40:0F:75", "ccb_v1");
-        andInterface.reqConnectedDevices();
+        // andInterface.reqConnectedDevices();
         
-      }}/> */}
+      }}/>
       {/* <ButtonWithIcon icon={DebugIcon} onClick={() => setInputModalOpen(true)}/> */}
+      {/* <ButtonWithIcon
+        icon={DebugIcon}
+        onClick={() => setRadioModalOpen(true)}
+      /> */}
 
       <Link to="/" className="p-2">
         <HomeIcon />
