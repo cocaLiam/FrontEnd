@@ -64,7 +64,8 @@ const DeviceManagingForm = ({
   const handleGroupAction = useCallback(
     async (actionType, inputValue) => {
       if (!selectedDevice) return; // 선택된 디바이스가 없으면 아무 작업도 하지 않음
-      const { deviceGroup, macAddress, deviceName, battery } = selectedDevice; // 선택된 디바이스 정보 가져오기
+      const { deviceGroup, macAddress, deviceName, deviceType, battery } =
+        selectedDevice; // 선택된 디바이스 정보 가져오기
 
       console.log(` actionType  :: ${actionType}`);
       console.log(` inputValue  :: ${inputValue}`);
@@ -105,12 +106,12 @@ const DeviceManagingForm = ({
             url = `/api/device/${authStatus.dbObjectId}/deviceDelete`;
             data = {
               macAddress: macAddress,
-              deviceName: deviceName,
+              deviceType: deviceType,
             };
             method = "DELETE";
 
             // 지워진 기기 Disconnect 처리
-            andInterface.reqDisconnect(macAddress, deviceName);
+            andInterface.reqDisconnect(macAddress, deviceType);
 
             // // 화면 재배치
             // await fetchDeviceList();
@@ -214,7 +215,6 @@ const DeviceManagingForm = ({
         setPasswordCheck={false}
       />
 
-
       {/* 모달 컨테이너 // overflow-y-auto 위아래 스크롤(Scroll)*/}
       <div
         className="fixed z-40 inline-block w-10/12 max-w-lg p-2 mx-auto overflow-y-auto transform -translate-x-1/2 -translate-y-1/2 bg-orange-100 rounded-md shadow-xl max-h-96 top-1/3 left-1/2 "
@@ -242,10 +242,7 @@ const DeviceManagingForm = ({
             </div>
           </div>
 
-          <div
-            // className="flex items-center justify-between p-1 mb-2 bg-white border border-gray-800"
-            className="flex items-center p-1 mb-2 bg-white border border-gray-800"
-          >
+          <div className="flex items-center p-1 mb-2 bg-white border border-gray-800">
             <span className="flex-wrap text-sm text-black">
               {selectedDevice.deviceName}
             </span>
@@ -268,6 +265,21 @@ const DeviceManagingForm = ({
               </button>
             </div>
           </div>
+          <div className="flex items-center p-1 mb-1 bg-white border border-gray-800">
+            <span className="flex-wrap text-sm text-black">
+              {`battery : ${selectedDevice.battery}`}
+            </span>
+          </div>
+        </div>
+        <div className="flex items-center p-1 mb-2 bg-white border border-gray-800">
+          <span className="flex-wrap text-sm text-black">
+            {`deviceType : ${selectedDevice.deviceType}`}
+          </span>
+        </div>
+        <div className="flex items-center p-1 mb-2 bg-white border border-gray-800">
+          <span className="flex-wrap text-sm text-black">
+            {`macAddress : ${selectedDevice.macAddress}`}
+          </span>
         </div>
         <div className="sticky bottom-0 text-lg font-bold text-center text-gray-500 transform -translate-x-1/2 left-1/2 animate-bounce">
           ↓
@@ -283,6 +295,7 @@ DeviceManagingForm.propTypes = {
     deviceGroup: PropTypes.string.isRequired,
     macAddress: PropTypes.string.isRequired,
     deviceName: PropTypes.string.isRequired,
+    deviceType: PropTypes.string.isRequired,
     battery: PropTypes.string,
   }).isRequired,
   deviceCardReload: PropTypes.func.isRequired,

@@ -1,7 +1,7 @@
-// components/atoms/icons/BluetoothDisconnect.jsx
-const BluetoothNotConnected = () => {
+// components/atoms/icons/BluetoothAddDevice.jsx
+const BluetoothAddDevice = () => {
   return (
-    <div style={{ color: "white", width: "40px", height: "40px" }}>
+    <div style={{ color: "white", width: "24px", height: "24px" }}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         xmlnsXlink="http://www.w3.org/1999/xlink"
@@ -43,12 +43,12 @@ const BluetoothNotConnected = () => {
           <text
             x="10"
             y="12"
-            fill="red"
-            fontSize="40"
+            fill="black"
+            fontSize="50"
             // fontWeight="bold"
             textAnchor="middle"
           >
-            ㅡ
+            +
           </text>
         </g>
       </svg>
@@ -56,4 +56,4 @@ const BluetoothNotConnected = () => {
   );
 };
 
-export default BluetoothNotConnected;
+export default BluetoothAddDevice;

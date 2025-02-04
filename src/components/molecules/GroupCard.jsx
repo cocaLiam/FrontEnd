@@ -22,6 +22,7 @@ import {
 import { handleError } from "@/utils/errorHandler";
 
 import { useHttpHook } from "@/hooks/useHttpHook"; // HTTP 요청을 처리하는 커스텀 훅
+import BluetoothAddDevice from "../atoms/icons/BluetoothAddDevice";
 
 const GroupCard = ({ userGroupList, groupCardReload }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -120,16 +121,17 @@ const GroupCard = ({ userGroupList, groupCardReload }) => {
 
   // 기기 추가 함수 -> BackEnd 정보전달
   const createDevice = useCallback(
-    async (macAddress, deviceName, battery) => {
+    async (macAddress, deviceType, battery) => {
       try {
         setIsLoading(true); // 로딩 상태 시작
         const responseData = await sendRequest({
           url: `/api/device/${authStatus.dbObjectId}/deviceCreate`, // API 엔드포인트
           method: "POST", // HTTP 메서드
           headers: { Authorization: `Bearer ${authStatus.token}` }, // 현재 토큰을 Authorization 헤더에 포함
-          data: { deviceGroup: selectedGroup, macAddress, deviceName, battery }, // 요청 데이터
+          data: { deviceGroup: selectedGroup, macAddress, deviceType, battery }, // 요청 데이터
         });
         console.log("기기 생성 성공:", responseData);
+        await fetchDeviceList()
       } catch (err) {
         handleError(err, setErrorMessage, setIsErrorModalOpen); // 공통 에러 처리 함수 호출
       } finally {
@@ -157,7 +159,7 @@ const GroupCard = ({ userGroupList, groupCardReload }) => {
 
         // 데이터가 유효하면 기기 생성
         console.log("유효한 데이터:", data);
-        await createDevice(data.macAddress, data.deviceName, "50");
+        await createDevice(data.macAddress, data.deviceType, "50");
 
         return true; // Android로 반환
       } catch (err) {
@@ -180,7 +182,8 @@ const GroupCard = ({ userGroupList, groupCardReload }) => {
     };
   }, [handleResConnect]);
   return (
-    <div className="max-w-full space-y-6 border rounded-lg shadow-md">
+    // <div className="max-w-full space-y-6 border rounded-lg shadow-md">
+    <div className="max-w-full rounded-lg shadow-md">
       {isLoading && <LoadingSpinner />}
       <ErrorModal
         isOpen={isErrorModalOpen}
@@ -190,18 +193,20 @@ const GroupCard = ({ userGroupList, groupCardReload }) => {
       {userGroupList.map((groupName) => (
         <div
           key={groupName}
-          className="relative bg-transparent border border-gray-800 rounded"
+          // className="relative bg-transparent border border-gray-800 rounded"
+          className="relative ml-2 mr-2 bg-transparent rounded"
         >
           {/* 왼쪽 위 "그룹명" Text */}
-          <h2 className="absolute px-1 text-lg font-bold text-white -top-4 -left-0">
+          {/* <h2 className="absolute px-1 text-lg font-bold text-white -top-4 -left-0"> */}
+          <h2 className="absolute ml-2 text-lg font-bold text-white">
             {groupName}
           </h2>
 
           {/* 오른쪽 위 "기기추가" 버튼 */}
-          <div className="absolute px-1 py-1 text-xs text-white bg-blue-500 rounded -top-4 -right-2 hover:bg-blue-600">
+          <div className="absolute px-1 py-1 text-xs text-white rounded -top-4 -right-2 hover:bg-blue-600">
             <ButtonWithIcon
-              icon={DebugIcon}
-              content={"기기 추가"}
+              icon={BluetoothAddDevice}
+              content={""}
               onClick={() => {
                 setSelectedGroup(groupName); // 선택된 그룹 지정
                 andInterface.reqConnect(); // 기기 추가 함수 -> Android 요청
@@ -210,7 +215,7 @@ const GroupCard = ({ userGroupList, groupCardReload }) => {
           </div>
 
           {/* DeviceCard 클릭 버튼 */}
-          <div className="grid grid-cols-2 gap-4 px-4 py-10">
+          <div className="grid grid-cols-2 gap-2 px-1 py-7">
             {(groupObject[groupName] || []).map((deviceInfo, index) => (
               <DeviceCard
                 key={deviceInfo.id || index} // 고유한 키 설정

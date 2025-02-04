@@ -20,10 +20,10 @@ export const andInterface = {
     }
   },
 
-  reqDisconnect: (macAddress, deviceName) => {
+  reqDisconnect: (macAddress, deviceType) => {
     const deviceInfo = {
       macAddress: macAddress,
-      deviceName: deviceName,
+      deviceType: deviceType,
     };
     
     if (window.AndroidInterface) {
@@ -37,12 +37,12 @@ export const andInterface = {
     }
   },
 
-  reqRemoveParing: (macAddress, deviceName) => {
+  reqRemoveParing: (macAddress, deviceType) => {
     // 사용법
     // : andInterface.reqRemoveParing("9C:95:6E:40:0F:75", "ccb_v1")
     const deviceInfo = {
       macAddress: macAddress,
-      deviceName: deviceName,
+      deviceType: deviceType,
     };
     console.log(
       "reqRemoveParing 보내는 DATA : ",
@@ -84,10 +84,10 @@ export const andInterface = {
     }
   },
 
-  reqReadData: (macAddress, deviceName) => {
+  reqReadData: (macAddress, deviceType) => {
     const deviceInfo = {
       macAddress: macAddress,
-      deviceName: deviceName,
+      deviceType: deviceType,
     };
     console.log(
       "reqReadData 보내는 DATA : ",
@@ -130,7 +130,7 @@ export const andInterface = {
     }
   },
 
-  pubSendData: (macAddress, deviceName, msg) => {
+  pubSendData: (macAddress, deviceType, msg) => {
     /**     사용법
      *      andInterface.pubSendData(
               "55:55:55:55",
@@ -141,13 +141,11 @@ export const andInterface = {
     const WriteData = {
       deviceInfo: {
         macAddress: macAddress,
-        deviceName: deviceName,
+        deviceType: deviceType,
       },
       msg: msg,
     };
     console.log(JSON.stringify(WriteData,null, 2));
-    console.log(window.AndroidInterface); // AndroidInterface 객체 확인
-    console.log(window.AndroidInterface.pubSendData); // pubSendData 메서드 확인
     if (window.AndroidInterface) {
       if (window.AndroidInterface.pubSendData) {
         window.AndroidInterface.pubSendData(JSON.stringify(WriteData));
@@ -168,10 +166,10 @@ export const andInterface = {
      */
   resConnect: (data) => {
     try {
+      console.log("resConnect 받은 DATA : ", JSON.stringify(data,null, 2));
       if (validateDeviceInfo(data).isValid) {
-        console.log("resConnect 받은 DATA : ", JSON.stringify(data,null, 2));
         console.log(typeof data); // object
-        console.log(data.deviceName);
+        console.log(data.deviceType);
         console.log(data.macAddress);
         console.log(data.resResult);
       }
@@ -184,10 +182,10 @@ export const andInterface = {
 
   resDisconnect: (data) => {
     try {
+      console.log("resDisconnect 받은 DATA : ", JSON.stringify(data,null, 2));
       if (validateDeviceInfo(data).isValid) {
-        console.log("resDisconnect 받은 DATA : ", JSON.stringify(data,null, 2));
         console.log(typeof data); // object
-        console.log(data.deviceName);
+        console.log(data.deviceType);
         console.log(data.macAddress);
         console.log(data.resResult);
       }
@@ -200,15 +198,12 @@ export const andInterface = {
 
   resRemoveParing: (data) => {
     try {
-      console.log(
-        "resRemoveParing 받은 DATA : ",
-        JSON.stringify(data,null, 2)
-      );
+      console.log("resRemoveParing 받은 DATA : ",JSON.stringify(data,null, 2));
       if (validateDeviceInfo(data).isValid) {
         console.log(typeof data); // object
-        console.log(`${data.macAddress} : ${data.deviceName} 기기 페어링 삭제 성공`)
+        console.log(`${data.macAddress} : ${data.deviceType} 기기 페어링 삭제 성공`)
       } else{
-        console.log(`${data.macAddress} : ${data.deviceName} 기기 페어링 삭제 실패`)
+        console.log(`${data.macAddress} : ${data.deviceType} 기기 페어링 삭제 실패`)
       }
       return true; // Android로 반환
     } catch (error) {
@@ -219,21 +214,13 @@ export const andInterface = {
 
   resParingInfo: (data) => {
     try {
-      console.log("resParingInfo : ",data);
-      console.log(
-        "resParingInfo 받은 DATA : ",
-        JSON.stringify(data,null, 2)
-      );
+      console.log("resParingInfo 받은 DATA : ",JSON.stringify(data,null, 2));
       
       if (!validateDeviceList(data).isValid) return false; // Paring Device 가 0 개 인 경우
       if (validateDeviceList(data).isValid) {
-        console.log(
-          "resParingInfo 받은 DATA : ",
-          JSON.stringify(data,null, 2)
-        );
         console.log(typeof data); // object
         console.dir(data.deviceList);
-        console.log(data.deviceList[0].deviceName);
+        console.log(data.deviceList[0].deviceType);
         console.log(data.deviceList[0].macAddress);
       }
       return true; // Android로 반환
@@ -245,16 +232,12 @@ export const andInterface = {
 
   resConnectedDevices: (data) => {
     try {
+      console.log("resConnectedDevices 받은 DATA : ",JSON.stringify(data,null, 2));
       if (!validateDeviceList(data).isValid) return false; // Conneted Device 가 0 개 인 경우
       if (validateDeviceList(data).isValid) {
-        alert(data)
-        console.log(
-          "resConnectedDevices 받은 DATA : ",
-          JSON.stringify(data,null, 2)
-        );
         console.log(typeof data); // object
         console.dir(data.deviceList);
-        console.log(data.deviceList[0].deviceName);
+        console.log(data.deviceList[0].deviceType);
         console.log(data.deviceList[0].macAddress);
       }
       return true; // Android로 반환
@@ -266,10 +249,10 @@ export const andInterface = {
 
   resReadData: (data) => {
     try {
+      console.log("resReadData 받은 DATA : ", JSON.stringify(data,null, 2));
       if (validateReadOrWriteData(data).isValid) {
-        console.log("resReadData 받은 DATA : ", JSON.stringify(data,null, 2));
         console.log(typeof data); // object
-        console.log(data.deviceInfo.deviceName);
+        console.log(data.deviceInfo.deviceType);
         console.log(data.deviceInfo.macAddress);
         for (const [key, value] of Object.entries(data.msg)) {
           console.log(`키: ${key}, 값: ${value}`);
@@ -299,7 +282,7 @@ export const andInterface = {
 
 // ---------------------------------- Util성 Validation 함수들 --------------------------------------
 // Validation 함수들
-export const validateDeviceInfo = (data) => {
+export const validateDeviceInfo = (data={}, withoutResult = false) => {
   const missingKeys = [];
   const emptyValueKeys = [];
   if (!(Object.prototype.hasOwnProperty.call(data, "macAddress"))) {
@@ -307,15 +290,17 @@ export const validateDeviceInfo = (data) => {
   } else if (!data.macAddress || data.macAddress.trim() === "") {
     emptyValueKeys.push("macAddress");
   }
-  if (!(Object.prototype.hasOwnProperty.call(data, "deviceName"))) {
-    missingKeys.push("deviceName");
-  } else if (!data.deviceName || data.deviceName.trim() === "") {
-    emptyValueKeys.push("deviceName");
+  if (!(Object.prototype.hasOwnProperty.call(data, "deviceType"))) {
+    missingKeys.push("deviceType");
+  } else if (!data.deviceType || data.deviceType.trim() === "") {
+    emptyValueKeys.push("deviceType");
   }
-  if (!(Object.prototype.hasOwnProperty.call(data, "resResult"))) {
-    missingKeys.push("resResult");
-  } else if (data.resResult == false) {
-    emptyValueKeys.push("resResult");
+  if (!(withoutResult)) {
+    if (!(Object.prototype.hasOwnProperty.call(data, "resResult"))) {
+      missingKeys.push("resResult");
+    } else if (data.resResult == false) {
+      emptyValueKeys.push("resResult");
+    }
   }
   return {
     isValid: missingKeys.length === 0 && emptyValueKeys.length === 0,
@@ -337,7 +322,7 @@ export const validateDeviceList = (data) => {
     };
   } else {
     data.deviceList.forEach((item, index) => {
-      const deviceInfoValidation = validateDeviceInfo(item);
+      const deviceInfoValidation = validateDeviceInfo(item, true);
       if (!deviceInfoValidation.isValid) {
         invalidItems.push({
           index,
@@ -347,6 +332,10 @@ export const validateDeviceList = (data) => {
       }
     });
   }
+
+  if(missingKeys.length > 0) console.log(`missingKeys : ${missingKeys}`);
+  if(invalidItems.length > 0) console.log(`invalidItems : ${JSON.stringify(invalidItems,null,2)}`);
+
   return {
     isValid: missingKeys.length === 0 && invalidItems.length === 0,
     missingKeys,
@@ -360,7 +349,7 @@ export const validateReadOrWriteData = (data) => {
   if (!(Object.prototype.hasOwnProperty.call(data, "deviceInfo"))) {
     missingKeys.push("deviceInfo");
   } else {
-    const deviceInfoValidation = validateDeviceInfo(data.deviceInfo);
+    const deviceInfoValidation = validateDeviceInfo(data.deviceInfo, true);
     if (!deviceInfoValidation.isValid) {
       return {
         isValid: false,
@@ -384,17 +373,17 @@ export const validateReadOrWriteData = (data) => {
 // PropTypes 정의
 andInterface.reqRemoveParing.propTypes = {
   macAddress: PropTypes.string.isRequired,
-  deviceName: PropTypes.string.isRequired,
+  deviceType: PropTypes.string.isRequired,
 };
 
 andInterface.reqDisconnect.propTypes = {
   macAddress: PropTypes.string.isRequired,
-  deviceName: PropTypes.string.isRequired,
+  deviceType: PropTypes.string.isRequired,
 };
 
 andInterface.reqReadData.propTypes = {
   macAddress: PropTypes.string.isRequired,
-  deviceName: PropTypes.string.isRequired,
+  deviceType: PropTypes.string.isRequired,
 };
 
 andInterface.pubToasting.propTypes = {
@@ -403,7 +392,7 @@ andInterface.pubToasting.propTypes = {
 
 andInterface.pubSendData.propTypes = {
   macAddress: PropTypes.string.isRequired,
-  deviceName: PropTypes.string.isRequired,
+  deviceType: PropTypes.string.isRequired,
   msg: PropTypes.object.isRequired,
 };
 

@@ -60,7 +60,7 @@ const DeviceManagingForm = ({
   const handleGroupAction = useCallback(
     async (actionType, inputValue) => {
       if (!selectedDevice) return; // 선택된 디바이스가 없으면 아무 작업도 하지 않음
-      const { deviceGroup, macAddress, deviceName, battery } = selectedDevice; // 선택된 디바이스 정보 가져오기
+      const { deviceGroup, macAddress, deviceName, deviceType, battery } = selectedDevice; // 선택된 디바이스 정보 가져오기
 
       console.log(` actionType  :: ${actionType}`);
       console.log(` inputValue  :: ${inputValue}`);
@@ -87,12 +87,12 @@ const DeviceManagingForm = ({
             url = `/api/device/${authStatus.dbObjectId}/deviceDelete`;
             data = {
               macAddress: macAddress,
-              deviceName: deviceName,
+              deviceType: deviceType,
             };
             method = "DELETE";
 
             // 지워진 기기 Disconnect 처리
-            andInterface.reqDisconnect(macAddress, deviceName);
+            andInterface.reqDisconnect(macAddress, deviceType);
 
             // // 화면 재배치
             // await fetchDeviceList();
