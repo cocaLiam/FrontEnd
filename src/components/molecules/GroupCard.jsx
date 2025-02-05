@@ -8,21 +8,13 @@ import PropTypes from "prop-types";
 import ErrorModal from "@/components/molecules/ErrorModal";
 import DeviceCard from "@/components/molecules/DeviceCard";
 
-import ButtonWithIcon from "@/components/atoms/ButtonWithIcon";
 import LoadingSpinner from "@/components/atoms/LoadingSpinner";
-
-import DebugIcon from "@/components/atoms/icons/DebugIcon";
 
 import { AuthContext } from "@/context/AuthContext";
 
-import {
-  andInterface,
-  validateDeviceInfo,
-} from "@/utils/android/androidInterFace";
 import { handleError } from "@/utils/errorHandler";
 
 import { useHttpHook } from "@/hooks/useHttpHook"; // HTTP 요청을 처리하는 커스텀 훅
-import BluetoothAddDevice from "../atoms/icons/BluetoothAddDevice";
 
 const GroupCard = ({ userGroupList, groupCardReload }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -31,7 +23,6 @@ const GroupCard = ({ userGroupList, groupCardReload }) => {
 
   // const [isDeviceManagingFormOpen, setDeviceManagingFormOpen] = useState(false);
   // const [selectedDevice, setSelectedDevice] = useState(null); // 선택된 디바이스 정보를 저장하는 상태
-  const [selectedGroup, setSelectedGroup] = useState(null); // 선택된 그룹 정보를 저장하는 상태
   const [groupObject, setGroupObject] = useState({}); // DeviceList 변경시 재적용을 위한 상태변수수
 /**
  * groupObject 예시
@@ -112,75 +103,13 @@ const GroupCard = ({ userGroupList, groupCardReload }) => {
     } finally {
       setIsLoading(false); // 로딩 상태 종료
     }
-  },[userGroupList]); // 의존성 추가
+  },[]); // 의존성 추가
 
   // 컴포넌트가 처음 렌더링될 때 사용자 정보 가져오기
   useEffect(() => {
     fetchDeviceList();
-  },[]);
-
-  // 기기 추가 함수 -> BackEnd 정보전달
-  const createDevice = useCallback(
-    async (macAddress, deviceType, battery) => {
-      try {
-        setIsLoading(true); // 로딩 상태 시작
-        const responseData = await sendRequest({
-          url: `/api/device/${authStatus.dbObjectId}/deviceCreate`, // API 엔드포인트
-          method: "POST", // HTTP 메서드
-          headers: { Authorization: `Bearer ${authStatus.token}` }, // 현재 토큰을 Authorization 헤더에 포함
-          data: { deviceGroup: selectedGroup, macAddress, deviceType, battery }, // 요청 데이터
-        });
-        console.log("기기 생성 성공:", responseData);
-        await fetchDeviceList()
-      } catch (err) {
-        handleError(err, setErrorMessage, setIsErrorModalOpen); // 공통 에러 처리 함수 호출
-      } finally {
-        setIsLoading(false); // 로딩 상태 종료
-      }
-    },
-    [authStatus.dbObjectId, authStatus.token, selectedGroup, sendRequest]
-  );
-
-  // 기기 추가 함수 -> Android 로 부터 Connect Response를 받는 함수
-  const handleResConnect = useCallback(
-    async (data) => {
-      try {
-        // 데이터 유효성 검사
-        const validation = validateDeviceInfo(data);
-
-        console.log("resConnect 받은 DATA:", JSON.stringify(data, null, 2));
-        console.log("validation:", validation.isValid);
-
-        if (!validation.isValid) {
-          throw {
-            status: 133,
-          };
-        }
-
-        // 데이터가 유효하면 기기 생성
-        console.log("유효한 데이터:", data);
-        await createDevice(data.macAddress, data.deviceType, "50");
-
-        return true; // Android로 반환
-      } catch (err) {
-        handleError(err, setErrorMessage, setIsErrorModalOpen); // 공통 에러 처리 함수 호출
-      } finally {
-        setIsLoading(false); // 로딩 상태 종료
-      }
-    },
-    [createDevice]
-  );
-
-  // 기기 추가 함수 -> Android 함수를 등록
-  useEffect(() => {
-    // Android WebView에서 호출할 수 있도록 window 객체에 함수 등록
-    window.resConnect = handleResConnect;
-
-    return () => {
-      // 페이지가 언마운트(페이지이동)될 때 등록된 함수 제거
-      delete window.resConnect;
-    };
-  }, [handleResConnect]);
+  },[userGroupList, fetchDeviceList]);
+  
   return (
     // <div className="max-w-full space-y-6 border rounded-lg shadow-md">
     <div className="max-w-full rounded-lg shadow-md">
@@ -201,18 +130,6 @@ const GroupCard = ({ userGroupList, groupCardReload }) => {
           <h2 className="absolute ml-2 text-lg font-bold text-white">
             {groupName}
           </h2>
-
-          {/* 오른쪽 위 "기기추가" 버튼 */}
-          <div className="absolute px-1 py-1 text-xs text-white rounded -top-4 -right-2 hover:bg-blue-600">
-            <ButtonWithIcon
-              icon={BluetoothAddDevice}
-              content={""}
-              onClick={() => {
-                setSelectedGroup(groupName); // 선택된 그룹 지정
-                andInterface.reqConnect(); // 기기 추가 함수 -> Android 요청
-              }}
-            />
-          </div>
 
           {/* DeviceCard 클릭 버튼 */}
           <div className="grid grid-cols-2 gap-2 px-1 py-7">

@@ -180,6 +180,22 @@ export const andInterface = {
     }
   },
 
+  resAutoConnect: (data) => {
+    try {
+      console.log("resConnect 받은 DATA : ", JSON.stringify(data,null, 2));
+      if (validateDeviceInfo(data).isValid) {
+        console.log(typeof data); // object
+        console.log(data.deviceType);
+        console.log(data.macAddress);
+        console.log(data.resResult);
+      }
+      return true; // Android로 반환
+    } catch (error) {
+      console.error(`에러 발생 1: ${error.message}`);
+      return false; // Android로 반환
+    }
+  },
+
   resDisconnect: (data) => {
     try {
       console.log("resDisconnect 받은 DATA : ", JSON.stringify(data,null, 2));
@@ -397,6 +413,10 @@ andInterface.pubSendData.propTypes = {
 };
 
 andInterface.resConnect.propTypes = {
+  data: PropTypes.object.isRequired,
+};
+
+andInterface.resAutoConnect.propTypes = {
   data: PropTypes.object.isRequired,
 };
 

@@ -11,10 +11,11 @@ import LoadingSpinner from "@/components/atoms/LoadingSpinner";
 import CloseButton from "@/components/atoms/CloseButton";
 
 import { handleError } from "@/utils/errorHandler";
-import { andInterface } from "@/utils/android/androidInterFace";
 
 import { AuthContext } from "@/context/AuthContext";
 import { useHttpHook } from "@/hooks/useHttpHook";
+
+import { andInterface } from "@/utils/android/androidInterFace";
 
 const DeviceManagingForm = ({
   setDeviceManagingFormOpen,
@@ -32,7 +33,7 @@ const DeviceManagingForm = ({
   const [userInfo, setUserInfo] = useState({});
 
   const [isRadioModalOpen, setRadioModalOpen] = useState(false);
-  const [selectedRadioButton, getSelectedContent] = useState("");
+  const [selectedRadioButton, setSelectedContent] = useState("");
 
   const authStatus = useContext(AuthContext);
   const { sendRequest } = useHttpHook();
@@ -112,6 +113,7 @@ const DeviceManagingForm = ({
 
             // 지워진 기기 Disconnect 처리
             andInterface.reqDisconnect(macAddress, deviceType);
+            andInterface.reqRemoveParing(macAddress, deviceType)
 
             // // 화면 재배치
             // await fetchDeviceList();
@@ -198,7 +200,7 @@ const DeviceManagingForm = ({
           title={"Group 변경"}
           contents={userInfo.deviceGroupList}
           // contents={["aa","bb","cc"]}
-          getSelectedContent={(target) => getSelectedContent(target)}
+          setSelectedContent={(target) => setSelectedContent(target)}
         />
       )}
       <InputModal

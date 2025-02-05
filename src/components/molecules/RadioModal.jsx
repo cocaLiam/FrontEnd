@@ -9,9 +9,10 @@ const RadioModal = ({
   isOpen,
   onClose,
   onConfirm,
-  title,
+  title = "",
   contents,
-  getSelectedContent,
+  setSelectedContent,
+  confirmButtonContent = "변경"
 }) => {
   if (!isOpen) return null;
 
@@ -30,7 +31,7 @@ const RadioModal = ({
 
       {/* 모달 컨테이너 */}
       {/* <div className="fixed z-50 inline-block w-10/12 p-2 mx-auto overflow-y-auto transform -translate-x-1/2 bg-orange-100 rounded-md shadow-xl -translate-y-1/3 top-1/2 left-1/2"> */}
-      <div className="fixed z-50 inline-block w-10/12 p-2 mx-auto transform -translate-x-1/2 -translate-y-1/2 bg-orange-100 rounded-md shadow-xl top-1/3 left-1/2">
+      <div className="fixed z-50 inline-block w-10/12 p-2 mx-auto transform -translate-x-1/2 bg-orange-100 rounded-md shadow-xl -translate-y-1/3 top-1/3 left-1/2">
       {/* <div className="fixed z-50 inline-block w-10/12 p-2 mx-auto transform -translate-x-1/2 -translate-y-1/2 bg-orange-100 rounded-md shadow-xl top-1/2 left-1/2 max-h-[80vh] overflow-y-auto"> */}
 
         {/* fixed: 화면에 고정 */}
@@ -59,7 +60,7 @@ const RadioModal = ({
               name="status"
               checked={false}
               onChange={() => {
-                getSelectedContent(content);
+                setSelectedContent(content);
               }}
             />
           ))}
@@ -74,7 +75,7 @@ const RadioModal = ({
             className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600"
             onClick={onConfirm}
           >
-            변경
+            {confirmButtonContent}
           </button>
           </div>
         </div>
@@ -89,7 +90,8 @@ RadioModal.propTypes = {
   onConfirm: PropTypes.func.isRequired,
   title: PropTypes.string,
   contents: PropTypes.array.isRequired,
-  getSelectedContent: PropTypes.func.isRequired,
+  setSelectedContent: PropTypes.func.isRequired,
+  confirmButtonContent: PropTypes.string,
 };
 
 export default RadioModal;

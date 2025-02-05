@@ -1,3 +1,4 @@
+
 import PropTypes from 'prop-types';
 
 /**
@@ -27,6 +28,9 @@ export const handleError = (err, setErrorMessage, setIsErrorModalOpen) => {
       break;
     case 405:
       message = "그룹에 포함된 디바이스들을 다른 그룹으로 옮기거나 삭제 해 주세요. : "
+      break;
+    case 408:
+      message = "없는 DeviceGroup에 기기를 생성 할 수 없습니다. : "
       break;
     case 409:
       message = "이미 존재하는 Data 입니다. : "
