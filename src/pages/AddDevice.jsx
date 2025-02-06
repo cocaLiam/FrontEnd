@@ -72,11 +72,11 @@ export default function AddDevice() {
     // Android WebView에서 호출할 수 있도록 window 객체에 함수 등록
     window.resConnect = handleResConnect;
 
-    return () => {
-      // 페이지가 언마운트될 때 등록된 함수 제거
-      console.log("기존의 window.resConnect가 초기화됩니다.");
-      delete window.resConnect;
-    };
+    // return () => {
+    //   // 페이지가 언마운트될 때 등록된 함수 제거
+    //   console.log("기존의 window.resConnect가 초기화됩니다.");
+    //   delete window.resConnect;
+    // };
   }, []);
 
   return (

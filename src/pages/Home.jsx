@@ -1,5 +1,5 @@
 // src/pages/Home.jsx
-import { useEffect, useState, useContext, useCallback } from "react";
+import { useEffect, useState, useContext, useCallback, useRef } from "react";
 
 import ErrorModal from "@/components/molecules/ErrorModal";
 import RadioModal from "@/components/molecules/RadioModal";
@@ -21,7 +21,7 @@ import { handleError } from "@/utils/errorHandler";
 import {
   andInterface,
   validateDeviceInfo,
-  validateDeviceList
+  validateDeviceList,
 } from "@/utils/android/androidInterFace";
 
 export default function Home() {
@@ -29,21 +29,44 @@ export default function Home() {
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const [isRadioModalOpen, setRadioModalOpen] = useState(false); // 단일일 선택 전용
-  const [selectedSelectedContent, setSelectedContent] = useState("");
+  const [isRadioModalOpen, setRadioModalOpen] = useState(false); // 단일 선택 라디오 버튼
+  const [selectedSelectedContent, setSelectedContent] = useState(""); // 단일 선택 된 타겟
 
-  const [isMultiSelectModalOpen, setMultiSelectModalOpen] = useState(false);
-
-  // const [isRadioModalOpen, setRadioModalOpen] = useState(false); // 다중 선택 전용
+  const [isMultiSelectModalOpen, setMultiSelectModalOpen] = useState(false); // 복수 선택 체크 박스
 
   const [RenderingTargetGroupList, setRenderingTargetGroup] = useState([]); // HOME 화면에 렌더링 할 Group List
   const [userGroupList, setUserGroupList] = useState([]); // Filtering 에 사용 될 Group List
+
+  // const [connectedDeviceList, setConnectedDeviceList] = useState([]); // 연결된 DeviceList를 저장할 List
+  const connectedDeviceList = useRef([]);
+  const [isAndroidInterfaceMounted, setIsAndroidInterfaceMounted] =
+    useState(false); // AndroidInterface 가 마운팅 된 후 AndroidInterface 요청 처리
+    
+  /**
+   * 디버깅용
+   */
+  useEffect(() => {
+    console.log(`ConnectList 업데이트 22: ${JSON.stringify(connectedDeviceList.current,null,2)}`);
+    console.log(`Length : ${connectedDeviceList.current.length}`)
+  }, [connectedDeviceList.current, connectedDeviceList]);
+  /**
+   * 디버깅용
+   */
 
   // HTTP 요청을 처리하기 위한 커스텀 훅에서 sendRequest 함수 가져오기
   const { sendRequest } = useHttpHook();
 
   const authStatus = useContext(AuthContext);
 
+  const setConnectedDeviceList = useCallback(async (data) => {
+    connectedDeviceList.current = data;
+    console.log(
+      `setConnectedDeviceList 호출 [${Object.prototype.toString.call(data)}] : ${JSON.stringify(data, null, 2)}`
+    );
+    console.log(
+      `setConnectedDeviceList 호출 [${Object.prototype.toString.call(connectedDeviceList)}] : ${JSON.stringify(connectedDeviceList, null, 2)}`);
+  }, []);
+  
   // User의 userGroupList 를 가져오는 함수
   const fetchGroupList = useCallback(async () => {
     setIsLoading(true);
@@ -86,11 +109,7 @@ export default function Home() {
         setIsLoading(false); // 로딩 상태 종료
       }
     },
-    [
-      authStatus.dbObjectId,
-      authStatus.token,
-      sendRequest,
-    ]
+    [authStatus.dbObjectId, authStatus.token, sendRequest]
   );
 
   // 기기 추가 함수 -> Android 로 부터 Connect Response를 받는 함수
@@ -107,7 +126,12 @@ export default function Home() {
         }
 
         // 데이터가 유효하면 기기 생성
-        await createDevice(data.macAddress, data.deviceType, "50", selectedSelectedContent);
+        await createDevice(
+          data.macAddress,
+          data.deviceType,
+          "50",
+          selectedSelectedContent
+        );
 
         return true; // Android로 반환
       } catch (err) {
@@ -120,30 +144,66 @@ export default function Home() {
     },
     [createDevice, fetchGroupList, selectedSelectedContent]
   );
+  
+  const tt = useCallback(async (data) => {
+    await setConnectedDeviceList(data.deviceList);
+  },[setConnectedDeviceList])
 
   const resConnectedDevices = useCallback(async (data) => {
     try {
       if (!validateDeviceList(data).isValid) return false; // Conneted Device 가 0 개 인 경우
-      if (validateDeviceList(data).isValid) {
-        console.log(typeof data); // object
-        console.dir(data.deviceList);
-        console.log(data.deviceList[0].deviceType);
-        console.log(data.deviceList[0].macAddress);
-      }
+      // if (validateDeviceList(data).isValid) {
+      //   // setConnectedDeviceList(data.deviceList)
+      //   // connectedDeviceList = data.deviceList;
+      //   console.log(
+      //     `ConnectList 업데이트 22 [${Object.prototype.toString.call(
+      //       data.deviceList
+      //     )}] : ${JSON.stringify(data.deviceList, null, 2)}`
+      //   );
+      //   setConnectedDeviceList(data.deviceList);
+      // }
+
+      console.log(
+        `ConnectList 업데이트 11 [${Object.prototype.toString.call(
+          data.deviceList
+        )}] : ${JSON.stringify(data.deviceList, null, 2)}`
+      );
+      // await makeAsync(data.deviceList);
+      await tt(data.deviceList);
+      // setConnectedDeviceList(data.deviceList)
+      await setConnectedDeviceList(data.deviceList)
+      // setConnectedDeviceList(
+      //   [
+      //     {
+      //       "deviceType": "ccb_v1",
+      //       "macAddress": "9C:95:6E:40:0F:75"
+      //     }
+      //   ]
+      // )
+
+      // setConnectedDeviceList((prevList) => {
+      //   console.log("Previous list:", prevList);
+      //   console.log("New data list:", data.deviceList);
+      //   return [...prevList, ...data.deviceList]; // 상태를 덮어쓰지 않고 새 데이터 병합
+      // });
+      
       return true; // Android로 반환
     } catch (error) {
       console.error(`에러 발생 1: ${error.message}`);
       return false; // Android로 반환
     }
-  }, []);
+  }, [tt,setConnectedDeviceList]);
 
   // 기기 추가 함수 -> Android 로 부터 Connect Response를 받는 함수
   const resAutoConnect = useCallback(async (data) => {
     try {
+      // 시작하자마자 자동연결을 해서 resAutoConnect 를 받지를 못함함
       console.log(
         "----------------------------------------------------------------------------"
       );
-      console.log("resAutoConnect 받은 DATA : ", JSON.stringify(data, null, 2));
+      console.log(
+        `resAutoConnect 받은 DATA : ${JSON.stringify(data, null, 2)}`
+      );
 
       // 데이터 유효성 검사
       if (!validateDeviceInfo(data).isValid) {
@@ -153,7 +213,6 @@ export default function Home() {
       }
 
       // 데이터가 유효하면 기기 생성
-      console.log("유효한 데이터:", data);
 
       return true; // Android로 반환
     } catch (err) {
@@ -173,23 +232,46 @@ export default function Home() {
 
   // 기기 추가 함수 -> Android 함수를 등록
   useEffect(() => {
+    console.log("## ANDROID RESPONSE INTERFACE 등록");
     // Android WebView에서 호출할 수 있도록 window 객체에 함수 등록
     window.resConnect = resConnect;
-    // window.resConnectedDevices = resConnectedDevices;
+    window.resConnectedDevices = resConnectedDevices;
     window.resAutoConnect = resAutoConnect;
 
-    return () => {
-      // 페이지가 언마운트(페이지이동)될 때 등록된 함수 제거
-      delete window.resConnect;
-      // delete window.resConnectedDevices;
-      delete window.resAutoConnect;
-    };
+    setIsAndroidInterfaceMounted(true);
+
+    // Android WebView 리로드 요청  // window에서 한번 삭제한 함수명들은 재등록 하려면 WebView Reload 를 요청해야한다.
+    // andInterface.pubReloadWebView();
+
+    // return () => {   // 버그가 있는게 한번 삭제하면 다시 등록해도 등록이 안됨
+    //   console.log("## ANDROID RESPONSE INTERFACE 해제")
+    //   // 페이지가 언마운트(페이지이동)될 때 등록된 함수 제거
+    //   delete window.resConnect;
+    //   delete window.resConnectedDevices;
+    //   delete window.resAutoConnect;
+    //   setIsAndroidInterfaceMounted(false);
+    // };
   }, []);
 
+  useEffect(() => {
+    console.log(`## ANDROID REQUEST 요청 ${isAndroidInterfaceMounted}`);
+    if (isAndroidInterfaceMounted) {
+      andInterface.reqConnectedDevices();
+    }
+    // andInterface.reqParingInfo()
+  }, [isAndroidInterfaceMounted]);
+
   // useEffect(() => {
-  //   andInterface.reqConnectedDevices();
-  //   andInterface.reqParingInfo()
-  // }, []);
+  //   const delayedRequest = async () => {
+  //       console.log(`## ANDROID REQUEST 요청 ${isAndroidInterfaceMounted}`);
+  //       if (isAndroidInterfaceMounted) {
+  //           await new Promise(resolve => setTimeout(resolve, 2000)); // 2초 딜레이
+  //           andInterface.reqConnectedDevices();
+  //       }
+  //   };
+
+  //   delayedRequest();
+  // }, [isAndroidInterfaceMounted]);
 
   return (
     <>
@@ -239,10 +321,28 @@ export default function Home() {
       {/* <div className="flex flex-col gap-4 px-6 py-4"> */}
       <div className="flex flex-col">
         {/* userGroupList가 불러와진 이후 GroupCard 렌더링링 */}
-        {RenderingTargetGroupList.length > 0 && (
+
+        {/* {(<GroupCard
+            userGroupList={RenderingTargetGroupList} // 그룹 리스트 전달
+            groupCardReload={fetchGroupList} // groupCard 리렌더링
+            connectedDeviceList={connectedDeviceList}
+            // connectedDeviceList={connectedDeviceList.current}
+          />
+        )} */}
+        {/* {RenderingTargetGroupList.length > 0 && (
           <GroupCard
             userGroupList={RenderingTargetGroupList} // 그룹 리스트 전달
             groupCardReload={fetchGroupList} // groupCard 리렌더링
+            connectedDeviceList={connectedDeviceList}
+            // connectedDeviceList={connectedDeviceList.current}
+          />
+        )} */}
+        {RenderingTargetGroupList.length > 0 && (
+          connectedDeviceList.current.length > 0 && <GroupCard
+            userGroupList={RenderingTargetGroupList} // 그룹 리스트 전달
+            groupCardReload={fetchGroupList} // groupCard 리렌더링
+            // connectedDeviceList={connectedDeviceList}
+            connectedDeviceList={connectedDeviceList.current}
           />
         )}
       </div>

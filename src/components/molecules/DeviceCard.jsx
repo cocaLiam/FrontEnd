@@ -11,8 +11,27 @@ import DeviceImgSmartToggle from "@/components/atoms/icons/DeviceImgSmartToggle"
 
 import { handleError } from "@/utils/errorHandler";
 
+import { andInterface } from "@/utils/android/androidInterFace";
+
 // Device 타입에 따라 아이콘을 선택하는 함수
-function DeviceIconSelector(deviceType) {
+function DeviceIconSelector(deviceType, connectedDeviceList, targetDeviceMacAddres) {
+  let bluetoothConnectStatus = "white"
+  console.log(`connectedDeviceList : ${JSON.stringify(connectedDeviceList,null,2)}`);
+  console.log(`targetDeviceMacAddres : ${targetDeviceMacAddres}`);
+
+  if(!connectedDeviceList){ // 아직 reqConnectedDevice 요청을 못한 상황
+    bluetoothConnectStatus= "blue"
+  }
+  if(connectedDeviceList.length === 0){ // 아직 연결된 디바이스가 없을 때
+    bluetoothConnectStatus= "yellow"
+  }
+  for(let DeviceInfo of connectedDeviceList){
+      if(DeviceInfo.macAddress === targetDeviceMacAddres){  // 해당 Target 기기가 연결된 상태일 때때
+        bluetoothConnectStatus= "green"
+        break;
+      } else bluetoothConnectStatus= "red"
+  }
+
   var IconComponent = "";
   // IconComponent = BluetoothNotConnected;
   IconComponent = DeviceImgSmartToggle;
@@ -35,13 +54,18 @@ function DeviceIconSelector(deviceType) {
       break;
   }
 
-  return <IconComponent vx={0} vy={-25} vw={130} vh={130} c="yellow" />;
+  return <IconComponent vx={0} vy={-25} vw={130} vh={130} c={bluetoothConnectStatus} />;
 }
 
-const DeviceCard = ({ deviceInfo, deviceCardReload, groupCardReload }) => {
-  const [isLoading, setIsLoading] = useState(false);                // TODO: 나중에 기기에 readRequest 할 때 쓸 용도
-  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);  // TODO: 나중에 기기에 readRequest 할 때 쓸 용도
-  const [errorMessage, setErrorMessage] = useState("");             // TODO: 나중에 기기에 readRequest 할 때 쓸 용도
+const DeviceCard = ({
+  deviceInfo,
+  deviceCardReload,
+  groupCardReload,
+  connectedDeviceList,
+}) => {
+  const [isLoading, setIsLoading] = useState(false); // TODO: 나중에 기기에 readRequest 할 때 쓸 용도
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false); // TODO: 나중에 기기에 readRequest 할 때 쓸 용도
+  const [errorMessage, setErrorMessage] = useState(""); // TODO: 나중에 기기에 readRequest 할 때 쓸 용도
   const [isDeviceManagingFormOpen, setDeviceManagingFormOpen] = useState(false);
 
   // Card의 상태를 관리하는 state
@@ -52,9 +76,9 @@ const DeviceCard = ({ deviceInfo, deviceCardReload, groupCardReload }) => {
   /**
    * 디버깅용
    */
-  // useEffect(() => {
-  //   console.log("isDeviceManagingFormOpen 상태 변경됨:", isDeviceManagingFormOpen);
-  // }, [isDeviceManagingFormOpen]);
+  useEffect(() => {
+    console.log("connectedDeviceList 33 상태 변경됨:", connectedDeviceList);
+  }, [connectedDeviceList]);
   /**
    * 디버깅용
    */
@@ -147,7 +171,28 @@ const DeviceCard = ({ deviceInfo, deviceCardReload, groupCardReload }) => {
         {/* <div className="grid grid-cols-2 mt-0 mb-2 ml-2 mr-1"> */}
         <div className="flex items-center justify-between mt-0 mb-2 ml-2 mr-1">
           {/* Device Icon and battery*/}
-          {DeviceIconSelector(deviceType)}
+          {DeviceIconSelector(deviceType,connectedDeviceList,macAddress)}
+
+          {/* {if(connectedDeviceList === undefind){ // 아직 Connected Device을 못받은 상황황
+            DeviceIconSelector(deviceType,"yellow");
+            return
+          }
+          for(let DeviceInfo of connectedDeviceList){
+              if(DeviceInfo.macAddress === macAddress){
+                DeviceIconSelector(deviceType,"green");   // 연결된 Device는 초록색
+              }else{
+                DeviceIconSelector(deviceType,"red");     // 연결안된 Device는 빨간색색
+              }
+          }}
+          {
+            connectedDeviceList && connectedDeviceList.length > 0
+              ? connectedDeviceList.find(
+                  (device) => device.macAddress === macAddress
+                )
+                ? DeviceIconSelector(deviceType, "green") // 연결된 Device는 초록색
+                : DeviceIconSelector(deviceType, "red") // 연결안된 Device는 빨간색
+              : DeviceIconSelector(deviceType, "red") // connectedDeviceList가 없거나 비어있을 때
+          } */}
 
           {/* ActionButton 버튼 */}
           <button
@@ -195,6 +240,7 @@ DeviceCard.propTypes = {
   }).isRequired,
   deviceCardReload: PropTypes.func.isRequired,
   groupCardReload: PropTypes.func.isRequired,
+  connectedDeviceList: PropTypes.array.isRequired,
 };
 
 export default DeviceCard;

@@ -106,6 +106,18 @@ export const andInterface = {
     }
   },
 
+  pubReloadWebView: () => {
+    if (window.AndroidInterface) {
+      if (window.AndroidInterface.pubReloadWebView) {
+        window.AndroidInterface.pubReloadWebView();
+      } else {
+        console.log("pubReloadWebView is not available.");
+      }
+    } else {
+      console.log("AndroidInterface is not available.");
+    }
+  },
+
   pubToasting: (msg) => {
     if (window.AndroidInterface) {
       if (window.AndroidInterface.pubToasting) {

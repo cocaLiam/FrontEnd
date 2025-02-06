@@ -43,15 +43,15 @@ const BottomNavigation = ({ onDrawerOpen }) => {
     console.log(selectedRadioButton)
   },[selectedRadioButton])
 
-  // useEffect(() => {
-  //   // // Android WebView에서 호출할 수 있도록 window 객체에 함수 등록
-  //   window.resConnect = andInterface.resConnect;
-  //   window.resRemoveParing = andInterface.resRemoveParing;
-  //   window.resParingInfo = andInterface.resParingInfo;
-  //   window.resConnectedDevices = andInterface.resConnectedDevices;
-  //   window.resReadData = andInterface.resReadData;
-  //   window.subObserveData = andInterface.subObserveData;
-  // }, []);
+  useEffect(() => {
+    // // Android WebView에서 호출할 수 있도록 window 객체에 함수 등록
+    window.resConnect = andInterface.resConnect;
+    window.resRemoveParing = andInterface.resRemoveParing;
+    window.resParingInfo = andInterface.resParingInfo;
+    window.resConnectedDevices = andInterface.resConnectedDevices;
+    window.resReadData = andInterface.resReadData;
+    window.subObserveData = andInterface.subObserveData;
+  }, []);
 
   return (
     // <nav className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-between h-16 px-4 bg-white border-t">
@@ -102,20 +102,20 @@ const BottomNavigation = ({ onDrawerOpen }) => {
 
       {/* <ButtonWithIcon icon={DebugIcon} onClick={() => setIsConfirmModalOpen(true)}/> */}
       {/* <ButtonWithIcon icon={DebugIcon} onClick={() => setIsErrorModalOpen(true)}/> */}
-      {/* <ButtonWithIcon icon={DebugIcon} onClick={() => {
+      <ButtonWithIcon icon={DebugIcon} onClick={() => {
         // andInterface.reqConnect()
 
         // andInterface.reqParingInfo();
         // andInterface.reqRemoveParing("9C:95:6E:40:0F:75", "ccb_v1");
         andInterface.reqConnectedDevices();
         
-      }}/> */}
+      }}/>
       {/* <ButtonWithIcon icon={DebugIcon} onClick={() => setInputModalOpen(true)}/> */}
       {/* <ButtonWithIcon
         icon={DebugIcon}
         onClick={() => setRadioModalOpen(true)}
       /> */}
-      <ButtonWithIcon icon={DebugIcon} onClick={() => setMultiSelectModalOpen(true)}/>
+      {/* <ButtonWithIcon icon={DebugIcon} onClick={() => setMultiSelectModalOpen(true)}/> */}
 
       <Link to="/" className="p-2">
         <HomeIcon />
