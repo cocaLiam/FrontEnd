@@ -84,12 +84,12 @@ const GroupCard = ({ userGroupList, groupCardReload, connectedDeviceList }) => {
     } finally {
       setIsLoading(false); // 로딩 상태 종료
     }
-  },[]); // 의존성 추가
+  },[authStatus.dbObjectId, authStatus.token, sendRequest, userGroupList]); // 의존성 추가
 
   // 컴포넌트가 처음 렌더링될 때 사용자 정보 가져오기
   useEffect(() => {
     fetchDeviceList();
-  },[userGroupList, fetchDeviceList]);
+  },[userGroupList, fetchDeviceList, connectedDeviceList]);
   
   return (
     // <div className="max-w-full space-y-6 border rounded-lg shadow-md">

@@ -16,8 +16,9 @@ import { andInterface } from "@/utils/android/androidInterFace";
 // Device 타입에 따라 아이콘을 선택하는 함수
 function DeviceIconSelector(deviceType, connectedDeviceList, targetDeviceMacAddres) {
   let bluetoothConnectStatus = "white"
-  console.log(`connectedDeviceList : ${JSON.stringify(connectedDeviceList,null,2)}`);
-  console.log(`targetDeviceMacAddres : ${targetDeviceMacAddres}`);
+  console.log(`최종 ${targetDeviceMacAddres}: ${JSON.stringify(connectedDeviceList,null,2)}`);
+  console.log(`L : ${connectedDeviceList.length}`)
+  // console.log(`targetDeviceMacAddres : ${targetDeviceMacAddres}`);
 
   if(!connectedDeviceList){ // 아직 reqConnectedDevice 요청을 못한 상황
     bluetoothConnectStatus= "blue"
@@ -27,14 +28,12 @@ function DeviceIconSelector(deviceType, connectedDeviceList, targetDeviceMacAddr
   }
   for(let DeviceInfo of connectedDeviceList){
       if(DeviceInfo.macAddress === targetDeviceMacAddres){  // 해당 Target 기기가 연결된 상태일 때때
+        console.log(`TARGET ${DeviceInfo.macAddress} === ${targetDeviceMacAddres} `)
         bluetoothConnectStatus= "green"
-        break;
       } else bluetoothConnectStatus= "red"
   }
 
   var IconComponent = "";
-  // IconComponent = BluetoothNotConnected;
-  IconComponent = DeviceImgSmartToggle;
 
   switch (deviceType) {
     case "안방불11":
@@ -73,15 +72,6 @@ const DeviceCard = ({
 
   const { deviceGroup, macAddress, deviceName, deviceType, battery } =
     deviceInfo; // 매개변수로 전달된 device를 사용
-  /**
-   * 디버깅용
-   */
-  useEffect(() => {
-    console.log("connectedDeviceList 33 상태 변경됨:", connectedDeviceList);
-  }, [connectedDeviceList]);
-  /**
-   * 디버깅용
-   */
 
   // 우측 상단 버튼 클릭 핸들러
   const handleActionButtonClick = async () => {

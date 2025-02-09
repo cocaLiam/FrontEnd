@@ -34,7 +34,7 @@ function RadioButton({
         name={name}
         id={id}
         defaultChecked={checked}
-        onChange={onChange} // 변경 이벤트 핸들러 등록
+      onChange={onChange} // 변경 이벤트 핸들러 등록
         className="absolute right-3"
       />
     </label>
