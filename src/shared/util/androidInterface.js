@@ -21,7 +21,7 @@
  * @property {DeviceInfo[]} deviceList - 디바이스들 주소 배열
  */
 
-const andInterface = {
+export const andInterface = {
   /**
 ====================================================================================================
      * Web(client) -> APP(server) API 호출
@@ -163,7 +163,7 @@ const andInterface = {
  * @param {Object} data - 검사할 데이터
  * @returns {Object} 검사 결과
  */
-function validateDeviceInfo(data) {
+export function validateDeviceInfo(data) {
   const missingKeys = [];
   const emptyValueKeys = [];
 
@@ -191,7 +191,7 @@ function validateDeviceInfo(data) {
  * @param {Object} data - 검사할 데이터
  * @returns {Object} 검사 결과
  */
-function validateDeviceList(data) {
+export function validateDeviceList(data) {
   const missingKeys = [];
   const invalidItems = [];
 
@@ -260,5 +260,3 @@ function validateReadOrWriteData(data) {
     emptyValueKeys,
   };
 }
-
-export default andInterface;
