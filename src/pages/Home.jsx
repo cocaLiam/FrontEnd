@@ -46,12 +46,6 @@ export default function Home() {
   /**
    * 디버깅용
    */
-  useEffect(() => {
-    console.log(
-      `ConnectList 업데이트 22: ${JSON.stringify(connectedDeviceList,null, 2)}`
-    );
-    console.log(`Length : ${connectedDeviceList.length}`);
-  }, [connectedDeviceList, connectedDeviceList.length]);
   /**
    * 디버깅용
    */
@@ -145,69 +139,14 @@ export default function Home() {
   const resConnectedDevices = useCallback(
     async (data) => {
       try {
-        console.log(
-          `ConnectList 업데이트 11 [${Object.prototype.toString.call(
-            data.deviceList
-          )}] : ${JSON.stringify(data.deviceList, null, 2)}`
-        );
 
         if (!validateDeviceList(data).isValid || data.deviceList.length === 0) {
+          setConnectedDeviceList([])
           console.log("유효하지 않거나 빈 리스트입니다. 상태를 유지합니다.");
           return false;
         }
 
-        // setConnectedDeviceList(
-          // [
-          //   {
-          //     "deviceType": "ccb_v1",
-          //     "macAddress": "9C:95:6E:40:0F:75"
-          //   }
-          // ]
-        // )
-
-        // setConnectedDeviceList(data.deviceList);
-
-        // // 상태 업데이트를 함수형으로 변경하여 최신 상태를 보장
-        // setConnectedDeviceList((prevList) => {
-        //   console.log("이전 상태:", JSON.stringify(prevList, null, 2));
-        //   return [...data.deviceList];
-        //   // return [
-        //   //   {
-        //   //     "deviceType": "ccb_v1",
-        //   //     "macAddress": "9C:95:6E:40:0F:75"
-        //   //   }
-        //   // ]
-        // });
-
-        setConnectedDeviceList((prevList) => {
-          console.log("이전 상태:", JSON.stringify(prevList, null, 2));
-          // return data.deviceList;
-          // return [...data.deviceList];
-          return JSON.parse(JSON.stringify(data.deviceList)); // 깊은 복사로 참조 끊기
-          // return [
-          //   {
-          //     "deviceType": "ccb_v1",
-          //     "macAddress": "9C:95:6E:40:0F:75"
-          //   }
-          // ]
-        });
-
-        // await new Promise(resolve => {
-        //   setConnectedDeviceList(data.deviceList);
-        //   resolve();
-        // });
-
-        console.log(
-          `ConnectList 업데이트 12 [${Object.prototype.toString.call(
-            connectedDeviceList
-          )}] : ${JSON.stringify(connectedDeviceList, null, 2)}`
-        );
-
-        // setConnectedDeviceList((prevList) => {
-        //   console.log("이전값   :", (JSON.stringify(prevList, null, 2)));
-        //   console.log("새로운 값:", (JSON.stringify(data.deviceList, null, 2)));
-        //   return [...data.deviceList]; // 항상 새로운 값 대입입
-        // });
+        setConnectedDeviceList(data.deviceList)
 
         return true; // Android로 반환
       } catch (error) {
@@ -256,41 +195,24 @@ export default function Home() {
 
   // 기기 추가 함수 -> Android 함수를 등록
   useEffect(() => {
-    console.log("## ANDROID RESPONSE INTERFACE 등록");
-    // Android WebView에서 호출할 수 있도록 window 객체에 함수 등록
     window.resConnect = resConnect;
     window.resConnectedDevices = resConnectedDevices;
     window.resAutoConnect = resAutoConnect;
     setIsAndroidInterfaceMounted(true);
 
-    // Android WebView 리로드 요청  // window에서 한번 삭제한 함수명들은 재등록 하려면 WebView Reload 를 요청해야한다.
-    // andInterface.pubReloadWebView();
-
-    // return () => {   // 버그가 있는게 한번 삭제하면 다시 등록해도 등록이 안됨
-    //   console.log("## ANDROID RESPONSE INTERFACE 해제")
-    //   // 페이지가 언마운트(페이지이동)될 때 등록된 함수 제거
-    //   delete window.resConnect;
-    //   delete window.resConnectedDevices;
-    //   delete window.resAutoConnect;
-    //   setIsAndroidInterfaceMounted(false);
-    // };
+    return () => {
+      delete window.resConnect;
+      delete window.resConnectedDevices;
+      delete window.resAutoConnect;
+      setIsAndroidInterfaceMounted(false);
+    };
   }, [resConnect, resAutoConnect, resConnectedDevices]);
 
-  // useEffect(() => {
-  //   if (isAndroidInterfaceMounted) {
-  //     console.log(`## ANDROID REQUEST 요청 ${isAndroidInterfaceMounted}`);
-  //     andInterface.reqConnectedDevices();
-  //   }
-  //   // andInterface.reqParingInfo()
-  // }, [isAndroidInterfaceMounted]);
-
   useEffect(() => {
-    console.log("111111111111111111111111111111111");
-  },);
-
-  useEffect(() => {
-    console.log("2222222222222222222222222222222222");
-  },[]);
+    if (isAndroidInterfaceMounted) {
+      andInterface.reqConnectedDevices();
+    }
+  }, [isAndroidInterfaceMounted]);
 
   return (
     <>
@@ -341,7 +263,6 @@ export default function Home() {
         <ButtonWithIcon
           icon={SettingsIcon}
           onClick={() => {andInterface.reqConnectedDevices();}}
-          // onClick={() => {setConnectedDeviceList([]); andInterface.reqConnectedDevices();}}
         />
       </div>
 
@@ -349,20 +270,11 @@ export default function Home() {
       <div className="flex flex-col">
         {/* userGroupList가 불러와진 이후 GroupCard 렌더링링 */}
 
-        {/* {RenderingTargetGroupList.length > 0 && (
-          <GroupCard
-            userGroupList={RenderingTargetGroupList} // 그룹 리스트 전달
-            groupCardReload={fetchGroupList} // groupCard 리렌더링
-            connectedDeviceList={connectedDeviceList}
-            // connectedDeviceList={connectedDeviceList.current}
-          />
-        )} */}
         {RenderingTargetGroupList.length > 0 && (
           <GroupCard
             userGroupList={RenderingTargetGroupList} // 그룹 리스트 전달
             groupCardReload={fetchGroupList} // groupCard 리렌더링
             connectedDeviceList={connectedDeviceList}
-            // connectedDeviceList={connectedDeviceList.current}
           />
         )}
       </div>

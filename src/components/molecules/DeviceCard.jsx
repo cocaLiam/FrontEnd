@@ -16,20 +16,20 @@ import { andInterface } from "@/utils/android/androidInterFace";
 // Device 타입에 따라 아이콘을 선택하는 함수
 function DeviceIconSelector(deviceType, connectedDeviceList, targetDeviceMacAddres) {
   let bluetoothConnectStatus = "white"
-  console.log(`최종 ${targetDeviceMacAddres}: ${JSON.stringify(connectedDeviceList,null,2)}`);
-  console.log(`L : ${connectedDeviceList.length}`)
   // console.log(`targetDeviceMacAddres : ${targetDeviceMacAddres}`);
 
   if(!connectedDeviceList){ // 아직 reqConnectedDevice 요청을 못한 상황
-    bluetoothConnectStatus= "blue"
+    bluetoothConnectStatus= "black"
   }
   if(connectedDeviceList.length === 0){ // 아직 연결된 디바이스가 없을 때
     bluetoothConnectStatus= "yellow"
   }
+  
+  let i = 0
   for(let DeviceInfo of connectedDeviceList){
       if(DeviceInfo.macAddress === targetDeviceMacAddres){  // 해당 Target 기기가 연결된 상태일 때때
-        console.log(`TARGET ${DeviceInfo.macAddress} === ${targetDeviceMacAddres} `)
         bluetoothConnectStatus= "green"
+        break;
       } else bluetoothConnectStatus= "red"
   }
 
@@ -162,27 +162,6 @@ const DeviceCard = ({
         <div className="flex items-center justify-between mt-0 mb-2 ml-2 mr-1">
           {/* Device Icon and battery*/}
           {DeviceIconSelector(deviceType,connectedDeviceList,macAddress)}
-
-          {/* {if(connectedDeviceList === undefind){ // 아직 Connected Device을 못받은 상황황
-            DeviceIconSelector(deviceType,"yellow");
-            return
-          }
-          for(let DeviceInfo of connectedDeviceList){
-              if(DeviceInfo.macAddress === macAddress){
-                DeviceIconSelector(deviceType,"green");   // 연결된 Device는 초록색
-              }else{
-                DeviceIconSelector(deviceType,"red");     // 연결안된 Device는 빨간색색
-              }
-          }}
-          {
-            connectedDeviceList && connectedDeviceList.length > 0
-              ? connectedDeviceList.find(
-                  (device) => device.macAddress === macAddress
-                )
-                ? DeviceIconSelector(deviceType, "green") // 연결된 Device는 초록색
-                : DeviceIconSelector(deviceType, "red") // 연결안된 Device는 빨간색
-              : DeviceIconSelector(deviceType, "red") // connectedDeviceList가 없거나 비어있을 때
-          } */}
 
           {/* ActionButton 버튼 */}
           <button

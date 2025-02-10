@@ -25,17 +25,13 @@ const GroupCard = ({ userGroupList, groupCardReload, connectedDeviceList }) => {
   // const [selectedDevice, setSelectedDevice] = useState(null); // 선택된 디바이스 정보를 저장하는 상태
   const [groupObject, setGroupObject] = useState({}); // DeviceList 변경시 재적용을 위한 상태변수
 
-    /**
-   * 디버깅용
-   */
-    useEffect(() => {
-      console.log(`ConnectList 업데이트 44: ${JSON.stringify(connectedDeviceList,null,2)}`);
-      console.log(`L : ${connectedDeviceList.length}`)
-    }, [connectedDeviceList]);
-    /**
-     * 디버깅용
-     */
-  console.log(`ConnectList 업데이트 33 [${Object.prototype.toString.call(connectedDeviceList)}] : ${JSON.stringify(connectedDeviceList,null,2)}`)
+  //   /**
+  //  * 디버깅용
+  //  */
+
+  //   /**
+  //    * 디버깅용
+  //    */
 
   // HTTP 요청을 처리하기 위한 커스텀 훅에서 sendRequest 함수 가져오기
   const { sendRequest } = useHttpHook();
@@ -130,19 +126,6 @@ const GroupCard = ({ userGroupList, groupCardReload, connectedDeviceList }) => {
                 connectedDeviceList={connectedDeviceList} // 연결되어 있는 device들 List
               />
               )
-              // <DeviceCard
-              //   key={deviceInfo.id || index} // 고유한 키 설정
-              //   deviceInfo={{
-              //     deviceGroup: deviceInfo.deviceGroup,
-              //     macAddress: deviceInfo.macAddress,
-              //     deviceName: deviceInfo.deviceName,
-              //     deviceType: deviceInfo.deviceType,
-              //     battery: deviceInfo.battery,
-              //   }} // Device 이름 또는 기본 텍스트
-              //   deviceCardReload={fetchDeviceList} // deviceCard 리렌더링
-              //   groupCardReload={groupCardReload} // groupCard 리렌더링
-              //   connectedDeviceList={connectedDeviceList} // 연결되어 있는 device들 List
-              // />
             ))}
           </div>
         </div>
