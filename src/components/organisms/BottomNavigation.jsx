@@ -107,7 +107,7 @@ const BottomNavigation = ({ onDrawerOpen }) => {
 
         // andInterface.reqParingInfo();
         // andInterface.reqRemoveParing("9C:95:6E:40:0F:75", "ccb_v1");
-        andInterface.reqConnectedDevices();
+        // andInterface.reqConnectedDevices();
         
       }}/>
       {/* <ButtonWithIcon icon={DebugIcon} onClick={() => setInputModalOpen(true)}/> */}

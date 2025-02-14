@@ -16,7 +16,7 @@ import { handleError } from "@/utils/errorHandler";
 
 import { useHttpHook } from "@/hooks/useHttpHook"; // HTTP 요청을 처리하는 커스텀 훅
 
-const GroupCard = ({ userGroupList, groupCardReload, connectedDeviceList }) => {
+const GroupCard = ({ userGroupList, groupCardReload, deviceStatusList }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -85,7 +85,7 @@ const GroupCard = ({ userGroupList, groupCardReload, connectedDeviceList }) => {
   // 컴포넌트가 처음 렌더링될 때 사용자 정보 가져오기
   useEffect(() => {
     fetchDeviceList();
-  },[userGroupList, fetchDeviceList, connectedDeviceList]);
+  },[userGroupList, fetchDeviceList]);
   
   return (
     // <div className="max-w-full space-y-6 border rounded-lg shadow-md">
@@ -123,7 +123,7 @@ const GroupCard = ({ userGroupList, groupCardReload, connectedDeviceList }) => {
                 }} // Device 이름 또는 기본 텍스트
                 deviceCardReload={fetchDeviceList} // deviceCard 리렌더링
                 groupCardReload={groupCardReload} // groupCard 리렌더링
-                connectedDeviceList={connectedDeviceList} // 연결되어 있는 device들 List
+                deviceStatusList={deviceStatusList} // 연결되어 있는 device들 List
               />
               )
             ))}
@@ -137,7 +137,7 @@ const GroupCard = ({ userGroupList, groupCardReload, connectedDeviceList }) => {
 GroupCard.propTypes = {
   userGroupList: PropTypes.array.isRequired,
   groupCardReload: PropTypes.func.isRequired,
-  connectedDeviceList: PropTypes.array.isRequired,
+  deviceStatusList: PropTypes.array.isRequired,
 };
 
 export default GroupCard;

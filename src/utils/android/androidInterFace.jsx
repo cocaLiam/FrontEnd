@@ -8,10 +8,41 @@ export const andInterface = {
      * Web에서 App으로 데이터를 전달받는 인터페이스
      */
 
-  reqConnect: () => {
+  reqScanStart: () => {
+    if (window.AndroidInterface) {
+      if (window.AndroidInterface.reqScanStart) {
+        console.log("reqScanStart ON.");
+        window.AndroidInterface.reqScanStart();
+      } else {
+        console.log("reqScanStart is not available.");
+      }
+    } else {
+      console.log("AndroidInterface is not available.");
+    }
+  },
+
+  reqScanStop: () => {
+    if (window.AndroidInterface) {
+      if (window.AndroidInterface.reqScanStop) {
+        console.log("reqScanStop ON.");
+        window.AndroidInterface.reqScanStop();
+      } else {
+        console.log("reqScanStop is not available.");
+      }
+    } else {
+      console.log("AndroidInterface is not available.");
+    }
+  },
+
+  reqConnect: (macAddress, deviceType) => {
+    const deviceInfo = {
+      macAddress: macAddress,
+      deviceType: deviceType,
+    };
     if (window.AndroidInterface) {
       if (window.AndroidInterface.reqConnect) {
-        window.AndroidInterface.reqConnect();
+        console.log("reqConnect ON.");
+        window.AndroidInterface.reqConnect(JSON.stringify(deviceInfo));
       } else {
         console.log("reqConnect is not available.");
       }
@@ -93,8 +124,6 @@ export const andInterface = {
       "reqReadData 보내는 DATA : ",
       JSON.stringify(deviceInfo,null, 2)
     );
-    console.log(window.AndroidInterface); // AndroidInterface 객체 확인
-    console.log(window.AndroidInterface.reqReadData); // pubSendData 메서드 확인
     if (window.AndroidInterface) {
       if (window.AndroidInterface.reqReadData) {
         window.AndroidInterface.reqReadData(JSON.stringify(deviceInfo));
@@ -175,7 +204,33 @@ export const andInterface = {
      * 1. Response 타입 , 2. Subscribe 타입
      * 1. Response 타입 : Web(req) --> App(res) --> Web
      * 2. Subscribe 타입 : App(publish) --> Web
-     */
+      */
+  resScanStart: (data) => {
+    try {
+      console.log("resScanStart 받은 DATA : ",JSON.stringify(data,null, 2));
+      
+      if (!validateDeviceList(data).isValid) return false; // Paring Device 가 0 개 인 경우
+      if (validateDeviceList(data).isValid) {
+        console.log(`1 : ${JSON.stringify(data, null, 2)}`);
+        console.log(`2 : ${Object.prototype.toString.call(data)}`);
+      }
+      return true; // Android로 반환
+    } catch (error) {
+      console.error(`에러 발생 1: ${error.message}`);
+      return false; // Android로 반환
+    }
+  },
+
+  resScanStop: (data) => {
+    try {
+      console.log("resScanStop 받은 DATA : ", JSON.stringify(data,null, 2));
+      return true; // Android로 반환
+    } catch (error) {
+      console.error(`에러 발생 1: ${error.message}`);
+      return false; // Android로 반환
+    }
+  },
+
   resConnect: (data) => {
     try {
       console.log("resConnect 받은 DATA : ", JSON.stringify(data,null, 2));

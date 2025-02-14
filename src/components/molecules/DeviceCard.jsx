@@ -13,24 +13,40 @@ import { handleError } from "@/utils/errorHandler";
 
 import { andInterface } from "@/utils/android/androidInterFace";
 
+function DevicePowerStatusIcon(deviceStatusList, targetDeviceMacAddres) {
+  let powerColor = "yellow"  // 기기 Power 상태 확인 중 + 확인 불가
+  const status = deviceStatusList.find(
+    (tmp) => tmp.deviceInfo.macAddress === targetDeviceMacAddres
+  )?.msg?.readData.status
+  // console.log(`최종 PowerStatus : ${status}`)
+  if(status == "1"){
+    powerColor = "green"    // 기기 Power ON
+  }else if (status == "0"){
+    powerColor = "red"      // 기기 Power OFF
+  }
+  return <PowerOnIcon w="60" h="40" c={powerColor}/>
+}
 // Device 타입에 따라 아이콘을 선택하는 함수
-function DeviceIconSelector(deviceType, connectedDeviceList, targetDeviceMacAddres) {
-  let bluetoothConnectStatus = "white"
+function DeviceIconSelector(
+  deviceType,
+  deviceStatusList,
+  targetDeviceMacAddres
+) {
+  let bluetoothConnectStatus = "white";
   // console.log(`targetDeviceMacAddres : ${targetDeviceMacAddres}`);
+  // console.log(`최종 : ${JSON.stringify(deviceStatusList, null, 2)}`);
+  // console.log(`최종 : ${Object.prototype.toString.call(deviceStatusList)}`);
+  // console.log(`targetDeviceMacAddres ${targetDeviceMacAddres}`);
 
-  if(!connectedDeviceList){ // 아직 reqConnectedDevice 요청을 못한 상황
-    bluetoothConnectStatus= "black"
+  if(deviceStatusList.length === 0){
+    bluetoothConnectStatus= "yellow"  // BLE 연결중
   }
-  if(connectedDeviceList.length === 0){ // 아직 연결된 디바이스가 없을 때
-    bluetoothConnectStatus= "yellow"
-  }
-  
-  let i = 0
-  for(let DeviceInfo of connectedDeviceList){
-      if(DeviceInfo.macAddress === targetDeviceMacAddres){  // 해당 Target 기기가 연결된 상태일 때때
-        bluetoothConnectStatus= "green"
+
+  for(let tmp of deviceStatusList){
+      if(tmp.deviceInfo.macAddress === targetDeviceMacAddres){
+        bluetoothConnectStatus= "green"  // BLE 연결 완료
         break;
-      } else bluetoothConnectStatus= "red"
+      } else bluetoothConnectStatus= "red"  // BLE 연결 실패패
   }
 
   var IconComponent = "";
@@ -53,14 +69,22 @@ function DeviceIconSelector(deviceType, connectedDeviceList, targetDeviceMacAddr
       break;
   }
 
-  return <IconComponent vx={0} vy={-25} vw={130} vh={130} c={bluetoothConnectStatus} />;
+  return (
+    <IconComponent
+      vx={0}
+      vy={-25}
+      vw={130}
+      vh={130}
+      c={bluetoothConnectStatus}
+    />
+  );
 }
 
 const DeviceCard = ({
   deviceInfo,
   deviceCardReload,
   groupCardReload,
-  connectedDeviceList,
+  deviceStatusList,
 }) => {
   const [isLoading, setIsLoading] = useState(false); // TODO: 나중에 기기에 readRequest 할 때 쓸 용도
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false); // TODO: 나중에 기기에 readRequest 할 때 쓸 용도
@@ -70,8 +94,10 @@ const DeviceCard = ({
   // Card의 상태를 관리하는 state
   const [isActive, setIsActive] = useState(false);
 
-  const { deviceGroup, macAddress, deviceName, deviceType, battery } =
-    deviceInfo; // 매개변수로 전달된 device를 사용
+  // 매개변수로 전달된 device를 사용
+  const { deviceGroup, macAddress, deviceName, deviceType } = deviceInfo;
+  let { battery } = deviceInfo;
+  
 
   // 우측 상단 버튼 클릭 핸들러
   const handleActionButtonClick = async () => {
@@ -95,11 +121,11 @@ const DeviceCard = ({
     if (isActive) {
       console.log("비활성화 API 호출");
       // 비활성화 API 호출 로직
-      andInterface.pubSendData(macAddress, deviceType, { toggleSwitch: "00" });
+      andInterface.pubSendData(macAddress, deviceType, { toggleSwitch: "0" });
     } else {
       console.log("활성화 API 호출");
       // 활성화 API 호출 로직
-      andInterface.pubSendData(macAddress, deviceType, { toggleSwitch: "01" });
+      andInterface.pubSendData(macAddress, deviceType, { toggleSwitch: "1" });
     }
   };
 
@@ -161,7 +187,7 @@ const DeviceCard = ({
         {/* <div className="grid grid-cols-2 mt-0 mb-2 ml-2 mr-1"> */}
         <div className="flex items-center justify-between mt-0 mb-2 ml-2 mr-1">
           {/* Device Icon and battery*/}
-          {DeviceIconSelector(deviceType,connectedDeviceList,macAddress)}
+          {DeviceIconSelector(deviceType, deviceStatusList, macAddress)}
 
           {/* ActionButton 버튼 */}
           <button
@@ -172,7 +198,7 @@ const DeviceCard = ({
             // className="px-0 py-0 bg-gray-600 border rounded hover:bg-gray-950"
             className="items-end px-0 py-0 bg-gray-600 border rounded"
           >
-            <PowerOnIcon w="60" h="40" c="yellow" />
+            {DevicePowerStatusIcon(deviceStatusList, macAddress)}
           </button>
         </div>
 
@@ -182,7 +208,11 @@ const DeviceCard = ({
         <span
           className={`absolute inset-x-0 bottom-0 h-1 w-full`}
           style={{
-            width: `${battery}%`, // 배터리 잔량에 따라 너비 설정
+            width: `${
+              battery = deviceStatusList.find(
+                (tmp) => tmp.deviceInfo.macAddress === deviceInfo.macAddress
+              )?.msg?.readData.battery || battery
+            }%`, // 배터리 잔량에 따라 너비 설정
             backgroundColor:
               battery > 75
                 ? "green"
@@ -209,7 +239,7 @@ DeviceCard.propTypes = {
   }).isRequired,
   deviceCardReload: PropTypes.func.isRequired,
   groupCardReload: PropTypes.func.isRequired,
-  connectedDeviceList: PropTypes.array.isRequired,
+  deviceStatusList: PropTypes.array.isRequired,
 };
 
 export default DeviceCard;
