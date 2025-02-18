@@ -220,7 +220,7 @@ export default function Home() {
         return false;
       }
 
-      setConnectedDeviceList(data.deviceList);
+      setConnectedDeviceList(data.deviceList);``
 
       for(let connectedDevice of data.deviceList){
         // 연결된 Device 들 정보 요청
@@ -298,13 +298,6 @@ export default function Home() {
       });
 
       console.log(`resReadData : ${JSON.stringify(data, null, 2)}`);
-      console.log(
-        `resAutoConnect 연결리스트 5 : ${JSON.stringify(
-          deviceStatusList,
-          null,
-          2
-        )}`
-      );
       return true; // Android로 반환
     } catch (error) {
       console.error(`에러 발생 1: ${error.message}`);
