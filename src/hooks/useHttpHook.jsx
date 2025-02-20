@@ -4,7 +4,7 @@ import { useCallback, useRef, useEffect } from 'react';
 
 const axiosInstance = axios.create({
   // baseURL: 'http://localhost:5000/',
-  baseURL: 'http://192.168.45.184:5000/',
+  baseURL: 'http://192.168.45.125:5000/',
   timeout: 5000,
 });
 

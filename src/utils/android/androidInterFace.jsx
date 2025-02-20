@@ -2,12 +2,13 @@
 import PropTypes from 'prop-types';
 
 export const andInterface = {
-  /**
-====================================================================================================
-     * Web(client) -> APP(server) API 호출
-     * Web에서 App으로 데이터를 전달받는 인터페이스
-     */
 
+/**
+====================================================================================================
+ * Web(client) --reqXXX--> APP(server) API 호출
+ * Request Type
+ * Web에서 App으로 Data를 요청하는 Request Interface
+ */
   reqScanStart: () => {
     if (window.AndroidInterface) {
       if (window.AndroidInterface.reqScanStart) {
@@ -135,6 +136,12 @@ export const andInterface = {
     }
   },
 
+/**
+====================================================================================================
+ * Web(client) --pubXXX--> APP(server) API 호출
+ * Publisher Type
+ * Web에서 App으로 Data를 보내는 publisher Interface
+ */
   pubReloadWebView: () => {
     if (window.AndroidInterface) {
       if (window.AndroidInterface.pubReloadWebView) {
@@ -198,13 +205,50 @@ export const andInterface = {
     }
   },
 
-  /**
+/**
 ====================================================================================================
-     * APP(client) -> Web(server) 데이터 전달
-     * 1. Response 타입 , 2. Subscribe 타입
-     * 1. Response 타입 : Web(req) --> App(res) --> Web
-     * 2. Subscribe 타입 : App(publish) --> Web
-      */
+ * Web(server) --getXXX--> APP(client) 데이터 전달
+ *   ↑                      ↓
+ *   └--------return--------┘
+ * Getter Type
+ * Web 이 요청한 Data 를 Reutrn 시켜주는 Getter Interface
+ */
+  getLocalStorageToken: () => {
+    if (window.AndroidInterface) {
+      if (window.AndroidInterface.getLocalStorageToken) {
+        return window.AndroidInterface.getLocalStorageToken();
+      } else {
+        console.log("getLocalStorageToken is not available.");
+      }
+    } else {
+      console.log("AndroidInterface is not available.");
+    }
+  },
+
+/**
+====================================================================================================
+ * Web(server) --setXXX--> APP(client) 데이터 전달
+ * setter Type
+ * Web 이 지정한 Data 를 저장하는 Setter Interface
+ */
+  setLocalStorageToken: (jsonString) => {
+    if (window.AndroidInterface) {
+      if (window.AndroidInterface.setLocalStorageToken) {
+        return window.AndroidInterface.setLocalStorageToken(jsonString);
+      } else {
+        console.log("setLocalStorageToken is not available.");
+      }
+    } else {
+      console.log("AndroidInterface is not available.");
+    }
+  },
+
+/**
+====================================================================================================
+ * APP(client) --resXXX--> Web(server) 데이터 전달
+ * Response Type
+ * APP 이 Web의 Request에 맞춰 답변하는 Response Interface
+ */
   resScanStart: (data) => {
     try {
       console.log("resScanStart 받은 DATA : ",JSON.stringify(data,null, 2));
@@ -348,6 +392,12 @@ export const andInterface = {
     }
   },
 
+/**
+====================================================================================================
+ * APP(client) --subXXX--> Web(server) 데이터 전달
+ * Subscriber Type
+ * APP이 구독된 Data 를 보내는 Subscriber Interface
+ */
   subObserveData: (data) => {
     try {
       console.log("subObserveData 받은 DATA : ", JSON.stringify(data,null, 2));

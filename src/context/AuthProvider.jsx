@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { AuthContext } from "./AuthContext";
 import { useAuthHook } from "../hooks/useAuthHook";
+import { andInterface } from "@/utils/android/androidInterFace";
 
 // 로그아웃 타이머를 전역 변수로 선언
 let logoutTimer;
@@ -38,8 +39,22 @@ export const AuthProvider = ({ children }) => {
   // 자동 로그인 로직
   useEffect(() => {
     const checkAndRefreshToken = async () => {
-      // 로컬 스토리지에서 저장된 인증 데이터를 가져옴
-      const storedData = JSON.parse(localStorage.getItem("tokenData"));
+      // Web 로컬 스토리지에서 저장된 인증 데이터를 가져옴
+      let storedData = localStorage.getItem("tokenData"); 
+      // getItem 시 JsonString or null 리턴
+
+      if(storedData === null){
+        // Web 로컬 스토리지에 Token 없을 시, Andorid 로컬 스토리지 검색
+        storedData = andInterface.getLocalStorageToken()
+        console.log(`디버깅 > getLocalStorageToken 호출 @`);
+      }else{
+        // Web 로컬 스토리지에 Token 있을 시, Andorid 로컬 스토리지 저장
+        const isSucess = andInterface.setLocalStorageToken(storedData);
+        console.log(`디버깅 > setLocalStorageToken 호출 @ : ${isSucess}`)
+      }
+
+      storedData = JSON.parse(storedData);
+
       if (storedData && storedData.token) {
         const expirationDate = new Date(storedData.expiration); // 저장된 만료 시간을 Date 객체로 변환
         if (expirationDate > new Date()) {
