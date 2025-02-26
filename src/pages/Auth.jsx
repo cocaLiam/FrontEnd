@@ -3,6 +3,7 @@ import { useState } from "react";
 
 import LoginForm from "@/components/molecules/auth_forms/LoginForm";
 import SignupForm from "@/components/molecules/auth_forms/SignupForm";
+import ButtonWithIcon from "@/components/atoms/ButtonWithIcon";
 
 const Auth = () => {
   const [isLoginForm, setAuthForm] = useState(true);
@@ -39,6 +40,7 @@ const Auth = () => {
           >
             {isLoginForm ? "회원가입하기" : "로그인하기"}
           </button>
+          <ButtonWithIcon content="구글 로그인 테스트" />
         </div>
       </div>
       {isLoginForm || <div className="sticky bottom-0 text-lg font-bold text-center text-gray-100 transform -translate-x-1/2 left-1/2 animate-bounce">

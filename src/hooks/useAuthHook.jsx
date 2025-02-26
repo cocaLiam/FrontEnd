@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import { decodeToken } from "@/utils/jwtUtils"; // JWT 토큰을 디코딩하는 유틸리티 함수
 import { useHttpHook } from "@/hooks/useHttpHook"; // HTTP 요청을 처리하는 커스텀 훅
+import { andInterface } from "@/utils/android/androidInterFace";
 
 // useAuthHook: 인증 관련 로직을 캡슐화한 커스텀 훅
 export const useAuthHook = ({
@@ -163,6 +164,7 @@ export const useAuthHook = ({
     setToken(null); // 토큰 제거
     setDbObjectId(null); // 사용자 ID 제거
     setTokenExpirationDate(null); // 토큰 만료 시간 제거
+    andInterface.setLocalStorageToken("{\"dbObjectId\":\"\",\"token\":\"\",\"expiration\":\"\"}"); // Android Cache Data 삭제제
     console.log(`Logout Called`);
 
     // 로컬 스토리지에서 인증 데이터 제거

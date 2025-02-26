@@ -46,11 +46,9 @@ export const AuthProvider = ({ children }) => {
       if(storedData === null){
         // Web 로컬 스토리지에 Token 없을 시, Andorid 로컬 스토리지 검색
         storedData = andInterface.getLocalStorageToken()
-        console.log(`디버깅 > getLocalStorageToken 호출 @`);
       }else{
         // Web 로컬 스토리지에 Token 있을 시, Andorid 로컬 스토리지 저장
-        const isSucess = andInterface.setLocalStorageToken(storedData);
-        console.log(`디버깅 > setLocalStorageToken 호출 @ : ${isSucess}`)
+        andInterface.setLocalStorageToken(storedData);
       }
 
       storedData = JSON.parse(storedData);

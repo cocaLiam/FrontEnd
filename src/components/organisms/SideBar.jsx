@@ -53,7 +53,7 @@ export default function SideBar({ isOpen, onClose }) {
             content={<Link to="/Settings">Settings</Link>}
             onClick={onClose}
           />
-          {/* Login 버튼 */}
+          {/* LogOut 버튼 */}
           {authStatus.isLoggedIn && (
             <ButtonWithIcon
               icon={LogoutIcon}

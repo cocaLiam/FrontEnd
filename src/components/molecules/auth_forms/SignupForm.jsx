@@ -1,12 +1,16 @@
 // @/components/molecules/auth_forms/SignupForm
-import { useState, useContext } from "react";
-
-import { AuthContext } from "@/context/AuthContext";
-import ErrorModal from "@/components/molecules/ErrorModal";
+import { useState, useContext, useEffect, useCallback, useRef } from "react";
 
 import { handleError } from "@/utils/errorHandler"; // 에러 처리 함수 import
+import { useHttpHook } from "@/hooks/useHttpHook";
+
+import ErrorModal from "@/components/molecules/ErrorModal";
 
 import LoadingSpinner from "@/components/atoms/LoadingSpinner";
+import ButtonWithIcon from "@/components/atoms/ButtonWithIcon";
+
+import { AuthContext } from "@/context/AuthContext";
+
 
 const SignupForm = () => {
   const [formData, setFormData] = useState({
@@ -31,7 +35,14 @@ const SignupForm = () => {
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
+  const [sendButtonContent, setSendButtonContent] = useState("전송");
+  const [emailTimer, setEmailTimer] = useState(null);
+  const [verificationInput, setVerificationInput] = useState(false)
+  const [verificationCode, setVerificationCode] = useState(["","","",""]);
+  const inputRefs = useRef([]);
+
   const authStatus = useContext(AuthContext);
+  const { sendRequest } = useHttpHook();
 
   // 유효성 검사 함수
   const validateField = (name, value) => {
@@ -142,6 +153,93 @@ const SignupForm = () => {
     }
   };
 
+  const startEmailTimer = useCallback((seconds) => {
+    // 기존 타이머가 있다면 제거
+    if (emailTimer) {clearInterval(emailTimer); setVerificationInput(false);}
+
+    const timer = setInterval(() => {
+      seconds--;
+
+      // 시간 형식 변환 (분:초)
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = seconds % 60;
+      const timeString = `${minutes}분 ${remainingSeconds
+        .toString()
+        .padStart(2, "0")}초`;
+
+      if (seconds <= 0) {
+        clearInterval(timer);
+        setVerificationInput(false);
+        setSendButtonContent("재전송");
+      } else {
+        setSendButtonContent(timeString);
+      }
+    }, 1000);
+
+    setEmailTimer(timer);
+  },[emailTimer]);
+
+  const requestEmailCode = useCallback(async (userEmail) => {
+    setIsLoading(true);
+    console.log(`userEmail : ${userEmail}`)
+    try {
+      const responseData = await sendRequest({
+        url: "/api/oauth/requestEmailCode",
+        method: "POST",
+        data: {userEmail: userEmail}
+      });
+      console.log(`responseData : ${JSON.stringify(responseData,null,2)}`);
+      startEmailTimer(10);
+      setVerificationInput(true)
+    } catch (err) {
+      handleError(err, setErrorMessage, setIsErrorModalOpen);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [sendRequest,startEmailTimer]);
+
+  const checkValCode = useCallback(async (pinCode) => {
+    setIsLoading(true);
+    try {
+      const responseData = await sendRequest({
+        url: "/api/oauth/checkValCode",
+        method: "POST",
+        data: {pinCode: pinCode}
+      });
+      console.log(`responseData : ${JSON.stringify(responseData,null,2)}`);
+      console.log(responseData);
+    } catch (err) {
+      handleError(err, setErrorMessage, setIsErrorModalOpen);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [sendRequest]);
+  
+  const handleCodeChange = useCallback((index, value) => {
+    if (value.length > 1) return;
+  
+    const newCode = [...verificationCode];
+    newCode[index] = value;
+    setVerificationCode(newCode);
+  
+    if (value && index < verificationCode.length - 1) {
+      inputRefs.current[index + 1].focus();
+    }
+  }, [verificationCode]);
+
+  const handleKeyDown = useCallback((index, e) => {
+    if (e.key === "Backspace" && !verificationCode[index] && index > 0) {
+      inputRefs.current[index - 1].focus();
+    }
+  }, [verificationCode]);
+
+  // 컴포넌트가 언마운트될 때 타이머 정리
+  useEffect(() => {
+    return () => {
+      if (emailTimer) clearInterval(emailTimer);
+    };
+  }, [emailTimer]);
+
   return (
     <form onSubmit={handleSubmit} className="mt-8 space-y-6">
       {isLoading && <LoadingSpinner />}
@@ -151,19 +249,55 @@ const SignupForm = () => {
         content={errorMessage}
       />
       <div className="space-y-4">
-        <div>
-          <input
-            name="userEmail"
-            type="email"
-            value={formData.userEmail}
-            onChange={handleChange}
-            required
-            className="relative block w-full px-3 py-2 text-white placeholder-gray-400 bg-gray-800 border border-gray-700 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="이메일"
-          />
+        <div className="space-y-4">
+          <div className="flex flex-row items-center space-x-2">
+            <input
+              name="userEmail"
+              type="email"
+              value={formData.userEmail}
+              onChange={handleChange}
+              required
+              className="relative block w-full px-3 py-2 text-white placeholder-gray-400 bg-gray-800 border border-gray-700 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="이메일"
+              disabled={sendButtonContent !== "전송"} // 타이머 동작 중에는 입력창 비활성화
+            />
+            {formData.userEmail !== "" && formErrors.userEmail === "" && (
+              // Email요청 전송 버튼
+              <ButtonWithIcon
+                content={sendButtonContent}
+                onClick={() => {
+                  if (
+                    sendButtonContent === "전송" ||
+                    sendButtonContent === "재전송"
+                  ) {
+                    console.log(
+                      `formErrors : ${JSON.stringify(formErrors, null, 2)}`
+                    );
+                    requestEmailCode(formData.userEmail)
+                  }
+                }}
+              />
+            )}
+          </div>
           {formErrors.userEmail && (
             <p className="text-sm text-red-500">{formErrors.userEmail}</p>
           )}
+          {verificationInput && <div className="flex justify-center space-x-2">
+            {/* PinCode 검사 */}
+            {verificationCode.map((digit, index) => (
+              <input
+                key={index}
+                ref={(el) => (inputRefs.current[index] = el)}
+                type="text"
+                maxLength="1"
+                className="w-10 h-10 text-xs font-bold text-center text-white bg-gray-800 border-2 border-gray-700 rounded-lg focus:border-blue-500 focus:outline-none"
+                value={digit}
+                onChange={(e) => handleCodeChange(index, e.target.value)}
+                onKeyDown={(e) => handleKeyDown(index, e)}
+              />
+            ))}
+            <ButtonWithIcon content="전송" onClick={() => checkValCode(verificationCode.join(''))}/>
+          </div>}
         </div>
         <div>
           <input

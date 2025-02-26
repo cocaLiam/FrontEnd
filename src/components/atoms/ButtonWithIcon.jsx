@@ -29,14 +29,14 @@ function ButtonWithIcon({
     "
       onClick={onClick}
     >
-      <Icon className="w-5 h-5" />
-      {content && <span>{content}</span>}  {/* content가 있을 때만 span 렌더링 */}
+      {Icon && <Icon className="w-5 h-5" />}
+      {content && <span className='text-nowrap'>{content}</span>}  {/* content가 있을 때만 span 렌더링 */}
     </button>
   );
 }
 
 ButtonWithIcon.propTypes = {
-  icon: PropTypes.elementType.isRequired,
+  icon: PropTypes.elementType,
   content: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.element

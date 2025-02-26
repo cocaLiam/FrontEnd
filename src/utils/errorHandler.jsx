@@ -35,8 +35,14 @@ export const handleError = (err, setErrorMessage, setIsErrorModalOpen) => {
     case 409:
       message = "이미 존재하는 Data 입니다. : "
       break;
+    case 421:
+      message = "Email이 유효 하지 않습니다."
+      break;
     case 422:
       message = "사용자 입력값 유효하지 않음\n 비밀번호 6글자 이상 : "
+      break;
+    case 423:
+      message = "PinCode가 유효하지 않습니다.\n PinCode를 제대로 입력 해 주세요"
       break;
     case 500:
       message = "로그인 할 수 없습니다. [ 서버 에러 : 비밀번호 검증 오류, DB query ] : "
