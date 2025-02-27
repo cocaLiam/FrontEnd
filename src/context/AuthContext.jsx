@@ -7,5 +7,6 @@ export const AuthContext = createContext({
   login         : async () => {},
   signup        : async () => {},
   refreshToken  : async () => {},
+  saveToken     : (dbObjectId, token) => {}, 
   logout        : async () => {},
 });

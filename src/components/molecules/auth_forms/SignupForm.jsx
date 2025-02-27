@@ -11,7 +11,7 @@ import ButtonWithIcon from "@/components/atoms/ButtonWithIcon";
 
 import { AuthContext } from "@/context/AuthContext";
 
-
+const VALIDATION_CODE_EXPRIRE_TIME = 30;
 const SignupForm = () => {
   const [formData, setFormData] = useState({
     userName: "",
@@ -35,11 +35,11 @@ const SignupForm = () => {
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const [sendButtonContent, setSendButtonContent] = useState("전송");
-  const [emailTimer, setEmailTimer] = useState(null);
-  const [verificationInput, setVerificationInput] = useState(false)
-  const [verificationCode, setVerificationCode] = useState(["","","",""]);
-  const inputRefs = useRef([]);
+  const [sendButtonContent, setSendButtonContent] = useState("전송"); // Email 요청 버튼 상태
+  const [emailTimer, setEmailTimer] = useState(null);  // 전송 후 제한시간
+  const [verificationInput, setVerificationInput] = useState(false);  // pinCode 입력칸 disable
+  const [verificationCode, setVerificationCode] = useState(["","","",""]);  // pinCode UI 저장
+  const inputRefs = useRef([]); // pinCode Data 저장
 
   const authStatus = useContext(AuthContext);
   const { sendRequest } = useHttpHook();
@@ -179,17 +179,16 @@ const SignupForm = () => {
     setEmailTimer(timer);
   },[emailTimer]);
 
-  const requestEmailCode = useCallback(async (userEmail) => {
+  const verifyEmail = useCallback(async (userEmail) => {
     setIsLoading(true);
-    console.log(`userEmail : ${userEmail}`)
     try {
       const responseData = await sendRequest({
-        url: "/api/oauth/requestEmailCode",
+        url: "/api/oauth/verifyEmail",
         method: "POST",
-        data: {userEmail: userEmail}
+        data: {userEmail}
       });
       console.log(`responseData : ${JSON.stringify(responseData,null,2)}`);
-      startEmailTimer(10);
+      startEmailTimer(VALIDATION_CODE_EXPRIRE_TIME);
       setVerificationInput(true)
     } catch (err) {
       handleError(err, setErrorMessage, setIsErrorModalOpen);
@@ -198,22 +197,26 @@ const SignupForm = () => {
     }
   }, [sendRequest,startEmailTimer]);
 
-  const checkValCode = useCallback(async (pinCode) => {
+  const checkEmail = useCallback(async (userEmail,pinCode) => {
     setIsLoading(true);
     try {
       const responseData = await sendRequest({
-        url: "/api/oauth/checkValCode",
+        url: "/api/oauth/checkEmail",
         method: "POST",
-        data: {pinCode: pinCode}
+        data: {userEmail, pinCode}
       });
       console.log(`responseData : ${JSON.stringify(responseData,null,2)}`);
       console.log(responseData);
+      clearInterval(emailTimer)
+      setVerificationInput(false);
+      setSendButtonContent("인증 성공")
+      // startEmailTimer(0)
     } catch (err) {
       handleError(err, setErrorMessage, setIsErrorModalOpen);
     } finally {
       setIsLoading(false);
     }
-  }, [sendRequest]);
+  }, [emailTimer, sendRequest]);
   
   const handleCodeChange = useCallback((index, value) => {
     if (value.length > 1) return;
@@ -259,7 +262,7 @@ const SignupForm = () => {
               required
               className="relative block w-full px-3 py-2 text-white placeholder-gray-400 bg-gray-800 border border-gray-700 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="이메일"
-              disabled={sendButtonContent !== "전송"} // 타이머 동작 중에는 입력창 비활성화
+              disabled={sendButtonContent !== "전송" && sendButtonContent !== "재전송"} // 타이머 동작 중에는 입력창 비활성화
             />
             {formData.userEmail !== "" && formErrors.userEmail === "" && (
               // Email요청 전송 버튼
@@ -270,10 +273,7 @@ const SignupForm = () => {
                     sendButtonContent === "전송" ||
                     sendButtonContent === "재전송"
                   ) {
-                    console.log(
-                      `formErrors : ${JSON.stringify(formErrors, null, 2)}`
-                    );
-                    requestEmailCode(formData.userEmail)
+                    verifyEmail(formData.userEmail)
                   }
                 }}
               />
@@ -296,7 +296,7 @@ const SignupForm = () => {
                 onKeyDown={(e) => handleKeyDown(index, e)}
               />
             ))}
-            <ButtonWithIcon content="전송" onClick={() => checkValCode(verificationCode.join(''))}/>
+            <ButtonWithIcon content="전송" onClick={() => checkEmail(formData.userEmail,verificationCode.join(''))}/>
           </div>}
         </div>
         <div>
@@ -373,7 +373,12 @@ const SignupForm = () => {
 
       <button
         type="submit"
-        className="w-full px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        // className="w-full px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        className={`w-full px-4 py-2 text-sm font-medium text-white border border-transparent rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
+          ${sendButtonContent === "인증 성공" 
+            ? "bg-blue-600 hover:bg-blue-700" 
+            : "bg-gray-500 cursor-not-allowed"}`}
+        disabled={!(sendButtonContent === "인증 성공")}
       >
         회원가입
       </button>

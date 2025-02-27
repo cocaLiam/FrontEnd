@@ -9,13 +9,14 @@ import PropTypes from 'prop-types';
 function ButtonWithIcon({ 
   icon: Icon, 
   content = '', 
+  classStyle = "",
   onClick = () => {} 
 }) {
   // icon: Icon -> props로 받은 icon을 Icon이라는 이름으로 구조분해할당
   // = DefaultIcon -> 기본값 설정
   return (
     <button 
-    className="
+    className={`
       inline-flex        // display: inline-flex; - 인라인 요소처럼 배치되면서 flex 속성 가짐
       items-center       // align-items: center; - flex 아이템들을 수직 중앙 정렬
       space-x-2          // space-x-2: flex 아이템 사이의 간격을 설정
@@ -25,8 +26,9 @@ function ButtonWithIcon({
       rounded-lg         // border-radius: 0.25rem; - 모서리를 4px 둥글게
       bg-gray-800      // background-color: #색상코드; - 밝은 회색 배경
       hover:bg-grey      // hover 시 background-color 변경 - 마우스 오버시 회색으로 변경
-      text-white       // 글자섹을 하얀색으로로
-    "
+      text-white       // 글자색을 하얀색으로
+      ${classStyle}
+    `}
       onClick={onClick}
     >
       {Icon && <Icon className="w-5 h-5" />}
@@ -41,7 +43,8 @@ ButtonWithIcon.propTypes = {
     PropTypes.string,
     PropTypes.element
   ]),
-  onClick: PropTypes.func
+  classStyle: PropTypes.string,
+  onClick: PropTypes.func.isRequired
 };
 
 export default ButtonWithIcon;

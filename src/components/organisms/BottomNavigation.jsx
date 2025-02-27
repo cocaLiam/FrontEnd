@@ -37,6 +37,7 @@ const BottomNavigation = ({ onDrawerOpen }) => {
   const handleInputConfirm = (inputValue) => {
     console.log("Input 입력값 : ",inputValue);
     setIsConfirmModalOpen(false)
+    setInputModalOpen(false)
   }
 
   useEffect(() => {
@@ -72,7 +73,6 @@ const BottomNavigation = ({ onDrawerOpen }) => {
       <InputModal
         isOpen={isInputModalOpen}
         onConfirm={handleInputConfirm}
-        s
         setClose={() => setInputModalOpen(false)}
         title="TTTTTT"
         content="CCCCCCCCCCCCCCC"

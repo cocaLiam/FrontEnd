@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
   const [tokenExpirationDate, setTokenExpirationDate] = useState(null); // 토큰 만료 시간
 
   // useAuthHook에서 제공하는 인증 관련 함수들
-  const { login, signup, refreshToken, logout } = useAuthHook({
+  const { login, signup, refreshToken, saveToken, logout } = useAuthHook({
     setToken,
     setDbObjectId,
     setTokenExpirationDate,
@@ -46,6 +46,9 @@ export const AuthProvider = ({ children }) => {
       if(storedData === null){
         // Web 로컬 스토리지에 Token 없을 시, Andorid 로컬 스토리지 검색
         storedData = andInterface.getLocalStorageToken()
+        if(storedData === null || storedData === undefined){
+          return null
+        }
       }else{
         // Web 로컬 스토리지에 Token 있을 시, Andorid 로컬 스토리지 저장
         andInterface.setLocalStorageToken(storedData);
@@ -75,6 +78,7 @@ export const AuthProvider = ({ children }) => {
         login, // 로그인 함수
         signup, // 회원가입 함수
         refreshToken, // 토큰 갱신 함수
+        saveToken,  // 소셜로그인 전용 LocalStorage 토큰 저장 함수수
         logout, // 로그아웃 함수
       }}
     >

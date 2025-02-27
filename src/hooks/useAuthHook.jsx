@@ -17,7 +17,8 @@ export const useAuthHook = ({
    * @param {string} userEmail - 사용자의 이메일
    * @param {string} password - 사용자의 비밀번호
    */
-  const login = useCallback(async (userEmail, password) => {
+  const login = useCallback(
+    async (userEmail, password) => {
       // 로그인 API 요청
       const responseData = await sendRequest({
         url: "/api/user/login", // 로그인 엔드포인트
@@ -58,7 +59,8 @@ export const useAuthHook = ({
    * @param {string} homeAddress - 사용자 주소
    * @param {string} phoneNumber - 사용자 전화번호
    */
-  const signup = useCallback(async (userName, userEmail, password, homeAddress, phoneNumber) => {
+  const signup = useCallback(
+    async (userName, userEmail, password, homeAddress, phoneNumber) => {
       // 회원가입 API 요청
       const responseData = await sendRequest({
         url: "/api/user/signup", // 회원가입 엔드포인트
@@ -67,32 +69,16 @@ export const useAuthHook = ({
       });
 
       // 응답 데이터에서 사용자 ID와 토큰 추출
-      const { dbObjectId, token, emailVerified } = responseData;
+      const { dbObjectId, token } = responseData;
       console.log("responseData : ", responseData);
 
-      // TODO: 나중에 이메일 인증 로직 필요함
       if (dbObjectId && token) {
-        console.log(
-          "회원가입 성공:",
-          responseData,
-          " - ",
-          dbObjectId,
-          " - ",
-          token
-        );
-
-        // 이메일 인증 여부 확인
-        if (!emailVerified) {
-          console.log("이메일 인증이 필요합니다. 인증 링크를 확인하세요.");
-          // 이메일 인증 관련 로직 추가
-        }
+        // 회원가입 후 자동으로 로그인 처리
+        await login(userEmail, password);
       } else {
         console.error("회원가입 실패:", responseData);
         throw new Error("회원가입에 실패했습니다.");
       }
-
-      // 회원가입 후 자동으로 로그인 처리
-      await login(userEmail, password);
     },
     [sendRequest, login]
   );
@@ -103,15 +89,34 @@ export const useAuthHook = ({
    * @param {string} token - 현재 토큰
    * @param {Date} expirationDate - 현재 토큰의 만료 시간
    */
-  const refreshToken = useCallback(async (dbObjectId, token, expirationDate) => {
+  const refreshToken = useCallback(
+    async (dbObjectId, token, expirationDate) => {
       // 현재 토큰의 만료 시간 계산
       const jwtDecodedData = decodeToken(token);
       const tokenExpiration =
         expirationDate || new Date(jwtDecodedData.exp * 1000);
 
+      // 토큰 갱신 API 요청
+      const responseData = await sendRequest({
+        url: "/api/user/refreshToken", // 토큰 갱신 엔드포인트
+        method: "POST", // HTTP 메서드
+        data: { dbObjectId: dbObjectId }, // 요청 데이터
+        headers: { Authorization: `Bearer ${token}` }, // 현재 토큰을 Authorization 헤더에 포함
+      });
+
+      // 응답 데이터에서 새로운 토큰 추출
+      const { newToken } = responseData;
+
+      // 새로운 토큰의 만료 시간 계산
+      const newTokenExpiration = new Date(decodeToken(newToken).exp * 1000);
+
+      // 상태 업데이트
+      setToken(newToken); // 새로운 토큰 저장
+      setDbObjectId(dbObjectId); // 사용자 ID 유지
+      setTokenExpirationDate(newTokenExpiration); // 새로운 토큰 만료 시간 저장
+
       // 남은 시간 계산
       const timeLeft = tokenExpiration.getTime() - new Date().getTime();
-
       // 남은 시간이 60분 미만일 경우 토큰 갱신
       if (timeLeft < 60 * 60 * 1000) {
         // 토큰 갱신 API 요청
@@ -157,14 +162,43 @@ export const useAuthHook = ({
   );
 
   /**
+   * 소셜 로그인 시, 사용하는 Token 셋업 함수수
+   */
+  const saveToken = useCallback(
+    async (dbObjectId, token) => {
+
+      // 새로운 토큰의 만료 시간 계산
+      const newTokenExpiration = new Date(decodeToken(token).exp * 1000);
+
+      // 상태 업데이트
+      setToken(token); // 새로운 토큰 저장
+      setDbObjectId(dbObjectId); // 사용자 ID 유지
+      setTokenExpirationDate(newTokenExpiration); // 새로운 토큰 만료 시간 저장
+
+      // TODO:소셜로그인시 id,pw로 로그인하는게 아니라 login함수를 사용 할 수 없으므로 refresh에서도 무지성으로 LocalStorage 저장 로직으로 바꿈 추후 고민해서 바꿔야함
+      localStorage.setItem(
+        "tokenData",
+        JSON.stringify({
+          dbObjectId,
+          token,
+          expiration: newTokenExpiration
+        })
+      );
+    },
+    []
+  );
+
+  /**
    * 로그아웃 함수
    */
-  const logout = useCallback(async() => {
+  const logout = useCallback(async () => {
     // 상태 초기화
     setToken(null); // 토큰 제거
     setDbObjectId(null); // 사용자 ID 제거
     setTokenExpirationDate(null); // 토큰 만료 시간 제거
-    andInterface.setLocalStorageToken("{\"dbObjectId\":\"\",\"token\":\"\",\"expiration\":\"\"}"); // Android Cache Data 삭제제
+    andInterface.setLocalStorageToken(
+      '{"dbObjectId":"","token":"","expiration":""}'
+    ); // Android Cache Data 삭제제
     console.log(`Logout Called`);
 
     // 로컬 스토리지에서 인증 데이터 제거
@@ -172,5 +206,5 @@ export const useAuthHook = ({
   }, [setToken, setDbObjectId, setTokenExpirationDate]);
 
   // 인증 관련 함수들을 반환
-  return { login, signup, refreshToken, logout };
+  return { login, signup, refreshToken, saveToken, logout };
 };
