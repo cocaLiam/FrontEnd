@@ -35,6 +35,10 @@ export const useHttpHook = () => {
     const source = axios.CancelToken.source();
     activeRequests.current.push(source);
 
+    console.log("#############DEBUG##############")
+    console.log(BACKENDURL)
+    console.log("#############DEBUG##############")
+    
     // 상세 로깅 추가
     console.log('HTTP > 전체 설정값:', JSON.stringify(config,null, 2));
 
@@ -43,9 +47,7 @@ export const useHttpHook = () => {
         ...config,
         cancelToken: source.token
       });
-      console.log("#############DEBUG##############")
-      console.log(BACKENDURL)
-      console.log("#############DEBUG##############")
+
 
       activeRequests.current = activeRequests.current.filter(
         req => req !== source
