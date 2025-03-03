@@ -20,6 +20,7 @@ export const useAuthHook = ({
   const login = useCallback(
     async (userEmail, password) => {
       // 로그인 API 요청
+      
       const responseData = await sendRequest({
         url: "/api/user/login", // 로그인 엔드포인트
         method: "POST", // HTTP 메서드
