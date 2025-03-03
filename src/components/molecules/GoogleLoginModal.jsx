@@ -21,7 +21,7 @@ const GoogleLoginModal = ({ isOpen, onClose }) => {
 
   const handleCredentialResponse = useCallback(async (response) => {
     const credential = response.credential;
-    
+    //
     setIsLoading(true);
     try {
       const responseData = await sendRequest({
