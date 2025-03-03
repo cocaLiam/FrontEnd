@@ -1,7 +1,6 @@
 // components/molecules/MultiSelectModal.jsx
 import PropTypes from "prop-types";
 
-import DebugIcon from "@/components/atoms/icons/DebugIcon";
 import CloseButton from "@/components/atoms/CloseButton";
 import Checkbox from "@/components/atoms/Checkbox"; // 체크박스 컴포넌트를 사용할 것을 가정
 
