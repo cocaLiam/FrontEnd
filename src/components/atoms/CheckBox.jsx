@@ -1,7 +1,7 @@
-// components/atoms/Checkbox.jsx
+// components/atoms/CheckBox.jsx
 import PropTypes from "prop-types";
 
-const Checkbox = ({ id, name, context, checked, onChange, color = "text-gray-700" }) => {
+const CheckBox = ({ id, name, context, checked, onChange, color = "text-gray-700" }) => {
   return (
     <label
       htmlFor={id}
@@ -34,7 +34,7 @@ const Checkbox = ({ id, name, context, checked, onChange, color = "text-gray-700
   );
 };
 
-Checkbox.propTypes = {
+CheckBox.propTypes = {
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   context: PropTypes.string.isRequired,
@@ -44,4 +44,4 @@ Checkbox.propTypes = {
   color: PropTypes.string,
 };
 
-export default Checkbox;
+export default CheckBox;

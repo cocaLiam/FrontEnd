@@ -2,7 +2,7 @@
 import PropTypes from "prop-types";
 
 import CloseButton from "@/components/atoms/CloseButton";
-import Checkbox from "@/components/atoms/Checkbox"; // 체크박스 컴포넌트를 사용할 것을 가정
+import CheckBox from "@/components/atoms/CheckBox"; // 체크박스 컴포넌트를 사용할 것을 가정
 
 import { useState } from "react";
 
@@ -52,7 +52,7 @@ const MultiSelectModal = ({
         </legend>
         <div className="flex flex-col gap-1 font-semibold">
           {contents.map((content) => (
-            <Checkbox
+            <CheckBox
               key={content} // React에서 key는 필수!
               id={content}
               name="multi-select"
