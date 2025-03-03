@@ -54,13 +54,13 @@ const MultiSelectModal = ({
           {contents.map((content) => (
             <Checkbox
               key={content} // React에서 key는 필수!
-              icon={<DebugIcon />}
-              context={content}
-              color="text-blue-500"
               id={content}
               name="multi-select"
+              context={content}
+              icon={<DebugIcon />}
               checked={selectedItems.includes(content)} // 선택 상태 관리
               onChange={() => toggleSelection(content)}
+              color="text-blue-500"
             />
           ))}
           <div className="grid grid-cols-2 gap-2 px-1 py-2">
