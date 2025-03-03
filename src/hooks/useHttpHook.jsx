@@ -2,14 +2,12 @@
 import axios from 'axios';
 import { useCallback, useRef, useEffect } from 'react';
 
-const BACKENDURL = 'https://cocabot-backendprod-edfd59f6ff11.herokuapp.com/'
-// const BACKENDURL = 'http://localhost:5000/',
-// const BACKENDURL = 'http://192.168.45.175:5000/',
-// const BACKENDURL = 'https://backend.cocabot.com',
+// const BACKENDURL = 'https://cocabot-backendprod-edfd59f6ff11.herokuapp.com/'
+// const BACKENDURL = 'http://localhost:5000/'
+// const BACKENDURL = 'http://192.168.45.175:5000/'
+const BACKENDURL = 'https://backend.cocabot.com'
+
 const axiosInstance = axios.create({
-  // baseURL: 'http://localhost:5000/',
-  // baseURL: 'http://192.168.45.175:5000/',
-  // baseURL: 'https://backend.cocabot.com',
   baseURL: BACKENDURL,
   timeout: 5000,
 });
