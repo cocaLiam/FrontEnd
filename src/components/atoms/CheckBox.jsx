@@ -1,7 +1,7 @@
 // components/atoms/Checkbox.jsx
 import PropTypes from "prop-types";
 
-const Checkbox = ({ id, name, context, icon, checked, onChange, color = "text-gray-700" }) => {
+const Checkbox = ({ id, name, context, checked, onChange, color = "text-gray-700" }) => {
   return (
     <label
       htmlFor={id}

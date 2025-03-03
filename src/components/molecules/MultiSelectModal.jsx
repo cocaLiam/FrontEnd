@@ -58,7 +58,6 @@ const MultiSelectModal = ({
               id={content}
               name="multi-select"
               context={content}
-              icon={<DebugIcon />}
               checked={selectedItems.includes(content)} // 선택 상태 관리
               onChange={() => toggleSelection(content)}
               color="text-blue-500"
