@@ -3,9 +3,8 @@ import axios from 'axios';
 import { useCallback, useRef, useEffect } from 'react';
 
 // const BACKENDURL = 'https://cocabot-backendprod-edfd59f6ff11.herokuapp.com/'
-// const BACKENDURL = 'http://localhost:5000/'
-// const BACKENDURL = 'http://192.168.45.175:5000/'
-const BACKENDURL = 'https://backend.cocabot.com'
+const BACKENDURL = 'http://192.168.45.196:5000/'
+// const BACKENDURL = 'https://backend.cocabot.com'
 
 const axiosInstance = axios.create({
   baseURL: BACKENDURL,
@@ -33,10 +32,6 @@ export const useHttpHook = () => {
     const source = axios.CancelToken.source();
     activeRequests.current.push(source);
 
-    console.log("#############DEBUG##############")
-    console.log(BACKENDURL)
-    console.log("#############DEBUG##############")
-    
     // 상세 로깅 추가
     console.log('HTTP > 전체 설정값:', JSON.stringify(config,null, 2));
 
