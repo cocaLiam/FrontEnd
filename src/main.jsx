@@ -5,7 +5,6 @@ import App from './App.jsx'
 import 'flowbite';  // flowbite-react가 아닌 flowbite를 import
 import { AuthProvider } from '@/context/AuthProvider.jsx';
 
-// CICD TEST
 /* eslint-disable no-unused-vars */
 import {
   HiCog, // 설정 톱니바퀴
