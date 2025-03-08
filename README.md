@@ -94,19 +94,19 @@ $ npm run dev -- --port 3000 --host
 ```
 
 ## 👉 빌드 및 서버 업데이트
-### FrontEnd code 배포판 빌드
-***npm run build 시, dist package 파일들을 AWS S3 직접 업로드 하면 된다***
+### FrontEnd code 배포판 빌드 방법 2개
 ```bash
+1.
 $ npm run build
-```
+npm run build 후, dist/ 디렉토리에 있는 ㄹ파일들을 AWS S3 직접 업로드 하면 된다
 
-```bash
+2.
 $ git commit -m "Release_v${Number}.${Number} [${커밋 내용}]"
 ex) git commit -m "Release_v1.0 [로그인기능 추가]"
 ```
 
 ### [vite + React 프로젝트] Local Test ( with hosted backend )
-***localhost:3000 으로 서버구성해서 dist 디렉토리에 있는 코드 로컬실행***
+*** build 결과물을 Local 에서 Test 하는 방법***
 ```bash
 $ npm run build
 $ npm run preview -- --port 3000 --host
