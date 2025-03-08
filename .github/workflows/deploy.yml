@@ -77,15 +77,15 @@ jobs:
       - name: 8.Deploy to S3
         if: env.is_release == 'true'
         run: |
-          aws s3 sync ./dist s3://${{ secrets.AWS_S3_BUCKET_NAME }} --delete
-          aws s3 ls s3://${{ secrets.AWS_S3_BUCKET_NAME }}
+          aws s3 sync ./dist s3://app.cocabot.com --delete
+          aws s3 ls s3://app.cocabot.com
 # aws s3 sync ./dist s3://app.cocabot.com --delete
 # aws s3 ls s3://app.cocabot.com
       # 9. CloudFront 캐시 무효화 (조건에 따라 실행)
       - name: 9.Invalidate CloudFront cache
         if: env.is_release == 'true'
         run: |
-          aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_CLOUD_FRONT_ID }} --paths "/*"
+          aws cloudfront create-invalidation --distribution-id E1QI6AXVOT0ID4 --paths "/*"
 
     # aws cloudfront create-invalidation --distribution-id E1QI6AXVOT0ID4 --paths "/*"
 
