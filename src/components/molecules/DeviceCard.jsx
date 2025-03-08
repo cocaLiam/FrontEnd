@@ -121,11 +121,11 @@ const DeviceCard = ({
     if (isActive) {
       console.log("비활성화 API 호출");
       // 비활성화 API 호출 로직
-      andInterface.pubSendData(macAddress, deviceType, { toggleSwitch: "0" });
+      andInterface.pubSendData(macAddress, deviceType, { "command": "0" });
     } else {
       console.log("활성화 API 호출");
       // 활성화 API 호출 로직
-      andInterface.pubSendData(macAddress, deviceType, { toggleSwitch: "1" });
+      andInterface.pubSendData(macAddress, deviceType, { "command": "1" });
     }
   };
 
