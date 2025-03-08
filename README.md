@@ -12,8 +12,9 @@
 - 컴포넌트 기반 아키텍처
 - mongoose (mongoDB), (cloud Server DB : Atlas)
   - [MongoDB Atlas](https://cloud.mongodb.com/v2#/org/66fcba7d069a4d43c73cf7af/projects)
-- 구글 MAP_API 사용
-  - [Google Cloud Console](https://console.cloud.google.com/apis/credentials?hl=ko&project=effective-brook-437306-h0)
+- Mail 및 소셜로그인 방법
+  - ***Google OAuth***
+    - [Google Cloud](https://console.cloud.google.com/welcome?rapt=AEjHL4OJjFc4lzLNcPNlXrzCFEk45oarFz-owP3pH7s5GC9KMcHKLrYImjWonYlwViLawL4IKSzLOyJDlzlqi-pTsoabi1ETDflnLRV5rtVjyiFK-EuHj7Q&inv=1&invt=AbrdaA&project=oauthmailer-452010)
 - FrontEnd 서버
   - ***AWS s3***
     - [awsS3] https://eu-north-1.console.aws.amazon.com/console/home?region=eu-north-1#
