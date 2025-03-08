@@ -54,9 +54,8 @@ src/
 ```
 
 ### 환경변수 설명
-  - `.env` <- 개발환경, 배포판 공통 환경변수
-  - `.env.development` <- 개발환경 환경변수
-  - `.env.production`  <- 배포판 환경변수
+  - `.env.development` <- 개발환경 환경변수 (npm run dev 시 참조할 환경 변수)
+  - `.env.production`  <- 배포판 환경변수   (npm run build 시 참조할 환경 변수)
   - `github에 "Actions secrets and variables"` <- AWS S3 버킷 업로드 코드 ( with hosted backend )
 
 ___
@@ -78,34 +77,38 @@ $ npm i
 
 ___
 
-#### 
-# FrontEnd 실행 방법 
-##### 터미널2개 필요
-#####  - Tailwind CSS의 JIT(Just-In-Time) 모드
-#####  - vite의 HMR(Hot Module Replacement)
-#### 
+## 🚀 Getting Started
 
-### [tailWind CSS 실시간 적용 ]
+## 👉 Local Test 환경
+### [tailWind CSS 실시간 적용 (Tailwind CSS의 JIT(Just-In-Time) 모드) ]
 ***변경사항 감지시 ./src/output.css를 빌드해 실시간으로 Web에 적용***
 ```bash
 $ npx tailwindcss -i ./src/index.css -o ./src/output.css --watch
 ```
+
+### [vite + React 프로젝트] Local Test ( with local backend )
+***npm run dev 시, .env.development 환경변수를 참조해 빌드***
+```bash
+$ npm run dev -- --port 3000 --host
+```
+
+## 👉 빌드 및 서버 업데이트
 ### FrontEnd code 배포판 빌드
-***npm run build 시, .env.production 환경변수를 참조해 빌드***
-***npm run build 시, dist package 파일들을 AWS S3 업로드 하면 된다***
+***npm run build 시, dist package 파일들을 AWS S3 직접 업로드 하면 된다***
 ```bash
 $ npm run build
 ```
+
+```bash
+$ git commit -m "Release_v${Number}.${Number} [${커밋 내용}]"
+ex) git commit -m "Release_v1.0 [로그인기능 추가]"
+```
+
 ### [vite + React 프로젝트] Local Test ( with hosted backend )
 ***localhost:3000 으로 서버구성해서 dist 디렉토리에 있는 코드 로컬실행***
 ```bash
 $ npm run build
 $ npm run preview -- --port 3000 --host
-```
-### [vite + React 프로젝트] Local Test ( with local backend )
-***npm run dev 시, .env.development 환경변수를 참조해 빌드***
-```bash
-$ npm run dev -- --port 3000 --host
 ```
 
 ___
