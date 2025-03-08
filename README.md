@@ -33,34 +33,20 @@ src/
 ├── asset/                        # 이미지 파일들 (svg ..)
 |   └──                           
 ├── components/                   # UI 컴포넌트들을 모아둔 디렉토리 
-|   ├── templates/                # 전체 레이아웃 구조 
-|   │   └── MainLayout.jsx        # 사이드바, GNB 등을 포함한 전체 레이아웃
-|   ├── organisms/                # 큰 구조의 독립적 영역 [ Gnb, SideBar]
-|   │   ├── Sidebar.jsx           # 사이드 네비게이션 영역
-|   │   └── Gnb.jsx               # 글로벌 네비게이션 바 영역
+|   ├── atoms/                    # 가장 기본이 되는 컴포넌트 [ button, Input, spinner, RadioButton]
+|   │   └── icons/                # Icon [ jsx 타입의 svg ]
 |   ├── molecules/                # 재사용 가능한 복합 컴포넌트 [ Modal, Card, SearchBar]
-|   │   └── 
-|   ├── atoms/                    # 가장 기본이 되는 컴포넌트 [ button, Input, spinner]
-|   │   ├──
-|   │   └── icons/                # 아이콘 모음
-|   │       └──
-├── pages/                        # 실제 라우팅되는 페이지들
-|   ├── AddDevice.jsx             #
-|   ├── Debug.jsx                 #
-|   ├── Routine.jsx               #
-|   ├── Auth.jsx                  #
-|   ├── Home.jsx                  #
-|   ├── My.jsx                    #
-|   └── Settings.jsx              #
+|   │   ├── XXX_forms             # 각페이지에 사용될 Form들
+|   │   └── ...                   # 각페이지에 사용될 Form들
+|   ├── organisms/                # 큰 구조의 독립적 영역 [ Gnb, SideBar]
+|   └── templates/                # 전체 레이아웃 구조 
 ├── context/                      # React Context API를 사용한 전역 상태 관리 디렉토리
-│   └──       
 ├── hooks/                        # 재사용 가능한 커스텀 훅들을 모아둔 디렉토리
-│   └──     
+├── pages/                        # 실제 라우팅되는 페이지들
 ├── styles/                       # 스타일 관련 파일들을 모아둔 디렉토리
-│   └── index.css                 # Tailwind CSS 설정 및 전역 스타일
 ├── utils/                        # 여러 곳에서 재사용되는 유틸리티 함수들을 모아둔 디렉토리
-│   ├──       
-│   └──       
+|   ├── android/                  # Android Interface 관련 유틸 디렉토리
+|   └── ios/                      # IOS Interface 관련 유틸 디렉토리
 ├── App.jsx                       # 앱의 최상위 컴포넌트
 ├── index.css                     # 기본 스타일시트
 ├── main.jsx                      # React 앱의 진입점 (ReactDOM.render)
