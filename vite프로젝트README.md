@@ -143,12 +143,12 @@ npx tailwindcss -i ./src/index.css -o ./src/output.css --watch
 ***localhost:3000 으로 서버구성해서 dist 디렉토리에 있는 코드 로컬실행***
 ```bash
 $ npm run build
-$ npm run preview -- --port 3000 --host
+$ npm run preview --port 3000 --host
 ```
 ### [vite + React 프로젝트] Local Test ( with local backend )
 ***npm run dev 시, .env.development 환경변수를 참조해 빌드***
 ```bash
-$ npm run dev -- --port 3000 --host
+$ npm run dev --port 3000 --host
 ```
 
 
